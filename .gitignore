@@ -1,0 +1,7 @@
+cgi-bin/
+fotorama-4.6.4.dev/
+img/img-slideshow/slideshow-images-info.txt
+PHPMailer/
+shop-files/vendor/
+shop-files/cacert.pem
+.htaccess
