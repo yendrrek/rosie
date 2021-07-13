@@ -66,15 +66,18 @@ $slideshowSectionTitle1 = $pageName->slideshowSectionTitle1;
 $slideshowSectionTitle2 = $pageName->slideshowSectionTitle2;
 
 if ($contactPageIsLoaded) {
+
 	EnvironmentVariablesValidation::validatePHPMailerEnvVars();
 	$sellerEmail = EnvironmentVariablesValidation::$sellerEmail;
 	$sellerPhone = EnvironmentVariablesValidation::$sellerPhone;
 	$sellerMobile = EnvironmentVariablesValidation::$sellerMobile;
+
 	$tokenCsrf = new Token();
 	if (!isset($_SESSION['tokenCsrf'])) {
 		$_SESSION['tokenCsrf'] = $tokenCsrf->tokenCsrf;
 	}
 	$tokenCsrf = $_SESSION['tokenCsrf'];
+
 	$contactFormValidation = new ContactFormValidation();
 	$contactFormValidation->validateContactForm();
 	$senderName = $contactFormValidation->senderName;
@@ -85,12 +88,16 @@ if ($contactPageIsLoaded) {
 	$msgError = $contactFormValidation->msgError;
 	$generalNotification = $contactFormValidation->generalNotification;
 	$msgValidatedWillBeSubmited = $contactFormValidation->msgValidatedWillBeSubmited;
+
 	if ($msgValidatedWillBeSubmited) {
+
 		$contactFormSubmition = new ContactFormSubmition();
 		$contactFormSubmition->sendMsg($contactFormValidation);
 		$generalNotification = $contactFormSubmition->generalNotification;
 		$msgSentWillAmendDb = $contactFormSubmition->msgSentWillAmendDb;
+
 		if ($msgSentWillAmendDb) {
+
 			$contactFormDb = new ContactFormDb($pdo);
 			$userId = new UserId();
 			$userId->setUserId();
@@ -100,12 +107,14 @@ if ($contactPageIsLoaded) {
 }
     
 if ($shopPageIsLoaded) {
+
 	$tokenCsrf = new Token();
 	$tokenCsrf = $tokenCsrf->tokenCsrf;
 	$_SESSION['tokenCsrf'] = $tokenCsrf;
 }
 
 if ($basketPageIsLoaded) {
+
 	if (isset($_SESSION['tokenCsrf'])) {
 	    $tokenCsrf = $_SESSION['tokenCsrf'];
 	}
@@ -138,20 +147,27 @@ if ($basketPageIsLoaded) {
 	$userId->setUserId();
 
 	if ($productAddedToBasketWillAmendDbNow) {
+
 		$basketDb->addProductToBasketDb($userId);
+
 	} elseif ($removedProductFromBasketWillAmendDbNow || $zeroQtySelectedWillAmendDbNow) {
+
 		$basketDb->removeProductFromBasketDb($userId);
+
 	} elseif ($updatedQtyWillAmendDbNow && !$zeroQtySelectedWillAmendDbNow) {
+
 		$basketDb->updateQtyViaBasketDropDownMenuDb($userId);
 	}
 }
 
 if ($purchaseCompletedPageIsLoaded) {
+
 	$_SESSION = [];
 	session_destroy();
 }
 
 if ($errorTransactionPageIsNOTLoaded) {
+
     include 'views/head.php';
 }
 
@@ -167,25 +183,39 @@ $pagesWillIncludeMainNav = [
 ];
 
 if  (in_array(true, $pagesWillIncludeMainNav)) {
+
 	$resultMainNav = $pdo->query('SELECT * FROM mainNavItems ORDER BY id ASC');
+
 	$resultSubNav = $pdo->query('SELECT * FROM subNavItems ORDER BY id ASC');
+
 	include 'views/main-navigation-screens-1171px-up.php';
+
 	$resultMainNav = null;
     $resultSubNav = null;
+
 	$resultSmallMainNav = $pdo->query('SELECT * FROM smallMainNavItems ORDER BY id ASC');
+
 	$resultSmallSubNav = $pdo->query('SELECT * FROM smallSubNavItems ORDER BY id ASC'); 
+
 	include 'views/main-navigation-screens-1170px-down.php';
+
 	$resultSmallMainNav = null;
 	$resultSmallSubNav = null;
+
 } elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
+
 	$resultBasket = $pdo->query('SELECT * FROM basketMainNavItems ORDER BY id ASC');
+
 	$resultBasketSmallNav = $pdo->query('SELECT * FROM basketSmallMainNavItems ORDER BY id ASC');
+
 	include 'views/basket-navigation.php';
+
 	$resultBasket = null;
 	$resultBasketSmallNav = null;
 }
 
 if ($purchaseCompletedPageIsNOTLoaded && $errorTransactionPageIsNOTLoaded) {
+	
     include 'views/breadcrumbs.php';
 }
 
@@ -198,28 +228,49 @@ $pagesWillIncludeSlideshow = [
 ];
 
 if (in_array(true, $pagesWillIncludeSlideshow)) {
+
     $resultSlideshowImgs = $pdo->query("CALL getSlideshowImgs('$artworkSectionTitle')"); 
+
 	include 'views/slideshow.php';
+
 	$resultSlideshowImgs = null;
+
 	$resultThumbnailImgs = $pdo->query("CALL getThumbnailImgs('$artworkSectionTitle')");
+
 	include 'views/thumbnail-imgs.php';
+
 	$resultThumbnailImgs = null;
+
 } elseif ($aboutPageIsLoaded) {
+
 	$resultAbout = $pdo->query('SELECT * FROM aboutContent ORDER BY id ASC');
+
     include 'views/about-content.php';
+
     $resultAbout = null;
+
 } elseif ($contactPageIsLoaded) {
+
     include 'views/contact-form-and-details.php';
+
 } elseif ($shopPageIsLoaded) {
+
 	$resultCards = $pdo->query('CALL getCards()');
+
 	include 'views/shop-content.php';
+
 	$resultCards = null;
+
 } elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
+
     include 'views/basket-content.php';
 }
 
 if ($errorTransactionPageIsNOTLoaded) {
+
     include 'views/footer.php';
+
 } else {
+
 	include 'views/capture-transaction-error.html';
 }
