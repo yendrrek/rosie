@@ -3,12 +3,18 @@ session_start();
 
 require 'config/db-conn.php';
 
-spl_autoload_register(function($classToLoad) {
-    $classLoaded = stream_resolve_include_path('classes/' . $classToLoad . '.php');
-    if ($classLoaded !== false) {
-        include $classLoaded;
-    }
-});
+function loadClasses()
+{
+	$classLoaded = '';
+
+	spl_autoload_register(function($classToLoad) {
+	    $classLoaded = stream_resolve_include_path('classes/' . $classToLoad . '.php');
+	    if ($classLoaded !== false) {
+	        include $classLoaded;
+	    }
+	});
+} 
+loadClasses();
 
 $pagesWillIncludeMainNav = $existingPages = [];
 
@@ -43,11 +49,18 @@ $existingPages = [
 	$errorTransactionPageIsLoaded
 ];
 
-if (in_array(true, $existingPages)) {
-	$existingPages = null;
-} else {
-    echo '<p>The page requested does not exist.</p><br><br><a href="all-works.php">Go to Homepage</a>';
+function checkIfPageExists()
+{
+	global $existingPages;
+
+	if (in_array(true, $existingPages)) {
+		$existingPages = null;
+	} else {
+	    echo '<p>The page requested does not exist.</p><br><br><a href="all-works.php">Go to Homepage</a>';
+	}
 }
+checkIfPageExists();
+
 
 $contentSecurityPolicy = new ContentSecurityPolicy();
 $contentSecurityPolicy->setContentSecurityPolicyHeaders();
@@ -215,7 +228,7 @@ if  (in_array(true, $pagesWillIncludeMainNav)) {
 }
 
 if ($purchaseCompletedPageIsNOTLoaded && $errorTransactionPageIsNOTLoaded) {
-	
+
     include 'views/breadcrumbs.php';
 }
 
