@@ -5,14 +5,14 @@ require 'config/db-conn.php';
 
 function loadClasses()
 {
-	$classLoaded = '';
+    $classLoaded = '';
 
-	spl_autoload_register(function($classToLoad) {
-	    $classLoaded = stream_resolve_include_path('classes/' . $classToLoad . '.php');
-	    if ($classLoaded !== false) {
-	        include $classLoaded;
-	    }
-	});
+    spl_autoload_register(function($classToLoad) {
+        $classLoaded = stream_resolve_include_path('classes/' . $classToLoad . '.php');
+        if ($classLoaded !== false) {
+            include $classLoaded;
+        }
+    });
 } 
 loadClasses();
 
@@ -34,30 +34,30 @@ $errorTransactionPageIsNOTLoaded = (strpos($currentPage, 'capture-transaction-er
 $errorTransactionPageIsLoaded = (strpos($currentPage, 'capture-transaction-error') !== false);
 
 $existingPages = [
-	$allWorksPageIsLoaded,
-	$allWorksPageIsLoaded,
-	$geometryPageIsLoaded,
-	$stainedGlassPageIsLoaded,
-	$ceramicTilesPageIsLoaded,
-	$paintingsPageIsLoaded,
-	$aboutPageIsLoaded,
-	$contactPageIsLoaded,
-	$shopPageIsLoaded,
-	$basketPageIsLoaded,
-	$basketPageIsLoaded,
-	$purchaseCompletedPageIsLoaded,
-	$errorTransactionPageIsLoaded
+    $allWorksPageIsLoaded,
+    $allWorksPageIsLoaded,
+    $geometryPageIsLoaded,
+    $stainedGlassPageIsLoaded,
+    $ceramicTilesPageIsLoaded,
+    $paintingsPageIsLoaded,
+    $aboutPageIsLoaded,
+    $contactPageIsLoaded,
+    $shopPageIsLoaded,
+    $basketPageIsLoaded,
+    $basketPageIsLoaded,
+    $purchaseCompletedPageIsLoaded,
+    $errorTransactionPageIsLoaded
 ];
 
 function checkIfPageExists()
 {
-	global $existingPages;
+    global $existingPages;
 
-	if (in_array(true, $existingPages)) {
-		$existingPages = null;
-	} else {
-	    echo '<p>The page requested does not exist.</p><br><br><a href="all-works.php">Go to Homepage</a>';
-	}
+    if (in_array(true, $existingPages)) {
+        $existingPages = null;
+    } else {
+        echo '<p>The page requested does not exist.</p><br><br><a href="all-works.php">Go to Homepage</a>';
+    }
 }
 checkIfPageExists();
 
@@ -80,103 +80,103 @@ $slideshowSectionTitle2 = $pageName->slideshowSectionTitle2;
 
 if ($contactPageIsLoaded) {
 
-	EnvironmentVariablesValidation::validatePHPMailerEnvVars();
-	$sellerEmail = EnvironmentVariablesValidation::$sellerEmail;
-	$sellerPhone = EnvironmentVariablesValidation::$sellerPhone;
-	$sellerMobile = EnvironmentVariablesValidation::$sellerMobile;
+    EnvironmentVariablesValidation::validatePHPMailerEnvVars();
+    $sellerEmail = EnvironmentVariablesValidation::$sellerEmail;
+    $sellerPhone = EnvironmentVariablesValidation::$sellerPhone;
+    $sellerMobile = EnvironmentVariablesValidation::$sellerMobile;
 
-	$tokenCsrf = new Token();
-	if (!isset($_SESSION['tokenCsrf'])) {
-		$_SESSION['tokenCsrf'] = $tokenCsrf->tokenCsrf;
-	}
-	$tokenCsrf = $_SESSION['tokenCsrf'];
+    $tokenCsrf = new Token();
+    if (!isset($_SESSION['tokenCsrf'])) {
+        $_SESSION['tokenCsrf'] = $tokenCsrf->tokenCsrf;
+    }
+    $tokenCsrf = $_SESSION['tokenCsrf'];
 
-	$contactFormValidation = new ContactFormValidation();
-	$contactFormValidation->validateContactForm();
-	$senderName = $contactFormValidation->senderName;
-	$senderEmail = $contactFormValidation->senderEmail;
-	$msg = $contactFormValidation->msg;
-	$senderNameError = $contactFormValidation->senderNameError;
-	$senderEmailError = $contactFormValidation->senderEmailError;
-	$msgError = $contactFormValidation->msgError;
-	$generalNotification = $contactFormValidation->generalNotification;
-	$msgValidatedWillBeSubmited = $contactFormValidation->msgValidatedWillBeSubmited;
+    $contactFormValidation = new ContactFormValidation();
+    $contactFormValidation->validateContactForm();
+    $senderName = $contactFormValidation->senderName;
+    $senderEmail = $contactFormValidation->senderEmail;
+    $msg = $contactFormValidation->msg;
+    $senderNameError = $contactFormValidation->senderNameError;
+    $senderEmailError = $contactFormValidation->senderEmailError;
+    $msgError = $contactFormValidation->msgError;
+    $generalNotification = $contactFormValidation->generalNotification;
+    $msgValidatedWillBeSubmited = $contactFormValidation->msgValidatedWillBeSubmited;
 
-	if ($msgValidatedWillBeSubmited) {
+    if ($msgValidatedWillBeSubmited) {
 
-		$contactFormSubmition = new ContactFormSubmition();
-		$contactFormSubmition->sendMsg($contactFormValidation);
-		$generalNotification = $contactFormSubmition->generalNotification;
-		$msgSentWillAmendDb = $contactFormSubmition->msgSentWillAmendDb;
+        $contactFormSubmition = new ContactFormSubmition();
+        $contactFormSubmition->sendMsg($contactFormValidation);
+        $generalNotification = $contactFormSubmition->generalNotification;
+        $msgSentWillAmendDb = $contactFormSubmition->msgSentWillAmendDb;
 
-		if ($msgSentWillAmendDb) {
+        if ($msgSentWillAmendDb) {
 
-			$contactFormDb = new ContactFormDb($pdo);
-			$userId = new UserId();
-			$userId->setUserId();
-			$contactFormDb->insertContactFormDb($contactFormValidation, $userId);
-		}
-	}
+            $contactFormDb = new ContactFormDb($pdo);
+            $userId = new UserId();
+            $userId->setUserId();
+            $contactFormDb->insertContactFormDb($contactFormValidation, $userId);
+        }
+    }
 }
     
 if ($shopPageIsLoaded) {
 
-	$tokenCsrf = new Token();
-	$tokenCsrf = $tokenCsrf->tokenCsrf;
-	$_SESSION['tokenCsrf'] = $tokenCsrf;
+    $tokenCsrf = new Token();
+    $tokenCsrf = $tokenCsrf->tokenCsrf;
+    $_SESSION['tokenCsrf'] = $tokenCsrf;
 }
 
 if ($basketPageIsLoaded) {
 
-	if (isset($_SESSION['tokenCsrf'])) {
-	    $tokenCsrf = $_SESSION['tokenCsrf'];
-	}
+    if (isset($_SESSION['tokenCsrf'])) {
+        $tokenCsrf = $_SESSION['tokenCsrf'];
+    }
 
-	EnvironmentVariablesValidation::validatePayPalEnvVars();
+    EnvironmentVariablesValidation::validatePayPalEnvVars();
     $clientId = EnvironmentVariablesValidation::$payPalClientId;
 
-	$retailPrices = new RetailPrices();
-	$retailPrices->getRetailPrices();
-	$productsRetailPrices = $retailPrices->productsRetailPrices;
-	$_SESSION['productsRetailPrices'] = $productsRetailPrices;
+    $retailPrices = new RetailPrices();
+    $retailPrices->getRetailPrices();
+    $productsRetailPrices = $retailPrices->productsRetailPrices;
+    $_SESSION['productsRetailPrices'] = $productsRetailPrices;
 
-	$addingProductToBasket = new AddingProductToBasket();
-	$addingProductToBasket->addProductToBasket(); 
-	$productAddedToBasketWillAmendDbNow = $addingProductToBasket->productAddedToBasketWillAmendDbNow;
-	$showStockLimitInfoLightbox = $addingProductToBasket->showStockLimitInfoLightbox;
+    $addingProductToBasket = new AddingProductToBasket();
+    $addingProductToBasket->addProductToBasket(); 
+    $productAddedToBasketWillAmendDbNow = $addingProductToBasket->productAddedToBasketWillAmendDbNow;
+    $showStockLimitInfoLightbox = $addingProductToBasket->showStockLimitInfoLightbox;
 
-	$removingProductFromBasket = new RemovingProductFromBasket();
-	$removingProductFromBasket->removeProductFromBasket();
-	$removedProductFromBasketWillAmendDbNow = $removingProductFromBasket->removedProductFromBasketWillAmendDbNow;
+    $removingProductFromBasket = new RemovingProductFromBasket();
+    $removingProductFromBasket->removeProductFromBasket();
+    $removedProductFromBasketWillAmendDbNow = $removingProductFromBasket->removedProductFromBasketWillAmendDbNow;
 
-	$updatingQtyViaBasketDropDownMenu = new UpdatingQtyViaBasketDropDownMenu();
-	$updatingQtyViaBasketDropDownMenu->updateQtyViaBasketDropDownMenu();
-	$updatedQtyWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->updatedQtyWillAmendDbNow;
-	$zeroQtySelectedWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->zeroQtySelectedWillAmendDbNow;
+    $updatingQtyViaBasketDropDownMenu = new UpdatingQtyViaBasketDropDownMenu();
+    $updatingQtyViaBasketDropDownMenu->updateQtyViaBasketDropDownMenu();
+    $updatedQtyWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->updatedQtyWillAmendDbNow;
+    $zeroQtySelectedWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->zeroQtySelectedWillAmendDbNow;
 
-	$basketDb = new BasketDb($pdo);
+    $basketDb = new BasketDb($pdo);
 
-	$userId = new UserId();
-	$userId->setUserId();
+    $userId = new UserId();
+    $userId->setUserId();
 
-	if ($productAddedToBasketWillAmendDbNow) {
+    if ($productAddedToBasketWillAmendDbNow) {
 
-		$basketDb->addProductToBasketDb($userId);
+        $basketDb->addProductToBasketDb($userId);
 
-	} elseif ($removedProductFromBasketWillAmendDbNow || $zeroQtySelectedWillAmendDbNow) {
+    } elseif ($removedProductFromBasketWillAmendDbNow || $zeroQtySelectedWillAmendDbNow) {
 
-		$basketDb->removeProductFromBasketDb($userId);
+        $basketDb->removeProductFromBasketDb($userId);
 
-	} elseif ($updatedQtyWillAmendDbNow && !$zeroQtySelectedWillAmendDbNow) {
+    } elseif ($updatedQtyWillAmendDbNow && !$zeroQtySelectedWillAmendDbNow) {
 
-		$basketDb->updateQtyViaBasketDropDownMenuDb($userId);
-	}
+        $basketDb->updateQtyViaBasketDropDownMenuDb($userId);
+    }
 }
 
 if ($purchaseCompletedPageIsLoaded) {
 
-	$_SESSION = [];
-	session_destroy();
+    $_SESSION = [];
+    session_destroy();
 }
 
 if ($errorTransactionPageIsNOTLoaded) {
@@ -185,46 +185,46 @@ if ($errorTransactionPageIsNOTLoaded) {
 }
 
 $pagesWillIncludeMainNav = [
-	$allWorksPageIsLoaded, 
-	$geometryPageIsLoaded, 
-	$stainedGlassPageIsLoaded, 
-	$ceramicTilesPageIsLoaded, 
-	$paintingsPageIsLoaded, 
-	$aboutPageIsLoaded, 
-	$contactPageIsLoaded, 
-	$shopPageIsLoaded
+    $allWorksPageIsLoaded, 
+    $geometryPageIsLoaded, 
+    $stainedGlassPageIsLoaded, 
+    $ceramicTilesPageIsLoaded, 
+    $paintingsPageIsLoaded, 
+    $aboutPageIsLoaded, 
+    $contactPageIsLoaded, 
+    $shopPageIsLoaded
 ];
 
 if  (in_array(true, $pagesWillIncludeMainNav)) {
 
-	$resultMainNav = $pdo->query('SELECT * FROM mainNavItems ORDER BY id ASC');
+    $resultMainNav = $pdo->query('SELECT * FROM mainNavItems ORDER BY id ASC');
 
-	$resultSubNav = $pdo->query('SELECT * FROM subNavItems ORDER BY id ASC');
+    $resultSubNav = $pdo->query('SELECT * FROM subNavItems ORDER BY id ASC');
 
-	include 'views/main-navigation-screens-1171px-up.php';
+    include 'views/main-navigation-screens-1171px-up.php';
 
-	$resultMainNav = null;
+    $resultMainNav = null;
     $resultSubNav = null;
 
-	$resultSmallMainNav = $pdo->query('SELECT * FROM smallMainNavItems ORDER BY id ASC');
+    $resultSmallMainNav = $pdo->query('SELECT * FROM smallMainNavItems ORDER BY id ASC');
 
-	$resultSmallSubNav = $pdo->query('SELECT * FROM smallSubNavItems ORDER BY id ASC'); 
+    $resultSmallSubNav = $pdo->query('SELECT * FROM smallSubNavItems ORDER BY id ASC'); 
 
-	include 'views/main-navigation-screens-1170px-down.php';
+    include 'views/main-navigation-screens-1170px-down.php';
 
-	$resultSmallMainNav = null;
-	$resultSmallSubNav = null;
+    $resultSmallMainNav = null;
+    $resultSmallSubNav = null;
 
 } elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
 
-	$resultBasket = $pdo->query('SELECT * FROM basketMainNavItems ORDER BY id ASC');
+    $resultBasket = $pdo->query('SELECT * FROM basketMainNavItems ORDER BY id ASC');
 
-	$resultBasketSmallNav = $pdo->query('SELECT * FROM basketSmallMainNavItems ORDER BY id ASC');
+    $resultBasketSmallNav = $pdo->query('SELECT * FROM basketSmallMainNavItems ORDER BY id ASC');
 
-	include 'views/basket-navigation.php';
+    include 'views/basket-navigation.php';
 
-	$resultBasket = null;
-	$resultBasketSmallNav = null;
+    $resultBasket = null;
+    $resultBasketSmallNav = null;
 }
 
 if ($purchaseCompletedPageIsNOTLoaded && $errorTransactionPageIsNOTLoaded) {
@@ -233,30 +233,30 @@ if ($purchaseCompletedPageIsNOTLoaded && $errorTransactionPageIsNOTLoaded) {
 }
 
 $pagesWillIncludeSlideshow = [
-	$allWorksPageIsLoaded, 
-	$geometryPageIsLoaded, 
-	$stainedGlassPageIsLoaded, 
-	$ceramicTilesPageIsLoaded, 
-	$paintingsPageIsLoaded
+    $allWorksPageIsLoaded, 
+    $geometryPageIsLoaded, 
+    $stainedGlassPageIsLoaded, 
+    $ceramicTilesPageIsLoaded, 
+    $paintingsPageIsLoaded
 ];
 
 if (in_array(true, $pagesWillIncludeSlideshow)) {
 
     $resultSlideshowImgs = $pdo->query("CALL getSlideshowImgs('$artworkSectionTitle')"); 
 
-	include 'views/slideshow.php';
+    include 'views/slideshow.php';
 
-	$resultSlideshowImgs = null;
+    $resultSlideshowImgs = null;
 
-	$resultThumbnailImgs = $pdo->query("CALL getThumbnailImgs('$artworkSectionTitle')");
+    $resultThumbnailImgs = $pdo->query("CALL getThumbnailImgs('$artworkSectionTitle')");
 
-	include 'views/thumbnail-imgs.php';
+    include 'views/thumbnail-imgs.php';
 
-	$resultThumbnailImgs = null;
+    $resultThumbnailImgs = null;
 
 } elseif ($aboutPageIsLoaded) {
 
-	$resultAbout = $pdo->query('SELECT * FROM aboutContent ORDER BY id ASC');
+    $resultAbout = $pdo->query('SELECT * FROM aboutContent ORDER BY id ASC');
 
     include 'views/about-content.php';
 
@@ -268,11 +268,11 @@ if (in_array(true, $pagesWillIncludeSlideshow)) {
 
 } elseif ($shopPageIsLoaded) {
 
-	$resultCards = $pdo->query('CALL getCards()');
+    $resultCards = $pdo->query('CALL getCards()');
 
-	include 'views/shop-content.php';
+    include 'views/shop-content.php';
 
-	$resultCards = null;
+    $resultCards = null;
 
 } elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
 
@@ -285,5 +285,5 @@ if ($errorTransactionPageIsNOTLoaded) {
 
 } else {
 
-	include 'views/capture-transaction-error.html';
+    include 'views/capture-transaction-error.html';
 }
