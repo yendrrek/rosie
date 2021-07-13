@@ -15,12 +15,16 @@ require __DIR__ . '/vendor/autoload.php';
 require 'paypal-client.php';
 require '../config/db-conn.php';
 
-spl_autoload_register(function($classToLoad) {
-    $classLoaded = stream_resolve_include_path('../classes/' . $classToLoad . '.php');
-    if ($classLoaded !== false) {
-        include $classLoaded;
-    }
-});
+function loadClasses()
+{
+    spl_autoload_register(function($classToLoad) {
+        $classLoaded = stream_resolve_include_path('../classes/' . $classToLoad . '.php');
+        if ($classLoaded !== false) {
+            include $classLoaded;
+        }
+    });
+}
+loadClasses();
 
 $OrderIDjsonRowData = file_get_contents('php://input');
 $OrderIDArr = [];
