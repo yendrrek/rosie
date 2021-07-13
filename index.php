@@ -61,7 +61,6 @@ function checkIfPageExists()
 }
 checkIfPageExists();
 
-
 $contentSecurityPolicy = new ContentSecurityPolicy();
 $contentSecurityPolicy->setContentSecurityPolicyHeaders();
 
