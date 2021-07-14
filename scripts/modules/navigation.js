@@ -99,7 +99,7 @@ export const Navigation = {
 
   focusPaintingsLink (event) {
     if (document.activeElement === this.mainNavArrow ||
-    	document.activeElement === this.geometrySubNavLink) {
+      document.activeElement === this.geometrySubNavLink) {
       event.preventDefault();
       this.paintingsSubNavLink.focus();
     }
@@ -169,6 +169,6 @@ export const Navigation = {
     for (const items of subNavSmallListItems) {
       items.classList.toggle('subnav-small__items_visible');
     }
-  },
+  }
 
 };

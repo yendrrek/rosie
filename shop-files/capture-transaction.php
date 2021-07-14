@@ -39,7 +39,6 @@ class CaptureOrder
     public $orderId;
     public $totalPrice;
 
-    
     public function captureOrder($orderId) 
     {
         $request = new OrdersCaptureRequest($orderId);

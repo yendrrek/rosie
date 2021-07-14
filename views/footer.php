@@ -8,8 +8,8 @@ include 'includes/back-to-top-btn.html';
     <div class="body__push"></div> <!-- Keeps the footer always at the bottom. -->
 </div> <!-- Closing tag for all the content above the footer -->
 <footer class="footer body__footer">
-	<span class="copyright">&copy; <?php echo date('Y'); ?> Rosie Piontek</span>
-	<a class="fab fa-instagram link link_visited link_instagram link_instagram_hover footer__link
+    <span class="copyright">&copy; <?php echo date('Y'); ?> Rosie Piontek</span>
+    <a class="fab fa-instagram link link_visited link_instagram link_instagram_hover footer__link
     link_instagram_outline" href="https://www.instagram.com/rosiepiontekart/?hl=en" target="_blank"></a>
 </footer>
 <script src="scripts/explorer-alert.js"></script>

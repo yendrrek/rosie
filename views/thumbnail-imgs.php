@@ -19,8 +19,7 @@ while ($rowThumbnailImgs = $resultThumbnailImgs->fetch()):
         endif; 
         ?>">
 
-        <div class="thumbnail-clickable-area body__thumbnail-clickable-area thumbnail-clickable-area_hover thumbnail-clickable-area_outline" 
-             tabindex="0">
+        <div class="thumbnail-clickable-area body__thumbnail-clickable-area thumbnail-clickable-area_hover thumbnail-clickable-area_outline" tabindex="0">
             <img class="thumbnail-clickable-area__img
 
                 <?php
@@ -44,7 +43,9 @@ while ($rowThumbnailImgs = $resultThumbnailImgs->fetch()):
             <div class="thumbnail-clickable-area__additional-info"><?php echo $rowThumbnailImgs['thumbAdditional']; ?></div>
         </div>
     </div>
+
     <?php 
 endwhile;
 ?>
+
 </div>

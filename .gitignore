@@ -5,3 +5,4 @@ PHPMailer/
 shop-files/vendor/
 shop-files/cacert.pem
 .htaccess
+styles/main-minified.css

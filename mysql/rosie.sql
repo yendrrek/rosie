@@ -10,7 +10,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -39,8 +38,8 @@ IF productAlreadyInBasket > 0 THEN
         UPDATE basket SET quantity=quantity+addedQty, dateModified=NOW() WHERE id=productAlreadyInBasket;
     END IF;
 ELSE
-	INSERT INTO basket (userId, productId, quantity)
-	VALUES (userId, addedProductId, addedQty);
+  INSERT INTO basket (userId, productId, quantity)
+  VALUES (userId, addedProductId, addedQty);
 END IF;
 END$$
 
@@ -50,20 +49,20 @@ SELECT * FROM cards ORDER BY id ASC$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getSlideshowImgs`(IN `artworkSection` TEXT)
 SELECT * FROM slideshow
 WHERE CASE artworkSection WHEN 'allWorks'     THEN id BETWEEN 1  AND 29
- 					      WHEN 'geometry'     THEN id BETWEEN 12 AND 15
-					      WHEN 'stainedGlass' THEN id BETWEEN 16 AND 27
-					      WHEN 'ceramicTiles' THEN id BETWEEN 28 AND 29
-                          WHEN 'paintings'	  THEN id BETWEEN 1  AND 11
+                WHEN 'geometry'     THEN id BETWEEN 12 AND 15
+                WHEN 'stainedGlass' THEN id BETWEEN 16 AND 27
+                WHEN 'ceramicTiles' THEN id BETWEEN 28 AND 29
+                          WHEN 'paintings'    THEN id BETWEEN 1  AND 11
                           END
 ORDER BY id ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getThumbnailImgs`(IN `artworkSection` TEXT)
 SELECT * FROM thumbnailImgs 
-WHERE CASE artworkSection WHEN 'allWorks' 	  THEN id BETWEEN 1  AND 29
-                          WHEN 'geometry' 	  THEN id BETWEEN 12 AND 15
+WHERE CASE artworkSection WHEN 'allWorks'     THEN id BETWEEN 1  AND 29
+                          WHEN 'geometry'     THEN id BETWEEN 12 AND 15
                           WHEN 'stainedGlass' THEN id BETWEEN 16 AND 27
                           WHEN 'ceramicTiles' THEN id BETWEEN 28 AND 29
-                          WHEN 'paintings'	  THEN id BETWEEN 1  AND 11
+                          WHEN 'paintings'    THEN id BETWEEN 1  AND 11
                           END
 ORDER BY id ASC$$
 

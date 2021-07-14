@@ -31,6 +31,6 @@ export const SafariFixStyles = {
     for (const img of slideshowImgs) {
       img.classList.add('slide__img_dont-apply-chrome-fix-in-safari');
     }
-  },
+  }
   
 };

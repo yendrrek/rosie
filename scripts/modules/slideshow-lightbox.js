@@ -1,6 +1,7 @@
 'use strict';
 
 import { HelperMethods } from './helper-methods.js';
+
 import { SharedVar } from '../main.js';
 
 export const SlideshowLightbox = {
@@ -280,6 +281,6 @@ export const SlideshowLightbox = {
     if (window.innerWidth < 1058 || window.innerWidth > 1920) {
       this.hideFullPageImg();
     }
-  },
+  }
 
 };

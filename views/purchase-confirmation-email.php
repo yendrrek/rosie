@@ -3,7 +3,8 @@
     
 .purchase-confirmation-email {
   color: #1a1a1a;
-  font-size: 1.063rem; }
+  font-size: 1.063rem;
+}
 
 </style>
 </head>
@@ -30,11 +31,11 @@
                         Quantity: <?php echo $items[0][$i]['qty']; ?><br>
                         Subtotal: &pound; <?php echo number_format($totalPriceOfSingleProduct[$i], 2); ?><br><br>
 
-    			        <?php
-    			            $totalQtyOfSingleProduct[$i] = $items[0][$i]['qty'];
+                        <?php
+                            $totalQtyOfSingleProduct[$i] = $items[0][$i]['qty'];
                         endfor;
                         $totalQtyOfAllProducts = array_sum($totalQtyOfSingleProduct);
-			            ?>
+                        ?>
 
                         Total quantity purchased: <?php echo $totalQtyOfAllProducts; ?><br> 
                         <strong>Total price: &pound; <?php echo $this->totalPrice; ?></strong><br>

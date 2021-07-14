@@ -40,6 +40,6 @@ export const HelperMethods = {
 
   restoreBodyScrollbar () {
     document.body.style.overflow = 'initial';
-  },
+  }
 
 };

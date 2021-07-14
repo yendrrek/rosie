@@ -1,4 +1,5 @@
 <div class="slideshow" tabindex="-1">
+    
     <?php
     include 'includes/slideshow-nav.php';
     while ($rowSlideshowImgs = $resultSlideshowImgs->fetch()): 

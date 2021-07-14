@@ -42,13 +42,13 @@ class PageName
             $isPurchaseCompleted
         ];
 
-    	switch ($currentPage) {
-    		case $isAllWorks:
-    			$this->pageTitle = 'All Works ' . $fixedChunkOfPageTitle;
+        switch ($currentPage) {
+            case $isAllWorks:
+                $this->pageTitle = 'All Works ' . $fixedChunkOfPageTitle;
                 $this->breadcrumbsPageTitle = 'All Works';
                 $this->artworkSectionTitle = 'allWorks';
                 $this->slideshowSectionTitle1 = 'All Works';
-    			break;
+                break;
             case $isGeometry:
                 $this->pageTitle = 'Geometry ' . $fixedChunkOfPageTitle;
                 $this->breadcrumbsPageTitle = 'Geometry';
@@ -94,7 +94,7 @@ class PageName
             case $isPurchaseCompleted:
                 $this->pageTitle = 'Purchase completed ' . $fixedChunkOfPageTitle;
                 break;
-    	}
+        }
         if (in_array(true, $existingPages)) {
             $existingPages = null;
         } else {

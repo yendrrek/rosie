@@ -59,6 +59,6 @@ export const OutlineForKeyboardUsers = {
     }
     document.removeEventListener('focusin', this.showOutline);
     this.controlContactFormFieldOutline();  
-  },
+  }
   
 };

@@ -110,9 +110,9 @@
   font-size: 30px; 
 }
 
-  /* 
-  \\ FULL-PAGE MODAL \\ 
-  */
+/* 
+\\ FULL-PAGE MODAL \\ 
+*/
 
   /*
     Full-page modal is used for notifications about:
@@ -156,9 +156,9 @@
   z-index: 104; 
 }
 
-  /* 
-  \\ FULL-PAGE MODAL ENDS HERE \\ 
-  */
+/* 
+\\ FULL-PAGE MODAL ENDS HERE \\ 
+*/
 
 /* 
 \\ REUSED BLOCKS END HERE \\ 
@@ -362,17 +362,21 @@
 /* Animation used to imitate transition-duration of hover effect on the menu items. */
 @-webkit-keyframes triangle {
   from {
-    border-top: 0.529em solid hsl(0, 0%, 10%); }
-  to {
-    border-top: 0.529em solid hsl(288, 40%, 40%); } 
+    border-top: 0.529em solid hsl(0, 0%, 10%);
   }
+  to {
+    border-top: 0.529em solid hsl(288, 40%, 40%);
+  } 
+}
 
 @keyframes triangle {
   from {
-    border-top: 0.529em solid hsl(0, 0%, 10%); }
-  to {
-    border-top: 0.529em solid hsl(288, 40%, 40%);} 
+    border-top: 0.529em solid hsl(0, 0%, 10%);
   }
+  to {
+    border-top: 0.529em solid hsl(288, 40%, 40%);
+  } 
+}
 
 .arrow__outline-bright-filling { 
   border-left: 0.588em solid transparent;
@@ -385,9 +389,9 @@
   z-index: 2; 
 }
 
-  /* 
-  \\ SUBNAVIGATION \\
-  */ 
+/* 
+\\ SUBNAVIGATION \\
+*/ 
 
 .subnav {
   background-color: hsl(306, 24%, 82%);
@@ -448,9 +452,9 @@
   margin: 0.294em 0.118em 0; 
 }
 
-  /* 
-  \\ SUBNAVIGATION ENDS HERE \\
-  */
+/* 
+\\ SUBNAVIGATION ENDS HERE \\
+*/
 
 .basket {
   cursor: pointer;
@@ -933,7 +937,8 @@
 /* Firefox only. */
 @-moz-document url-prefix() {
   .icon_close-img-fullpage {
-    right: 56px; } 
+    right: 56px;
+  } 
 }
 
 .icon_close-img-fullpage:hover {
@@ -975,7 +980,8 @@
 @-moz-document url-prefix() {
   .slide__img-rectangle,
   .slide__img-square {
-    transform: none; } 
+    transform: none;
+  } 
 }
 
 /* Make the same fix from above not affect Safari as otherwise pages crash when slideshow gallery images are zoomed in on Apple mobile devices. */
@@ -3282,9 +3288,9 @@
   } 
 }
 
-  /*
-  \\ TOUCHSCREEN DEVICES \\
-  */
+/*
+\\ TOUCHSCREEN DEVICES \\
+*/
 
 @media (pointer: coarse) {
   .logo_hover:hover, 
@@ -3340,19 +3346,19 @@
   .policy_hover:hover {
   -webkit-text-decoration: none;
           text-decoration: none; 
-        }
+  }
   .btn_add-to-basket:hover .fas {
     transform: none; 
   }
   .slide__img-rectangle_zoom-in,
   .slide__img-square_zoom-in {
     pointer-events: none; 
-    } 
-  }
+  } 
+}
 
-  /*
-  \\ TOUCHSCREEN DEVICES END HERE \\
-  */
+/*
+\\ TOUCHSCREEN DEVICES END HERE \\
+*/
 
 /* 
 \\ MEDIA QUERIES END HERE \\

@@ -18,15 +18,15 @@ export const BackToTopButton = {
   },
 
   showBackToTopBtn () {
-  	if (this.backToTopBtn.classList.contains('back-to-top-btn_hidden')) {
-  	  this.backToTopBtn.classList.remove('back-to-top-btn_hidden');
-  	  this.backToTopBtn.classList.add('back-to-top-btn_visible');
-  	}
+    if (this.backToTopBtn.classList.contains('back-to-top-btn_hidden')) {
+      this.backToTopBtn.classList.remove('back-to-top-btn_hidden');
+      this.backToTopBtn.classList.add('back-to-top-btn_visible');
+    }
   },
 
   hideBackToTopBtn () {
-  	this.backToTopBtn.classList.remove('back-to-top-btn_visible');
-  	this.backToTopBtn.classList.add('back-to-top-btn_hidden');
+    this.backToTopBtn.classList.remove('back-to-top-btn_visible');
+    this.backToTopBtn.classList.add('back-to-top-btn_hidden');
   }
 
 };
