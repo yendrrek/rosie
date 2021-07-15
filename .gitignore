@@ -6,6 +6,7 @@ shop-files/vendor/
 shop-files/cacert.pem
 .htaccess
 styles/main-minified.css
+styles/hamburger-minified.css
 fotorama-4.6.4.dev/fotorama-minified.js
 fotorama-4.6.4.dev/fotorama-minified.css
 scripts/modules-minified/adding-products-to-basket.js
