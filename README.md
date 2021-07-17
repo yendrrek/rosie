@@ -108,3 +108,5 @@ of all works        |            |       |       |     |
 * An animated placeholder for images being loaded in the lightbox gallery.
 
 * Progressive enhancement. Better functionality without JavaScript.
+
+* Implement Webpack for automatic minification and bundling.
