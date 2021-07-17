@@ -3,6 +3,8 @@ Data needed across different methods are stored in properties.
 Data needed in only one method in a particular object are made variables.
 
 All lightboxes are shown in full-page and consist of two animated modals, one is the background, the other is in the center and contains the content.
+
+'Resize' event is fired when changing viewport width via developer tools.
 */
 
 'use strict';
