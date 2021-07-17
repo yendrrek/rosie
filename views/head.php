@@ -14,20 +14,11 @@ endif;
     <title><?php echo $pageTitle;?></title>
     <link href="https://fonts.googleapis.com/css?family=Alice%7CForum&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/ad7a1df0ce.js" 
-    crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/ad7a1df0ce.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <?php
-if (strpos($pageTitle, 'Shop') !== false): 
-    ?>
-
-    <script src="fotorama-4.6.4.dev/fotorama.dev.js"></script>
-    <link  href="fotorama-4.6.4.dev/fotorama.dev.css" rel="stylesheet">
-
-    <?php
-endif;
 if (strpos($pageTitle, 'Basket') !== false):
     if (!empty($_SESSION['basket'])):
     ?>
