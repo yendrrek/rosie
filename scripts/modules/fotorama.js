@@ -23,9 +23,9 @@ export const Fotorama = {
 
   removeFotoramaForScreensWiderThan1169px () {
     if (this.fotoramaJsAlreadyInDom() && this.fotoramaCssAlreadyInDom()) {
-  	  if (screen.width > 1169 && this.shopPageIsLoaded) {
-	    this.fotoramaJsAlreadyInDom().remove();
-	    this.fotoramaCssAlreadyInDom().remove();
+      if (screen.width > 1169 && this.shopPageIsLoaded) {
+      this.fotoramaJsAlreadyInDom().remove();
+      this.fotoramaCssAlreadyInDom().remove();
       }
     }
   }
