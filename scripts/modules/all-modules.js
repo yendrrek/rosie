@@ -8,6 +8,8 @@ export { ContactForm } from './contact-form.js';
 
 export { ExtraImgLightboxInShop } from './extra-img-lightbox-in-shop.js';
 
+export { Fotorama } from './fotorama.js';
+
 export { HeadingWithBreadcrumbs } from './heading-with-breadcrumbs.js';
 
 export { Navigation } from './navigation.js';

@@ -23,6 +23,10 @@ for (const event of ['click', 'keydown']) {
   document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
 }
 
+module.Fotorama.insertFotoramaForScreensNarrowerThan1170px();
+window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
+window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
+
 document.addEventListener('scroll', () => module.HeadingWithBreadcrumbs.controlHeadingWithBreadcrumbs());
 
 document.addEventListener('keydown', () =>  module.Navigation.tabThroughMainNav(event));
