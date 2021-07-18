@@ -11,7 +11,7 @@ Project's address:  *https://rosiepiontek.com*
 
 ## Technologies used
 
-* Apache, MySQL, PHP 7.1.8
+* Apache, MySQL, PHP 7.1
 
 * jQuery  for Ajax calls: 
    When processing the basket and the contact form.
