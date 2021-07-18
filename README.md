@@ -109,4 +109,4 @@ of all works        |            |       |       |     |
 
 * Progressive enhancement. Better functionality without JavaScript.
 
-* Implement Webpack for automatic minification and bundling.
+* Implement server-side automatic minification.
