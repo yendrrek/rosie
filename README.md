@@ -1,4 +1,4 @@
-# Painter's portfolio website with a simple shop 
+# Painter's portfolio website with a shop 
 
 This is my debut project which I started in November 2019 to learn web development and design. 
 Project's address:  *https://rosiepiontek.com*
