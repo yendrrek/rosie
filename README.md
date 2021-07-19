@@ -13,14 +13,12 @@ Project's address:  *https://rosiepiontek.com*
 
 * Apache, MySQL, PHP 7.1
 
-* jQuery  for Ajax calls: 
-   When processing the basket and the contact form.
+* jQuery  for Ajax calls when processing the basket and the contact form.
    
 * PayPal API with Smart Button *https://developer.paypal.com/docs/checkout/integrate/*   *https://developer.paypal.com/docs/checkout/reference/server-integration/capture-transaction/* 
 *https://developer.paypal.com/demo/checkout/#/pattern/server*
 
-* PHP Mailer
-For sending purchase confirmation to clients
+* PHP Mailer for sending purchase confirmation to clients
 
 * Google fonts and icons
 
@@ -48,12 +46,12 @@ JavaScript code uses ES6 modules with object literals which are imported to *'ma
 
 Contact form is validated on the server side.
 
-In some cases insertion into database or fetching data from it is performed using MySQL stored procedures. These cases are:
-&nbsp;&nbsp;&nbsp;&nbsp;a) basket operations (adding, removing products);
+In some cases insertion into database or fetching data from it is performed using MySQL stored procedures. These cases are:  
+&nbsp;&nbsp;&nbsp;&nbsp;a) basket operations (adding, removing products);  
 &nbsp;&nbsp;&nbsp;&nbsp;b) pulling images of the artworks and their descriptions.
 
-Prepared statements are used for database insertion of:
-&nbsp;&nbsp;&nbsp;&nbsp;a) user input from the contact form;
+Prepared statements are used for database insertion of:  
+&nbsp;&nbsp;&nbsp;&nbsp;a) user input from the contact form;  
 &nbsp;&nbsp;&nbsp;&nbsp;b) completed orders and customer details.
   
 Nonces and Content Security Policy headers are applied with PHP to increase security of the website.
