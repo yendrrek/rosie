@@ -13,7 +13,7 @@ Project's address:  *https://rosiepiontek.com*
 
 * Apache, MySQL, PHP 7.1
 
-* jQuery  for Ajax calls when processing the basket and the contact form.
+* jQuery  for Ajax calls when processing the basket and the contact form
    
 * PayPal API with the Smart Button  
 *https://developer.paypal.com/docs/checkout/integrate/*  
