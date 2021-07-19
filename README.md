@@ -20,7 +20,11 @@ Project's address:  *https://rosiepiontek.com*
 *https://developer.paypal.com/docs/checkout/reference/server-integration/capture-transaction/*  
 *https://developer.paypal.com/demo/checkout/#/pattern/server*
 
-* PHP Mailer for sending purchase confirmation to clients
+* PHP Mailer for sending purchase confirmation to clients  
+
+* Composer dependency manager for installing PayPal SDK and PHP Mailer
+
+### Visual third-party components  
 
 * Google fonts and icons
 
@@ -31,8 +35,6 @@ Project's address:  *https://rosiepiontek.com*
 
 * Fotorama image gallery for displaying photos of products in the shop on touchscreens narrower than 1170px
 *https://fotorama.io/*
-
-* Composer dependency manager for installing PayPal SDK and PHP Mailer
 
 ## General description
 
@@ -64,7 +66,7 @@ Website can be fully keyboard-only navigated.
 
 ## Shop description
 
-All operations are performed using AJAX for a smooth user experience and are recorded in the database (adding, removing products, updating quantity, order and customer details).
+All operations are performed using AJAX for a smooth user experience and their results are recorded in the database (adding, removing products, updating quantity, order and customer details).
 
 Online payment is possible via PayPal Smart Button integrated on the sever side.
 
@@ -78,7 +80,7 @@ If the quantity of a product which is to be added to the basket is going to be g
 
 ```
 Homepage with
-thumbnail images ---------------------------------------
+thumbnail* images ---------------------------------------
 of all works        |            |       |       |     |
                     |            |       |       |     |
                     |          About  Contact  Shop  Basket
@@ -99,11 +101,13 @@ of all works        |            |       |       |     |
 
  [ ] reCAPTCHA in the contact form.
 
- [ ] Automatic email notification sent to the seller when stock is low. Initially, error_log() was implemented but it would send an email on every http request.
+ [ ] Automatic email notification sent to the seller when stock is low.  
 
- [ ] In a situation when clicking browser's back button (while the full-page lightbox gallery is open) would take the user to a different website, a warning should appear. Same could be applied in the basket when it's not empty. Plug-in for implementing it: https://github.com/codedance/jquery.AreYouSure .
+ [ ] In a situation when clicking browser's back button (while the full-page lightbox gallery is open) would take the user to a different website, a warning should appear. Plug-in for implementing it: https://github.com/codedance/jquery.AreYouSure .  
 
- [ ] When the user submits the contact form, a notification above it saying "Sending...", in the same place where "Message sent. Thank you" is displayed later.
+ [ ] Same warning (as above) in the basket when it's not empty.
+
+ [ ] When user submits the contact form, a notification above it saying "Sending...", in the same place where "Message sent. Thank you" is displayed later.
 
  [ ] An animated placeholder for images being loaded in the lightbox gallery.
 
