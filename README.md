@@ -97,6 +97,8 @@ of all works        |            |       |       |     |
 
  [x] Load Fotorama gallery plug-in only for touchscreens narrower than 1170px.
 
+ [ ] Load JavaScript modules only when they are needed.
+
  [ ] Prepared statements instead of MySQL stored procedures.
 
  [ ] reCAPTCHA in the contact form.
