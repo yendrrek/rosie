@@ -95,7 +95,7 @@ of all works        |            |       |       |     |
 
 ## Future improvements  
 
- [x] Load "Fotorama" gallery plug-in only for touchscreens narrower than 1170px.
+ [x] Load Fotorama gallery plug-in only for touchscreens narrower than 1170px.
 
  [ ] Prepared statements instead of MySQL stored procedures.
 
