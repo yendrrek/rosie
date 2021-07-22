@@ -9,7 +9,6 @@ export const AddingProductsToBasket = {
   addProductToBasket (event) {
     const _this = AddingProductsToBasket;
     this.btnUsedToAddProductToBasket = $(event.currentTarget).find('.btn_add-to-basket');
-    event.preventDefault();
     $.ajax({
       url: 'basket',
       method: 'POST',
