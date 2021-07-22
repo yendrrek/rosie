@@ -1,7 +1,5 @@
 'use strict';
 
-export { AddingProductsToBasket } from './adding-products-to-basket.js';
-
 export { BackToTopButton } from './back-to-top-btn.js';
 
 export { ContactForm } from './contact-form.js';
