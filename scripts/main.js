@@ -12,8 +12,8 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 export const SharedVar = { focusedThumbnailImgBeforeSlideshowVisible: null };
 
 $('form:not(.contact-form__items)').on('submit', event => {
-  const stayOnPageAndDontRedirect = () => event.preventDefault();
-  stayOnPageAndDontRedirect();
+  const stayOnPage = () => event.preventDefault();
+  stayOnPage();
   import('./modules/adding-products-to-basket.js')
   .then((module) => {
     module.AddingProductsToBasket.addProductToBasket(event);
