@@ -401,7 +401,7 @@
 
 .subnav_hidden {
   opacity: 0;
-  transform: scale(0, 0); 
+  transform: scale(0); 
 }
 
 .nav__subnav {
@@ -416,12 +416,12 @@
 /* Activates the subnavigation with keyboard. */
 .subnav_visible {
   opacity: 1;
-  transform: scale(1, 1); 
+  transform: scale(1); 
 }
 
 .list-item:hover .subnav {
   opacity: 1;
-  transform: scale(1, 1); 
+  transform: scale(1); 
 }
 
 .subnav__item {
@@ -991,12 +991,12 @@
 }
 
 .slide__img-rectangle_zoom-in {
-  transform: scale(4, 4);
+  transform: scale(4);
   transform-origin: 30.56% 7.3%; 
 }
 
 .slide__img-square_zoom-in {
-  transform: scale(4, 4);
+  transform: scale(4);
   transform-origin: 30.53% 9.4%; 
 }
 
@@ -3316,11 +3316,11 @@
   .list-item:hover .subnav { /* For big touch screen devices on which the non -hamburger menu is used. It cancels the 
                                 hover effect which activates the subnav and lets the visibility of the subnav be toggled with .subnav_visible_if-touchstart below via touchstart event. */
     opacity: 0;
-    transform: scale(0, 0); 
+    transform: scale(0); 
   }
   .subnav_visible_if-touchstart {
     opacity: 1 !important; /* Otherwise, the hover state triggered by .list-item above takes precedence. */
-    transform: scale(1, 1) !important; 
+    transform: scale(1) !important; 
   }
   .nav__link_hover:hover,
   .subnav__link_hover:hover,
