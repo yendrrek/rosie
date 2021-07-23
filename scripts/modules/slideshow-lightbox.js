@@ -27,8 +27,10 @@ export const SlideshowLightbox = {
           this.slideshowLightbox.focus();
           currentSlide = currentThumbnailImg;
           this.showCurrentSlide(currentSlide);
-          SharedVar.focusedThumbnailImgBeforeSlideshowVisible = event.target;
           this.setSlideshowLightboxNavigation();
+        }
+        if (event.key === 'Enter') {
+          SharedVar.focusedThumbnailImgBeforeSlideshowVisible = event.target;
         }
       }
     } 
