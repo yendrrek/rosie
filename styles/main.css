@@ -822,6 +822,8 @@
   height: 100%;
   flex-direction: column;
   left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: fixed;
   top: 0;
   transform: translate(9999px, 0);
@@ -947,7 +949,6 @@
 .slide {
   display: flex;
   flex: 1 0 auto;
-  overflow-y: auto; /* Makes scrolling possible when image in full page. */
   width: 100%; 
 }
 
@@ -998,6 +999,10 @@
 .slide__img-square_zoom-in {
   transform: scale(4);
   transform-origin: 30.53% 9.4%; 
+}
+
+.slide_scrollable {
+  overflow-y:  auto;
 }
 
 @-webkit-keyframes zoomin {
