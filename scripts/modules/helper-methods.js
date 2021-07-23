@@ -1,6 +1,6 @@
 'use strict';
 
-import { SharedVar } from '../main.js';
+import { continuationOfTabbingFrom } from '../main.js';
 
 export const HelperMethods = {
 
@@ -32,8 +32,8 @@ export const HelperMethods = {
     restoredBodyAfterFixingLightboxJerk.style.marginRight = '';
     this.restoreBodyScrollbar();
     if (pageWithThumbnailImgs) {
-      if (SharedVar.focusedThumbnailImgBeforeSlideshowVisible) {
-        SharedVar.focusedThumbnailImgBeforeSlideshowVisible.focus();
+      if (continuationOfTabbingFrom.thumbnailImgWhichOpenedSlideshow) {
+        continuationOfTabbingFrom.thumbnailImgWhichOpenedSlideshow.focus();
       }
     }
   },

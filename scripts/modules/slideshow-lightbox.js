@@ -2,7 +2,7 @@
 
 import { HelperMethods } from './helper-methods.js';
 
-import { SharedVar } from '../main.js';
+import { continuationOfTabbingFrom } from '../main.js';
 
 export const SlideshowLightbox = {
 
@@ -30,7 +30,7 @@ export const SlideshowLightbox = {
           this.setSlideshowLightboxNavigation();
         }
         if (event.key === 'Enter') {
-          SharedVar.focusedThumbnailImgBeforeSlideshowVisible = event.target;
+          continuationOfTabbingFrom.thumbnailImgWhichOpenedSlideshow = event.target;
         }
       }
     } 
