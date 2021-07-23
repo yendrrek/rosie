@@ -9,7 +9,7 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 
 'use strict';
 
-export const SharedVar = { focusedThumbnailImgBeforeSlideshowVisible: null };
+export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: null };
 
 $('form:not(.contact-form__items)').on('submit', event => {
   const stayOnPage = () => event.preventDefault();
