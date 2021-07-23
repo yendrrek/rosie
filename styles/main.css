@@ -1689,10 +1689,6 @@
   outline-offset:  0.5rem;
 }
 
-.btn_add-to-basket_outline:focus .fas {
-  transform: rotate(20deg); 
-}
-
 .btn_add-to-basket:hover .fas {
   transform: rotate(20deg); 
 }
