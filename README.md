@@ -117,6 +117,6 @@ of all works        |            |       |       |     |
 
  [ ] Server-side automatic minification.
 
- [ ] Faster rendering of the images when they are seen first time in the lightbox gallery. Event though they are all cached when the lightbox is open for the first time, the initial rendering is slower. When navigating to the same image again, it renders faster. 
+ [ ] The following refers to Chrome only: Faster rendering of the images when they are seen first time in the lightbox gallery. Event though they are all cached when the lightbox is open for the first time, the initial rendering is slower. When navigating to the same image again, it renders faster. 
 
  [ ] Hover effect stays active on a thumbnail image when closing the slideshow gallery lightbox.
