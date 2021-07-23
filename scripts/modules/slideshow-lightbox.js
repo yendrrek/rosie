@@ -185,6 +185,15 @@ export const SlideshowLightbox = {
         img.classList.add('slide__img-square_zoom-out');
       }
     }
+    this.makeSlideNotScrollable();
+  },
+
+  makeSlideNotScrollable () {
+    for (const slide of this.slides) {
+      if (slide.classList.contains('slide_scrollable')) {
+        slide.classList.remove('slide_scrollable');
+      }
+    }
   },
 
   preserveTabbingOrderIfUserClicksOnSlide () {
@@ -220,6 +229,15 @@ export const SlideshowLightbox = {
       } else if (img.classList.contains('slide__img-square')) {
         img.classList.remove('slide__img-square_zoom-out');
         img.classList.add('slide__img-square_zoom-in');
+      }
+    }
+    this.makeFullPageImgScrollable();
+  },
+
+  makeFullPageImgScrollable () {
+    for (const slide of this.slides) {
+      if (slide.classList.contains('slide_visible')) {
+        slide.classList.add('slide_scrollable');
       }
     }
   },
