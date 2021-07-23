@@ -8,7 +8,7 @@ export const AddingProductsToBasket = {
 
   addProductToBasket (event) {
     const _this = AddingProductsToBasket;
-    this.btnUsedToAddProductToBasket = $(event.currentTarget).find('.btn_add-to-basket');
+    this.willContinueTabbingFromSameAddToBasketBtn = $(event.currentTarget).find('.btn_add-to-basket');
     $.ajax({
       url: 'basket',
       method: 'POST',
@@ -101,7 +101,7 @@ export const AddingProductsToBasket = {
     if (this.stockLimitInfoCloseBtn()) {
       this.stockLimitInfoCloseBtn().setAttribute('tabindex', '-1');
     }
-    this.btnUsedToAddProductToBasket.focus();
+    this.willContinueTabbingFromSameAddToBasketBtn.focus();
   },
 
   openAddedToBasketLightbox () {
