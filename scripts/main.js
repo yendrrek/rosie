@@ -15,17 +15,24 @@ $('form:not(.contact-form__items)').on('submit', event => {
   const stayOnPage = () => event.preventDefault();
   stayOnPage();
   import('./modules/adding-products-to-basket.js')
-  .then((module) => {
+  .then(module => {
     module.AddingProductsToBasket.addProductToBasket(event);
+  });
+});
+
+$('.contact-form__items').on('submit', event => {
+  const stayOnPage = () => event.preventDefault();
+  stayOnPage();
+  import('./modules/contact-form.js')
+  .then(module => {
+    module.ContactForm.sendMessgeViaContactForm(event);
+    module.ContactForm.dontResubmitContactFormWhenPageReloaded();
   });
 });
 
 import * as module from './modules/all-modules.js';
 
 document.addEventListener('scroll', () => module.BackToTopButton.controlBackToTopBtn());
-
-$('.contact-form__items').on('submit', () => module.ContactForm.sendMessgeViaContactForm(event));
-module.ContactForm.dontResubmitContactFormWhenPageReloaded();
 
 for (const event of ['click', 'keydown']) {
   document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());

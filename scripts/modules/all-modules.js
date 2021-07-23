@@ -2,8 +2,6 @@
 
 export { BackToTopButton } from './back-to-top-btn.js';
 
-export { ContactForm } from './contact-form.js';
-
 export { ExtraImgLightboxInShop } from './extra-img-lightbox-in-shop.js';
 
 export { Fotorama } from './fotorama.js';
