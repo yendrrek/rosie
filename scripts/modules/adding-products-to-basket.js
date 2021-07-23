@@ -117,7 +117,6 @@ export const AddingProductsToBasket = {
       event.preventDefault();
     } else if (this.userWantsToCloseAddedToBasketLightbox()) {
       this.closeAddedToBasketLightbox();
-      HelperMethods.restoreBodyScrollbar();
     }
   },
 
