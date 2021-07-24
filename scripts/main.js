@@ -11,8 +11,11 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 
 export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: null };
 
+function stayOnPage () {
+  event.preventDefault();
+}
+
 $('form:not(.contact-form__items)').on('submit', event => {
-  const stayOnPage = () => event.preventDefault();
   stayOnPage();
   import('./modules/adding-products-to-basket.js')
   .then(module => {
@@ -21,7 +24,6 @@ $('form:not(.contact-form__items)').on('submit', event => {
 });
 
 $('.contact-form__items').on('submit', event => {
-  const stayOnPage = () => event.preventDefault();
   stayOnPage();
   import('./modules/contact-form.js')
   .then(module => {
