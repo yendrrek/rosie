@@ -32,13 +32,21 @@ $('.contact-form__items').on('submit', event => {
   });
 });
 
+if (window.location.href.includes('shop')) {
+  import('./modules/extra-img-lightbox-in-shop.js')
+  .then(module => {
+    for (const event of ['click', 'keydown']) {
+      document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
+      document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox()); 
+    }
+  });
+}
+
 import * as module from './modules/all-modules.js';
 
 document.addEventListener('scroll', () => module.BackToTopButton.controlBackToTopBtn());
 
 for (const event of ['click', 'keydown']) {
-  document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
-  document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox());
   document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
 }
 
