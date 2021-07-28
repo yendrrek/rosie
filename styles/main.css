@@ -971,9 +971,6 @@
   height: auto;
   margin: 6.647% 2.068% 0 auto; 
   min-width: 0; /* Aligns images and descriptions in Chrome. */
-  transform: scale(1.0224); /* Fixes blurred images in Chrome since v.92.
-                            In earlier versions of Chrome, 'transform: transaleZ(0)' worked, 
-                            but now it doesn't fix all the images. */
   width: 25%;
   z-index: 1; 
 }
