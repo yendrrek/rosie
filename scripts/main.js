@@ -11,36 +11,82 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 
 export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: null };
 
+function loadModulesOnDemand () {
+  loadModuleAddingProductsToBasket();
+  loadModuleContactForm();
+  loadModuleExtraImgLightboxInShop();
+  loadModuleSlideshowLightbox();
+  loadModuleBackToTopButton();
+}
+
+loadModulesOnDemand();
+
 function stayOnPage () {
   event.preventDefault();
 }
 
-$('form:not(.contact-form__items)').on('submit', event => {
-  stayOnPage();
-  import('./modules/adding-products-to-basket.js')
-  .then(module => {
-    module.AddingProductsToBasket.addProductToBasket(event);
+function loadModuleAddingProductsToBasket () {
+  $('form:not(.contact-form__items)').on('submit', event => {
+    stayOnPage();
+    import('./modules/adding-products-to-basket.js')
+    .then(module => {
+      module.AddingProductsToBasket.addProductToBasket(event);
+    });
   });
-});
+}
 
-$('.contact-form__items').on('submit', event => {
-  stayOnPage();
-  import('./modules/contact-form.js')
-  .then(module => {
-    module.ContactForm.sendMessgeViaContactForm(event);
-    module.ContactForm.dontResubmitContactFormWhenPageReloaded();
+function loadModuleContactForm () {
+  $('.contact-form__items').on('submit', event => {
+    stayOnPage();
+    import('./modules/contact-form.js')
+    .then(module => {
+      module.ContactForm.sendMessgeViaContactForm(event);
+      module.ContactForm.dontResubmitContactFormWhenPageReloaded();
+    });
   });
-});
+}
+
+function loadModuleExtraImgLightboxInShop () {
+  if (window.location.href.includes('shop')) {
+    import('./modules/extra-img-lightbox-in-shop.js')
+    .then(module => {
+      for (const event of ['click', 'keydown']) {
+        document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
+        document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox()); 
+      }
+    });
+  }
+}
+
+function loadModuleSlideshowLightbox () {
+  const pagesWithSlideshowGallery = (
+    window.location.href.includes('all-works') ||
+    window.location.href.includes('geometry') ||
+    window.location.href.includes('stained-glass') ||
+    window.location.href.includes('ceramic-tiles') ||
+    window.location.href.includes('paintings')
+  );
+  if (pagesWithSlideshowGallery) {
+    import('./modules/slideshow-lightbox.js')
+    .then(module => {
+      for (const event of ['click', 'keydown']) {
+        document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
+      }          
+      window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized());
+    });
+  }
+}
+
+function loadModuleBackToTopButton () {
+  document.addEventListener('scroll', () => {
+    import('./modules/back-to-top-btn.js')
+    .then(module => {
+      module.BackToTopButton.controlBackToTopBtn();
+    });
+  });
+}
 
 import * as module from './modules/all-modules.js';
-
-document.addEventListener('scroll', () => module.BackToTopButton.controlBackToTopBtn());
-
-for (const event of ['click', 'keydown']) {
-  document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
-  document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox());
-  document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
-}
 
 module.Fotorama.insertFotoramaForScreensNarrowerThan1170px();
 window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
@@ -63,7 +109,5 @@ document.addEventListener('keydown', () => module.OutlineForKeyboardUsers.enable
 document.addEventListener('mousedown', () => module.OutlineForKeyboardUsers.hideOutline());
 
 document.addEventListener('click', () => module.PostageReturnsPolicyLightbox.openPPRPolicyLightbox());
-
-window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized());
 
 module.SafariFixStyles.fixStylesInSafariOnly();
