@@ -12,6 +12,7 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: null };
 
 function loadModulesOnDemand () {
+  loadModuleSafariFixStyles();
   loadModulesActivatedByScrollEvent();
   loadModuleSlideshowLightbox();
   loadModuleFotorama();
@@ -22,6 +23,21 @@ function loadModulesOnDemand () {
 }
 
 loadModulesOnDemand();
+
+function loadModuleSafariFixStyles() {
+  const isSafari = (
+    (
+      /Apple Computer/.test(navigator.vendor) &&
+      /Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent)
+    )
+  );
+  if (isSafari) {
+    import('./modules/safari-fix-styles.js')
+    .then(module => {
+      module.SafariFixStyles.fixStylesInSafariOnly();
+    });
+  }
+}
 
 function loadModulesActivatedByScrollEvent () {
   document.addEventListener('scroll', () => {
@@ -146,5 +162,3 @@ $('.table__product-qty-menu').on('change', module.OperationsInsideBasket.control
 
 document.addEventListener('keydown', () => module.OutlineForKeyboardUsers.enableOutline(event));
 document.addEventListener('mousedown', () => module.OutlineForKeyboardUsers.hideOutline());
-
-module.SafariFixStyles.fixStylesInSafariOnly();
