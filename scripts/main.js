@@ -98,7 +98,7 @@ function loadModuleFotorama () {
   }
 }
 
-import * as module from './modules/all-modules.js';
+import * as module from './modules/other-modules.js';
 
 document.addEventListener('scroll', () => module.HeadingWithBreadcrumbs.controlHeadingWithBreadcrumbs());
 
