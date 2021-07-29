@@ -1,7 +1,5 @@
 'use strict';
 
-export { HeadingWithBreadcrumbs } from './heading-with-breadcrumbs.js';
-
 export { Navigation } from './navigation.js';
 
 export { OperationsInsideBasket } from './operations-inside-basket.js';
