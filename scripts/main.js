@@ -73,8 +73,17 @@ function loadModuleSlideshowLightbox () {
       for (const event of ['click', 'keydown']) {
         document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
       }          
-      window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized());
+      reactToViewportSizeChangedInDevTools(module);
     });
+  }
+}
+
+function reactToViewportSizeChangedInDevTools (module) {
+  if (module.SlideshowLightbox) {
+    window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized()); 
+  } else if (module.Fotorama) {
+    window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
+    window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
   }
 }
 
@@ -95,11 +104,6 @@ function loadModuleFotorama () {
       reactToViewportSizeChangedInDevTools(module);
     });
   }
-}
-
-function reactToViewportSizeChangedInDevTools (module) {
-  window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
-  window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
 }
 
 import * as module from './modules/other-modules.js';
