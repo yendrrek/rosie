@@ -17,13 +17,10 @@ function loadModulesOnDemand () {
   loadModuleExtraImgLightboxInShop();
   loadModuleSlideshowLightbox();
   loadModuleBackToTopButton();
+  loadModuleFotorama();
 }
 
 loadModulesOnDemand();
-
-function stayOnPage () {
-  event.preventDefault();
-}
 
 function loadModuleAddingProductsToBasket () {
   $('form:not(.contact-form__items)').on('submit', event => {
@@ -44,6 +41,10 @@ function loadModuleContactForm () {
       module.ContactForm.dontResubmitContactFormWhenPageReloaded();
     });
   });
+}
+
+function stayOnPage () {
+  event.preventDefault();
 }
 
 function loadModuleExtraImgLightboxInShop () {
@@ -86,11 +87,18 @@ function loadModuleBackToTopButton () {
   });
 }
 
-import * as module from './modules/all-modules.js';
+function loadModuleFotorama () {
+  if (window.location.href.includes('shop')) {
+    import('./modules/fotorama.js')
+    .then(module => {
+      module.Fotorama.insertFotoramaForScreensNarrowerThan1170px();
+      window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
+      window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
+    });
+  }
+}
 
-module.Fotorama.insertFotoramaForScreensNarrowerThan1170px();
-window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
-window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
+import * as module from './modules/all-modules.js';
 
 document.addEventListener('scroll', () => module.HeadingWithBreadcrumbs.controlHeadingWithBreadcrumbs());
 

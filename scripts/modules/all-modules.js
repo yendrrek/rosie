@@ -1,7 +1,5 @@
 'use strict';
 
-export { Fotorama } from './fotorama.js';
-
 export { HeadingWithBreadcrumbs } from './heading-with-breadcrumbs.js';
 
 export { Navigation } from './navigation.js';
