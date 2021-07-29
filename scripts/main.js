@@ -14,8 +14,10 @@ export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: nul
 function loadModulesOnDemand () {
   loadModulesActivatedByScrollEvent();
   loadModuleSlideshowLightbox();
-  loadModuleBackToTopButton();
   loadModuleFotorama();
+  loadModuleContactForm();
+  loadModuleExtraImgLightboxInShop();
+  loadModuleAddingProductsToBasket();
 }
 
 loadModulesOnDemand();
@@ -69,15 +71,6 @@ function reactToViewportSizeChangedInDevTools (module) {
   }
 }
 
-function loadModuleBackToTopButton () {
-  document.addEventListener('scroll', () => {
-    import('./modules/back-to-top-btn.js')
-    .then(module => {
-      module.BackToTopButton.controlBackToTopBtn();
-    });
-  });
-}
-
 function loadModuleFotorama () {
   if (window.location.href.includes('shop')) {
     import('./modules/fotorama.js')
@@ -88,9 +81,44 @@ function loadModuleFotorama () {
   }
 }
 
-import * as module from './modules/other-modules.js';
+function loadModuleContactForm () {
+  $('.contact-form__items').on('submit', event => {
+    stayOnPage();
+    import('./modules/contact-form.js')
+    .then(module => {
+      module.ContactForm.sendMessgeViaContactForm(event);
+      module.ContactForm.dontResubmitContactFormWhenPageReloaded();
+    });
+  });
+}
 
-document.addEventListener('scroll', () => module.HeadingWithBreadcrumbs.controlHeadingWithBreadcrumbs());
+function stayOnPage () {
+  event.preventDefault();
+}
+
+function loadModuleExtraImgLightboxInShop () {
+  if (window.location.href.includes('shop')) {
+    import('./modules/extra-img-lightbox-in-shop.js')
+    .then(module => {
+      for (const event of ['click', 'keydown']) {
+        document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
+        document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox()); 
+      }
+    });
+  }
+}
+
+function loadModuleAddingProductsToBasket () {
+  $('form:not(.contact-form__items)').on('submit', event => {
+    stayOnPage();
+    import('./modules/adding-products-to-basket.js')
+    .then(module => {
+      module.AddingProductsToBasket.addProductToBasket(event);
+    });
+  });
+}
+
+import * as module from './modules/other-modules.js';
 
 document.addEventListener('keydown', () =>  module.Navigation.tabThroughMainNav(event));
 document.addEventListener('click', () =>  module.Navigation.hideSubNavUponClickingAnywhere());
