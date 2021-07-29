@@ -27,31 +27,18 @@ function loadModulesActivatedByScrollEvent () {
   });
 }
 
-function loadModuleContactForm () {
-  $('.contact-form__items').on('submit', event => {
-    stayOnPage();
-    import('./modules/contact-form.js')
-    .then(module => {
-      module.ContactForm.sendMessgeViaContactForm(event);
-      module.ContactForm.dontResubmitContactFormWhenPageReloaded();
-    });
+function loadModuleBackToTopButton () {
+  import('./modules/back-to-top-btn.js')
+  .then(module => {
+    module.BackToTopButton.controlBackToTopBtn();
   });
 }
 
-function stayOnPage () {
-  event.preventDefault();
-}
-
-function loadModuleExtraImgLightboxInShop () {
-  if (window.location.href.includes('shop')) {
-    import('./modules/extra-img-lightbox-in-shop.js')
-    .then(module => {
-      for (const event of ['click', 'keydown']) {
-        document.addEventListener(event, () => module.ExtraImgLightboxInShop.openShopExtraImgLightbox());
-        document.addEventListener(event, () => module.ExtraImgLightboxInShop.closeShopExtraImgLightbox()); 
-      }
-    });
-  }
+function loadModuleHeadingWithBreadcrumbs () {
+  import('./modules/heading-with-breadcrumbs.js')
+  .then(module => {
+    module.HeadingWithBreadcrumbs.controlHeadingWithBreadcrumbs();
+  });
 }
 
 function loadModuleSlideshowLightbox () {
