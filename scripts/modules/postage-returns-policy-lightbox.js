@@ -11,18 +11,11 @@ export const PostageReturnsPolicyLightbox = {
   policyLightboxClickableElements: document.querySelectorAll('#return-policy-close-btn, #first-contact-form-link, #second-contact-form-link, #third-contact-form-link'),
 
   openPPRPolicyLightbox () {
-    const policyActivators = document.querySelectorAll('.policy-activator');
-    if (policyActivators) {
-      for (const activator of policyActivators) {
-        if (event.target === activator) {
-          for (const modals of this.policyLightbox) {
-            modals.classList.add('policy-open-anim');
-          }
-          HelperMethods.preventJerkingOfLightbox();
-          this.preparePPRPolicyLightboxKeyboardNavigation();    
-        }
-      } 
+    for (const modals of this.policyLightbox) {
+      modals.classList.add('policy-open-anim');
     }
+    HelperMethods.preventJerkingOfLightbox();
+    this.preparePPRPolicyLightboxKeyboardNavigation();    
   },
 
   preparePPRPolicyLightboxKeyboardNavigation () {
