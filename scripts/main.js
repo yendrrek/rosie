@@ -92,10 +92,14 @@ function loadModuleFotorama () {
     import('./modules/fotorama.js')
     .then(module => {
       module.Fotorama.insertFotoramaForScreensNarrowerThan1170px();
-      window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
-      window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
+      reactToViewportSizeChangedInDevTools(module);
     });
   }
+}
+
+function reactToViewportSizeChangedInDevTools (module) {
+  window.addEventListener('resize', () => module.Fotorama.removeFotoramaForScreensWiderThan1169px());
+  window.addEventListener('resize', () => module.Fotorama.insertFotoramaForScreensNarrowerThan1170px());
 }
 
 import * as module from './modules/other-modules.js';
