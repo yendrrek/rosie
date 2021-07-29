@@ -12,9 +12,7 @@ All lightboxes are shown in full-page and consist of two animated modals, one is
 export const continuationOfTabbingFrom = { thumbnailImgWhichOpenedSlideshow: null };
 
 function loadModulesOnDemand () {
-  loadModuleAddingProductsToBasket();
-  loadModuleContactForm();
-  loadModuleExtraImgLightboxInShop();
+  loadModulesActivatedByScrollEvent();
   loadModuleSlideshowLightbox();
   loadModuleBackToTopButton();
   loadModuleFotorama();
@@ -22,13 +20,10 @@ function loadModulesOnDemand () {
 
 loadModulesOnDemand();
 
-function loadModuleAddingProductsToBasket () {
-  $('form:not(.contact-form__items)').on('submit', event => {
-    stayOnPage();
-    import('./modules/adding-products-to-basket.js')
-    .then(module => {
-      module.AddingProductsToBasket.addProductToBasket(event);
-    });
+function loadModulesActivatedByScrollEvent () {
+  document.addEventListener('scroll', () => {
+    loadModuleBackToTopButton();
+    loadModuleHeadingWithBreadcrumbs();
   });
 }
 
