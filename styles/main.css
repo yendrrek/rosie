@@ -969,6 +969,7 @@
       align-self: start;
   cursor: zoom-in;
   height: auto;
+  image-rendering: pixelated;
   margin: 6.647% 2.068% 0 auto; 
   min-width: 0; /* Aligns images and descriptions in Chrome. */
   width: 25%;
@@ -979,13 +980,12 @@
 @-moz-document url-prefix() {
   .slide__img-rectangle,
   .slide__img-square {
-    transform: none;
+    image-rendering: auto;
   } 
 }
 
-/* Make the same fix from above not affect Safari as otherwise pages crash when slideshow gallery images are zoomed in on Apple mobile devices. */
 .slide__img_dont-apply-chrome-fix-in-safari {
-  transform: none; 
+  image-rendering: auto; 
 }
 
 .slide__img-rectangle_zoom-in {
