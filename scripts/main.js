@@ -111,15 +111,13 @@ function loadModuleExtraImgLightboxInShop () {
 
 function loadModulePostageReturnsPolicyLightbox () {
   const policyActivators = document.querySelectorAll('.policy-activator');
-  if (policyActivators) {
-    for (const activator of policyActivators) {
-      activator.addEventListener('click', () => {
-        import('./modules/postage-returns-policy-lightbox.js')
-        .then(module => {
-          module.PostageReturnsPolicyLightbox.openPPRPolicyLightbox();
-        });
+  for (const activator of policyActivators) {
+    activator.addEventListener('click', () => {
+      import('./modules/postage-returns-policy-lightbox.js')
+      .then(module => {
+        module.PostageReturnsPolicyLightbox.openPPRPolicyLightbox();
       });
-    }
+    });
   }
 }
 
@@ -148,7 +146,5 @@ $('.table__product-qty-menu').on('change', module.OperationsInsideBasket.control
 
 document.addEventListener('keydown', () => module.OutlineForKeyboardUsers.enableOutline(event));
 document.addEventListener('mousedown', () => module.OutlineForKeyboardUsers.hideOutline());
-
-//document.addEventListener('click', () => module.PostageReturnsPolicyLightbox.openPPRPolicyLightbox());
 
 module.SafariFixStyles.fixStylesInSafariOnly();
