@@ -3,13 +3,9 @@
 export const SafariFixStyles = {
 
   fixStylesInSafariOnly () {
-    const isSafari = ((/Apple Computer/.test(navigator.vendor) &&
-      /Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent)));
-    if (isSafari) {
-      this.fixAddToBasketBtn();
-      this.fixExtraImgActivatorInShop();
-      this.disableChromeImgFix();
-    }  
+    this.fixAddToBasketBtn();
+    this.fixExtraImgActivatorInShop();
+    this.disableChromeImgFix();
   },
 
   fixAddToBasketBtn () {
