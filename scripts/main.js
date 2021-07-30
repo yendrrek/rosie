@@ -20,6 +20,8 @@ function loadModulesOnDemand () {
   loadModuleExtraImgLightboxInShop();
   loadModulePostageReturnsPolicyLightbox();
   loadModuleAddingProductsToBasket();
+  document.addEventListener('keydown', loadModuleEnabledOutlineForKeyboardUsers);
+  document.addEventListener('mousedown', loadModuleContactFormFieldsOutline);
 }
 
 loadModulesOnDemand();
@@ -147,7 +149,32 @@ function loadModuleAddingProductsToBasket () {
   });
 }
 
+function loadModuleEnabledOutlineForKeyboardUsers () {
+  if (event.key === 'Tab' || (event.shiftKey && event.key === 'Tab')) {
+    import('./modules/enabled-outline-for-keyboard-users.js')
+    .then(module => {
+      module.EnabledOutlineForKeyboardUsers.enableOutline();
+    });
+  loadModuleContactFormFieldsOutline();
+  }
+};
+
+function loadModuleContactFormFieldsOutline () {
+  if (window.location.href.includes('contact')) {
+    import('./modules/contact-form-fields-outline.js')
+    .then(module => {
+      setTimeout(function() { preventDefaultGreenFromFleetinglyOverlayingRedErrorOutline(module) }, 300);
+    });
+  }
+}
+
+function preventDefaultGreenFromFleetinglyOverlayingRedErrorOutline (module) {
+  module.controlContactFormFieldsOutline();
+}
+
 import * as module from './modules/other-modules.js';
+
+document.addEventListener('mousedown', () => module.DisabledOutlineForKeyboardUsers.hideOutline());
 
 document.addEventListener('keydown', () =>  module.Navigation.tabThroughMainNav(event));
 document.addEventListener('click', () =>  module.Navigation.hideSubNavUponClickingAnywhere());
@@ -160,5 +187,3 @@ $('.btn-basket_remove-product-single').on('click', module.OperationsInsideBasket
 $('.btn-basket_remove-product-all').on('click', module.OperationsInsideBasket.controlBasket);
 $('.table__product-qty-menu').on('change', module.OperationsInsideBasket.controlBasket);
 
-document.addEventListener('keydown', () => module.OutlineForKeyboardUsers.enableOutline(event));
-document.addEventListener('mousedown', () => module.OutlineForKeyboardUsers.hideOutline());
