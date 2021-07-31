@@ -20,6 +20,7 @@ function loadModulesOnDemand () {
   loadModuleExtraImgLightboxInShop();
   loadModulePostageReturnsPolicyLightbox();
   loadModuleAddingProductsToBasket();
+  loadModuleOperationsInsideBasket();
   document.addEventListener('keydown', loadModuleEnabledOutlineForKeyboardUsers);
   document.addEventListener('mousedown', loadModuleContactFormFieldsOutline);
 }
@@ -149,6 +150,24 @@ function loadModuleAddingProductsToBasket () {
   });
 }
 
+function loadModuleOperationsInsideBasket () {
+  $('.btn-basket_remove-product-single, .btn-basket_remove-product-all').on('click', event => {
+    stayOnPage();
+    importModuleOperationsInsideBasket(event);
+  });
+  $('.table__product-qty-menu').on('change', event => {
+    stayOnPage();
+    importModuleOperationsInsideBasket(event);
+  });
+}
+
+function importModuleOperationsInsideBasket (event) {
+  import('./modules/operations-inside-basket.js')
+  .then(module => {
+    module.controlBasket(event)
+  });
+}
+
 function loadModuleEnabledOutlineForKeyboardUsers () {
   if (event.key === 'Tab' || (event.shiftKey && event.key === 'Tab')) {
     import('./modules/enabled-outline-for-keyboard-users.js')
@@ -182,8 +201,4 @@ document.addEventListener('focusin', () =>  module.Navigation.tabFromMainNavToTh
 document.addEventListener('touchstart', () =>  module.Navigation.showOrHideSubNavOnTouchscreensWiderThan1170px(event));
 module.Navigation.setHamburgerMenuActivation();
 module.Navigation.setSubNavActivation();
-
-$('.btn-basket_remove-product-single').on('click', module.OperationsInsideBasket.controlBasket);
-$('.btn-basket_remove-product-all').on('click', module.OperationsInsideBasket.controlBasket);
-$('.table__product-qty-menu').on('change', module.OperationsInsideBasket.controlBasket);
 
