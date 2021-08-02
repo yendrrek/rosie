@@ -277,11 +277,15 @@ export const SlideshowLightbox = {
   },
 
   closeSlideshowLightbox () {
+    const zoomInAndCloseIcons = document.querySelectorAll('.icon_zoom, .icon_close');
     this.slideshowLightbox.classList.remove('slideshow_visible');
     this.slideshowLightbox.classList.add('slideshow_hidden');
     this.slideshowLightbox.addEventListener('animationend', () => {
       this.slideshowLightbox.classList.remove('slideshow_hidden');
     });
+    for (const iconWontBeFocusable of zoomInAndCloseIcons) {
+      iconWontBeFocusable.removeAttribute('tabindex');
+    }
     document.removeEventListener('keydown', this.referenceToTabThroughZoomInAndCloseIconsInLoop);
     for (const event of ['click', 'keydown']) {
       document.removeEventListener(event, this.referenceToControlSlideshowLightbox);
