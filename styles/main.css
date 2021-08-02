@@ -3308,15 +3308,15 @@
   .contact-form__btn_hover:hover {
     background-color: #b19568; 
   }
-  .list-item_all-works_background-like-subnav:hover {
+  .all-works-background-like-subnav:hover {
     background-color: hsl(306, 24%, 82%); 
   }
   .list-item:hover .subnav { /* For big touch screen devices on which the non -hamburger menu is used. It cancels the 
-                                hover effect which activates the subnav and lets the visibility of the subnav be toggled with .subnav_visible_if-touchstart below via touchstart event. */
+                                hover effect which activates the subnav and lets the visibility of the subnav be toggled with '.subnav_visible' below via touchstart event. */
     opacity: 0;
     transform: scale(0); 
   }
-  .subnav_visible_if-touchstart {
+  .subnav_visible {
     opacity: 1 !important; /* Otherwise, the hover state triggered by .list-item above takes precedence. */
     transform: scale(1) !important; 
   }
