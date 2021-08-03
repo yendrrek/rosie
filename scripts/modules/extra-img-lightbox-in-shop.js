@@ -1,6 +1,6 @@
 'use strict';
 
-import { HelperMethods } from './helper-methods.js'; 
+import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js'; 
 
 export function openShopExtraImgLightbox () {
   const extraImgInnerModal = document.querySelectorAll('.shop__extra-img-modal-inner');
@@ -15,7 +15,7 @@ export function openShopExtraImgLightbox () {
       for (const modals of extraImgLightbox) {
         modals.classList.add('shop__extra-img_visible');
       }
-      HelperMethods.preventJerkingOfLightbox();
+      preventJerkingOfLightbox();
       const currentExtraImgInnerModal = extraImgInnerModal[index];
       trapFocusInShopExtraImgLightbox(currentExtraImgInnerModal);
     }
@@ -49,7 +49,7 @@ export function closeShopExtraImgLightbox () {
           });
         }
       }
-      HelperMethods.restoreBodyState();
+      restoreBodyState();
     } 
   }
 }

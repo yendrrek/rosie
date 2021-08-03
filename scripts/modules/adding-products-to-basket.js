@@ -1,6 +1,11 @@
 'use strict';
 
-import { HelperMethods } from './helper-methods.js';
+import {
+  isInViewport,
+  preventJerkingOfLightbox,
+  restoreBodyScrollbar,
+  restoreBodyState
+} from './helper-methods.js';
 
 import { continuationOfTabbingFrom } from '../main.js';
 
@@ -32,7 +37,7 @@ function showQtyInBasketIcon () {
 
 function openStockLimitInfoLightbox (response) {
   removeStockLimitInfoLightboxOfPreviousProduct();
-  HelperMethods.preventJerkingOfLightbox();
+  preventJerkingOfLightbox();
   $('.shop-info').append($('#stock-limit-info-outer-modal', response));
   $('#stock-limit-info-outer-modal, .modal-inner_stock-info').addClass('stock-info-lightbox-visible');
   makeStockLimitInfoLightboxTabable(); 
@@ -55,7 +60,7 @@ function controlStockLimitInfoLightbox () {
     trapFocusInStockLimitInfoLightbox();
   } else if (userWantsToCloseStockLimitInfoLightbox()) {
     closeStockLimitInfoLightbox();
-    HelperMethods.restoreBodyScrollbar();
+    restoreBodyScrollbar();
   }
 }
 
@@ -91,7 +96,7 @@ function closeStockLimitInfoLightbox () {
       modals.classList.remove('stock-info-lightbox-hidden');
     });
   }
-  HelperMethods.restoreBodyState();
+  restoreBodyState();
   $(document).off('click keydown', controlStockLimitInfoLightbox);
   continueTabbing();
 }
@@ -105,7 +110,7 @@ function continueTabbing () {
 }
 
 function openAddedToBasketLightbox () {
-  HelperMethods.preventJerkingOfLightbox();
+  preventJerkingOfLightbox();
   $('#added-to-basket-outer-modal, #added-to-basket-inner-modal').addClass('product-added-lightbox-visible');
   $('#added-to-basket-inner-modal').focus();
   $(document).on('click keydown', controlAddedToBasketLightbox);
@@ -137,7 +142,7 @@ function closeAddedToBasketLightbox () {
       modals.classList.remove('product-added-confirmation-close-anim');
     });
   }
-  HelperMethods.restoreBodyState();
+  restoreBodyState();
   $(document).off('click keydown', controlAddedToBasketLightbox);
   continueTabbing();
 }

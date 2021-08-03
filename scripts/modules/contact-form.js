@@ -1,6 +1,6 @@
 'use strict';
 
-import { HelperMethods } from './helper-methods.js';
+import { isInViewport } from './helper-methods.js';
 
 export function sendMessgeViaContactForm (event) {
   event.preventDefault();
@@ -63,7 +63,7 @@ function showFailedIfMsgSentAlreadyDisplayed (response) {
 function makeNotificationVisibleIfNotInViewport () {
   const contactFormNotifications = document.querySelectorAll('.contact-form__msg-success, .contact-form__msg-error');
   for (const notification of contactFormNotifications) {
-    if (HelperMethods.isInViewport(notification) === false) {
+    if (isInViewport(notification) === false) {
       window.scrollTo({
         top: 0,
         behavior: 'smooth'

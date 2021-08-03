@@ -1,6 +1,6 @@
 'use strict';
 
-import { HelperMethods } from './helper-methods.js';
+import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';
 
 export const PostageReturnsPolicyLightbox = {
 
@@ -14,7 +14,7 @@ export const PostageReturnsPolicyLightbox = {
     for (const modals of this.policyLightbox) {
       modals.classList.add('policy-open-anim');
     }
-    HelperMethods.preventJerkingOfLightbox();
+    preventJerkingOfLightbox();
     this.preparePPRPolicyLightboxKeyboardNavigation();    
   },
 
@@ -71,7 +71,7 @@ export const PostageReturnsPolicyLightbox = {
         modals.classList.remove('policy-close-anim');
       });
     }
-    HelperMethods.restoreBodyState();
+    restoreBodyState();
     for (const event of ['click', 'keydown']) {
       document.removeEventListener(event, this.referenceToControlPPRPolicyLightbox);
     }
