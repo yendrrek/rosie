@@ -180,7 +180,7 @@ function loadModule_PostageReturnsPolicyLightbox_ () {
     activator.addEventListener('click', () => {
       import('./modules/postage-returns-policy-lightbox.js')
       .then(module => {
-        module.PostageReturnsPolicyLightbox.openPPRPolicyLightbox();
+        module.openPPRPolicyLightbox();
       });
     });
   }
