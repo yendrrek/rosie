@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * External library 'Fotorama' for showing photos of products in the shop on smaller touchscreen 
+ * devices. It requires JavaScript and CSS code which get inserted in <head> dynamically
+ * depending on the screen size. 
+ * https://fotorama.io/
+*/
+
 export function insertFotoramaForScreensNarrowerThan1170px () {
   const head = document.head;
   const fotoramaCss = document.createElement('link');
