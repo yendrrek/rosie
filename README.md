@@ -46,7 +46,7 @@ Main components are located in *views* folder.  Smaller parts which are included
 
 PHP code uses classes.
 
-JavaScript code uses ES6 modules with object literals which are imported to *main.js*.
+JavaScript code uses ES6 modules imported dynamically.
 
 Contact form is validated and sanitised on the server side.
 
@@ -97,7 +97,9 @@ of all works        |            |       |       |     |
 
  [x] Load Fotorama gallery plug-in only for touchscreens narrower than 1170px.
 
- [ ] Load JavaScript modules only when they are needed.
+ [x] Load JavaScript modules only when they are needed.
+
+ [x] Find a working hack for blurred images in Chrome in the slideshow gallery.
 
  [ ] Prepared statements instead of MySQL stored procedures.
 
@@ -120,5 +122,3 @@ of all works        |            |       |       |     |
  [ ] The following refers to Chrome only: Faster rendering of the images when they are seen first time in the lightbox gallery. Event though they are all cached when the lightbox is open for the first time, the initial rendering is slower. When navigating to the same image again, it renders faster. 
 
  [ ] Hover effect stays active on a thumbnail image when closing the slideshow gallery lightbox.
-
- [ ] Find a working hack for blurred images in Chrome in the slideshow gallery.
