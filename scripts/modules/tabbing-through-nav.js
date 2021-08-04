@@ -15,7 +15,12 @@ export function tabThroughNav () {
     }
     mainNavArrow.addEventListener('keydown', showSubNav);
     document.addEventListener('keydown', hideSubNavWithEscKey);
-    /* Link 'ALL WORKS' is deactivated on touchscreens wider than 1170px and acts only as the activator of subnavigation. If a laptop with touchscreen is used, switching to keyboard navigation will restore 'ALL WORKS' link's functionality. Edge case. */
+    /** 
+     * Link 'ALL WORKS' is deactivated on touchscreens wider than 1170px 
+     * and acts only as the activator of subnavigation. If a laptop with 
+     * touchscreen is used, switching to keyboard navigation will restore 
+     * 'ALL WORKS' link's functionality. Edge case. 
+    */
     makeAllWorksItemBeLinkAgainOnNonTouchscreens();
   } 
 }

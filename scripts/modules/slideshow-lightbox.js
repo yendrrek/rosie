@@ -4,6 +4,7 @@
  * the currently seen slide, instead, I can simply make it a property by adding it to 
  * the object 'SlideshowLightbox' and thus make it available to the methods which need it.
 */
+
 'use strict';
 
 import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';
