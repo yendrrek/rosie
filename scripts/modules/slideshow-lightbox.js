@@ -1,3 +1,9 @@
+/**
+ * This module is left as an object literal as it is more convenient for using the variable 
+ * 'currentSlide' in different methods. I don't have to iterate over all the slides to get 
+ * the currently seen slide, instead, I can simply make it a property by adding it to 
+ * the object 'SlideshowLightbox' and thus make it available to the methods which need it.
+*/
 'use strict';
 
 import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';
