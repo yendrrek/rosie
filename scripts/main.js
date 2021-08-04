@@ -15,7 +15,6 @@ export const continuationOfTabbingFrom = {
 };
 
 function loadModulesOnDemand () {
-
   loadModulesActivatedByScrollEvent();
   loadModule_AddingProductsToBasket_();
   loadModule_ContactForm_();
