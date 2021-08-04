@@ -101,4 +101,3 @@ function hideRemoveAllBtn () {
     $('.btn-basket_remove-product-all').remove();
   }
 }
-
