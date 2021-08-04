@@ -196,7 +196,7 @@ function loadModule_SafariFixStyles_() {
   if (isSafari) {
     import('./modules/safari-fix-styles.js')
     .then(module => {
-      module.SafariFixStyles.fixStylesInSafariOnly();
+      module.fixStylesInSafariOnly();
     });
   }
 }
