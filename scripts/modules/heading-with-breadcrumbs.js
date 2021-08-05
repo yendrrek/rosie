@@ -1,35 +1,30 @@
 'use strict';
 
-export const HeadingWithBreadcrumbs = {
-
-  headingWithBreadCrumbs: document.querySelector('.body__breadcrumbs'),
-  basketIcon: document.querySelector('.basket__icon_breadcrumbs_hidden'),
-  wordBasket: document.querySelector('.basket__txt_hidden'),
-  productQty: document.querySelector('.number_hidden'),
-
-  controlHeadingWithBreadcrumbs () {
-    const scrollDownPosition = document.documentElement.scrollTop;
-    if (this.headingWithBreadCrumbs) {
-      if (scrollDownPosition > 118) {
-        this.makeHeadingWithBreadcrumbsFixed();
-      } else {
-        this.unfixHeadingWithBreadcrumbs();
-      }
+export function controlHeadingWithBreadcrumbs () {
+  const headingWithBreadCrumbs = document.querySelector('.body__breadcrumbs');
+  const basketIcon = document.querySelector('.basket__icon_breadcrumbs_hidden');
+  const wordBasket = document.querySelector('.basket__txt_hidden');
+  const productQty = document.querySelector('.number_hidden');
+  const scrollDownPosition = document.documentElement.scrollTop;
+  if (headingWithBreadCrumbs) {
+    if (scrollDownPosition > 118) {
+      makeHeadingWithBreadcrumbsFixed(headingWithBreadCrumbs, basketIcon, wordBasket, productQty);
+    } else {
+      unfixHeadingWithBreadcrumbs(headingWithBreadCrumbs, basketIcon, wordBasket, productQty);
     }
-  },
-
-  makeHeadingWithBreadcrumbsFixed () {
-    this.headingWithBreadCrumbs.classList.add('heading-with-breadcrumbs_fixed');
-    this.basketIcon.classList.add('heading-with-breadcrumbs__basket-icon_visible');
-    this.wordBasket.classList.add('heading-with-breadcrumbs__word-basket_visible');
-    this.productQty.classList.add('heading-with-breadcrumbs__product-qty_visible');
-  },
-
-  unfixHeadingWithBreadcrumbs () {
-    this.headingWithBreadCrumbs.classList.remove('heading-with-breadcrumbs_fixed');
-    this.basketIcon.classList.remove('heading-with-breadcrumbs__basket-icon_visible');
-    this.wordBasket.classList.remove('heading-with-breadcrumbs__word-basket_visible');
-    this.productQty.classList.remove('heading-with-breadcrumbs__product-qty_visible');
   }
+}
 
-};
+function makeHeadingWithBreadcrumbsFixed (headingWithBreadCrumbs, basketIcon, wordBasket, productQty) {
+  headingWithBreadCrumbs.classList.add('heading-with-breadcrumbs_fixed');
+  basketIcon.classList.add('heading-with-breadcrumbs__basket-icon_visible');
+  wordBasket.classList.add('heading-with-breadcrumbs__word-basket_visible');
+  productQty.classList.add('heading-with-breadcrumbs__product-qty_visible');
+}
+
+function unfixHeadingWithBreadcrumbs (headingWithBreadCrumbs, basketIcon, wordBasket, productQty) {
+  headingWithBreadCrumbs.classList.remove('heading-with-breadcrumbs_fixed');
+  basketIcon.classList.remove('heading-with-breadcrumbs__basket-icon_visible');
+  wordBasket.classList.remove('heading-with-breadcrumbs__word-basket_visible');
+  productQty.classList.remove('heading-with-breadcrumbs__product-qty_visible');
+}

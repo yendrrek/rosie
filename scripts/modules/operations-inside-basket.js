@@ -1,6 +1,6 @@
 'use strict';
 
-import { HelperMethods } from './helper-methods.js';
+import { isInViewport } from './helper-methods.js';
 
 export function controlBasket (event) {
   const url = (event.type === 'click' && $(event.currentTarget).attr('href'));
@@ -83,7 +83,7 @@ function updateTotalPriceOfOrderInBasket (response) {
 function makeTotalPriceVisibleIfNotInViewport () {
   const totalPrice = document.querySelector('.table__order-total');
   const deviceOnWhichSingleTotalPricesNotSeen = (window.innerWidth <= 709);
-  if (totalPrice && deviceOnWhichSingleTotalPricesNotSeen && HelperMethods.isInViewport(totalPrice) === false) {
+  if (totalPrice && deviceOnWhichSingleTotalPricesNotSeen && isInViewport(totalPrice) === false) {
     window.scrollBy({
       top: window.innerHeight,
       behavior: 'smooth'
@@ -101,4 +101,3 @@ function hideRemoveAllBtn () {
     $('.btn-basket_remove-product-all').remove();
   }
 }
-

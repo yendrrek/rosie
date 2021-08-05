@@ -1,6 +1,13 @@
+/**
+ * This module is left as an object literal as it is more convenient for using the variable 
+ * 'currentSlide' in different methods. I don't have to iterate over all the slides to get 
+ * the currently seen slide, instead, I can simply make it a property by adding it to 
+ * the object 'SlideshowLightbox' and thus make it available to the methods which need it.
+*/
+
 'use strict';
 
-import { HelperMethods } from './helper-methods.js';
+import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';
 
 import { continuationOfTabbingFrom } from '../main.js';
 
@@ -22,7 +29,7 @@ export const SlideshowLightbox = {
     for (const [currentThumbnailImg] of thumbnailImgs.entries()) {
       if (event.target === thumbnailImgs[currentThumbnailImg]) {
         if (event.type === 'click' || event.key === 'Enter') {
-          HelperMethods.preventJerkingOfLightbox();
+          preventJerkingOfLightbox();
           this.slideshowLightbox.classList.add('slideshow_visible');
           this.slideshowLightbox.focus();
           currentSlide = currentThumbnailImg;
@@ -277,16 +284,20 @@ export const SlideshowLightbox = {
   },
 
   closeSlideshowLightbox () {
+    const zoomInAndCloseIcons = document.querySelectorAll('.icon_zoom, .icon_close');
     this.slideshowLightbox.classList.remove('slideshow_visible');
     this.slideshowLightbox.classList.add('slideshow_hidden');
     this.slideshowLightbox.addEventListener('animationend', () => {
       this.slideshowLightbox.classList.remove('slideshow_hidden');
     });
+    for (const iconWontBeFocusable of zoomInAndCloseIcons) {
+      iconWontBeFocusable.removeAttribute('tabindex');
+    }
     document.removeEventListener('keydown', this.referenceToTabThroughZoomInAndCloseIconsInLoop);
     for (const event of ['click', 'keydown']) {
       document.removeEventListener(event, this.referenceToControlSlideshowLightbox);
     }
-    HelperMethods.restoreBodyState();
+    restoreBodyState();
   },
 
   showFullPageImgByClickingOnImg () {

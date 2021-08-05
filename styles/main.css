@@ -1,21 +1,35 @@
 /* 
-***
-  In this stylesheet I'm trying to implement Single Responsibility Principle and some of the BEM methodology features.
-  https://en.bem.info/methodology/quick-start/. SRP is applied by using separate classes for: (1) styling and (2) external geometry with positioning.
+In this stylesheet I'm trying to implement Single Responsibility Principle and some
+of the BEM methodology features.
+https://en.bem.info/methodology/quick-start/.
+SRP is applied by using separate classes for:
+  (1) styling;
+  (2) external geometry with positioning.
 
-  Types of classes which do not follow SRP:
-    (1) Those which are temporarily added with JavaScript. 
-    (2) Pseudo elements created with ::before or ::after.
-    (3) BEM Elements, as they cannot be reused.
-    (4) BEM Block elements whose style, external geometry and positioning are inseparable in terms of their reusability. Example: a full-page modal.
+---
 
-  purchase-confirmation-email.php and capture-transaction-error.html have internal styles applied.
+Types of classes which do not follow SRP:
+  (1) Those which are temporarily added with JavaScript. 
+  (2) Pseudo elements created with '::before' or '::after'.
+  (3) BEM Elements, as they cannot be reused.
+  (4) BEM Block elements whose style, external geometry and positioning are inseparable
+      in terms of their reusability. Example: a full-page modal.
 
-***
-  Animations classes with the same declarations used by different elements are all grouped at the bottom of the sheet.
+---
+
+Pages 'purchase-confirmation-email.php' and 'capture-transaction-error.html'
+have internal styles applied.
+
+---
+
+Animations classes with the same declarations used by different elements
+are all grouped at the bottom of the sheet.
+
+---
   
-***
-  Unless specified otherwise, !important is applied only to prevent the same css block reused in different HTML elements from overriding the style of a modifier via media queries. Thanks to that repeating same declarations and multiple overriding is avoided.  
+Unless specified otherwise, '!important' is applied only to prevent the same css block
+reused in different HTML elements from overriding the style of a modifier via media queries.
+Thanks to that repeating same declarations and multiple overriding is avoided.  
 */                 
 
 * {
@@ -23,7 +37,11 @@
   margin: 0; 
 }
 
-/* There are custom outline styles applied. Elements with tabindex and input fields need to have their outline removed, as otherwise will be styled by the browser when focused. */
+/*
+There are custom outline styles applied.
+Elements with tabindex and input fields need to have their outline removed,
+as otherwise will be styled by the browser when focused.
+*/
 .arrow:focus,
 .btn:focus,
 .contact-form__input:focus,
@@ -62,8 +80,10 @@
   height: 100%; 
 }
 
-/* Whole page (apart from the footer) is wrapped in <div style="body__content-above-footer">.
-  It keeps the footer at the bottom always. */
+/*
+Whole page (apart from the footer) is wrapped in <div style="body__content-above-footer">.
+It keeps the footer at the bottom always.
+*/
 .body__content-above-footer {
   min-height: 100%; 
 }
@@ -73,9 +93,7 @@
   height: 64px; 
 }
 
-/*               
-\\ REUSED BLOCKS \\ 
-*/               
+/* REUSED BLOCKS */               
 
 .link {
   color: hsl(0, 0%, 20%);
@@ -110,17 +128,15 @@
   font-size: 30px; 
 }
 
-/* 
-\\ FULL-PAGE MODAL \\ 
-*/
+/* FULL-PAGE MODAL */
 
-  /*
-    Full-page modal is used for notifications about:
-      (1) Product added to the basket;
-      (2) Exceeding stock amount when adding products to the basket;
-      (3) Processing the purchase (after closing PayPal check-out window);
-      (4) For displaying Payment, Postage & Returns options and policy.
-  */
+/*
+Full-page modal is used for notifications about:
+  (1) Product added to the basket;
+  (2) Exceeding stock amount when adding products to the basket;
+  (3) Processing the purchase (after closing PayPal check-out window);
+  (4) For displaying Payment, Postage & Returns options and policy.
+*/
 
 /* Background of the full-page modal. */
 .modal-outer {
@@ -135,7 +151,7 @@
   z-index: 104; 
 }
 
-/* Smaller modal containing a notification, placed in the center of .modal-outer . */
+/* Smaller modal containing a notification, placed in the center of '.modal-outer'. */
 .modal-inner {
   background-color: hsl(209, 100%, 88%);
   border: 0.125rem solid hsl(0, 0%, 10%);
@@ -156,17 +172,11 @@
   z-index: 104; 
 }
 
-/* 
-\\ FULL-PAGE MODAL ENDS HERE \\ 
-*/
+/* FULL-PAGE MODAL ENDS HERE */
 
-/* 
-\\ REUSED BLOCKS END HERE \\ 
-*/
+/* REUSED BLOCKS END HERE */
 
-/* 
-\\ HEADER WITH LOGO AND NAVIGATION \\ 
-*/
+/* HEADER WITH LOGO AND NAVIGATION */
 
 .header {
   background-image: linear-gradient(hsl(306, 24%, 74%), hsl(306, 24%, 82%));
@@ -275,7 +285,11 @@
   display: none; 
 }
 
-/*  .all-works-background-like-subnav gets activated by keyboard users if any of the elements from the drop-down menu receives focus, so the whole sub-navigation and 'All Works' element just above it have the same colour. */  
+/* 
+'.all-works-background-like-subnav' gets activated by keyboard users if any of 
+the elements from the drop-down menu receives focus, so the whole sub-navigation
+and 'All Works' element just above it have the same colour.
+*/  
 .all-works-background-like-subnav,
 .logo_hover:hover, 
 .list-item_hover:hover {
@@ -321,8 +335,10 @@
   width: 5.61%; 
 }
 
-/* Triangular outline when tabbing the arrow next to 'All works'. 
-  The outline is made of three overlapping triangles. */
+/*
+Triangular outline when tabbing the arrow next to 'All works'. 
+The outline is made of three overlapping triangles.
+*/
 .arrow__outline-container {
   background: transparent;
   display: none;
@@ -389,9 +405,7 @@
   z-index: 2; 
 }
 
-/* 
-\\ SUBNAVIGATION \\
-*/ 
+/* SUBNAVIGATION */ 
 
 .subnav {
   background-color: hsl(306, 24%, 82%);
@@ -452,9 +466,7 @@
   margin: 0.294em 0.118em 0; 
 }
 
-/* 
-\\ SUBNAVIGATION ENDS HERE \\
-*/
+/* SUBNAVIGATION ENDS HERE */
 
 .basket {
   cursor: pointer;
@@ -517,9 +529,7 @@
   width: 1.25em; 
 }
 
-/* 
-\\ NAVIGATION FOR 1170px SCREENS AND SMALLER \\ 
-*/
+/* NAVIGATION FOR 1170px SCREENS AND SMALLER */
 
 .nav-small {
   border-bottom: 8px solid hsl(306, 24%, 82%);
@@ -610,17 +620,11 @@
   margin: 0 3.938em 0 3.375em; 
 }
 
-/* 
-\\ NAVIGATION FOR 1170px SCREENS AND SMALLER ENDS HERE \\ 
-*/
+/* NAVIGATION FOR 1170px SCREENS AND SMALLER ENDS HERE */
 
-/* 
-\\ HEADER WITH LOGO AND NAVIGATION END HERE \\ 
-*/
+/* HEADER WITH LOGO AND NAVIGATION END HERE */
 
-/* 
-\\ BAR BELOW THE HEADER \\ 
-*/
+/* BAR BELOW THE HEADER */
 
 .breadcrumbs__title {
   color: #b44663;
@@ -723,13 +727,9 @@
   top: 17px; 
 }
 
-/* 
-\\ BAR BELOW THE HEADER ENDS HERE \\ 
-*/
+/* BAR BELOW THE HEADER ENDS HERE */
 
-/* 
-\\ THUMBNAIL IMAGES WITH DESCRIPTIONS \\ 
-*/
+/* THUMBNAIL IMAGES WITH DESCRIPTIONS */
 
 .body__thumbnail-container {
   margin: 0 auto;
@@ -807,13 +807,9 @@
   text-transform: uppercase; 
 }
 
-/* 
-\\ THUMBNAIL IMAGES WITH DESCRIPTIONS END HERE \\ 
-*/
+/* THUMBNAIL IMAGES WITH DESCRIPTIONS END HERE */
 
-/* 
-\\ MODAL SLIDESHOW GALLERY \\ 
-*/
+/* MODAL SLIDESHOW GALLERY */
 
 .slideshow {
   align-items: center;
@@ -827,8 +823,8 @@
   position: fixed;
   top: 0;
   transform: translate(9999px, 0);
-  width: 100vw; /* Setting 'width' to 'vw' instead of '%' avoids jumping of the modal when 
-                   it gets closed. */
+  width: 100vw; /* Setting 'width' to 'vw' instead of '%' avoids jumping
+                of the modal when it gets closed. */
   z-index: 103; 
 }
 
@@ -1086,13 +1082,9 @@
   padding-top: 36px; 
 }
 
-/* 
-\\ MODAL SLIDESHOW GALLERY ENDS HERE \\ 
-*/
+/* MODAL SLIDESHOW GALLERY ENDS HERE */
 
-/* 
-\\ 'BACK TO TOP' BUTTON  \\ 
-*/
+/* 'BACK TO TOP' BUTTON */
 
 .back-to-top-btn {
   border: 2px solid hsl(306, 24%, 74%);
@@ -1147,13 +1139,9 @@
   transform: rotate(0); 
 }
 
-/* 
-\\ 'BACK TO TOP' BUTTON ENDS HERE \\ 
-*/
+/* 'BACK TO TOP' BUTTON ENDS HERE */
 
-/* 
-\\ FOOTER \\ 
-*/
+/* FOOTER */
 
 .footer {
   color: hsl(39, 7%, 37%);
@@ -1196,13 +1184,9 @@
   margin: 0.526em 0.105em 1em 0; 
 }
 
-/* 
-\\ FOOTER ENDS HERE \\ 
-*/
+/* FOOTER ENDS HERE */
 
-/* 
-\\ ABOUT \\ 
-*/
+/* ABOUT */
 
 .about {
   background: hsl(38, 29%, 80%);
@@ -1234,13 +1218,9 @@
   max-width: 100%; 
 }
 
-/* 
-\\ ABOUT ENDS HERE \\ 
-*/
+/* ABOUT ENDS HERE */
 
-/* 
-\\ CONTACT FORM \\ 
-*/
+/* CONTACT FORM */
 
 .body__contact-form-container {
   display: flex;
@@ -1379,13 +1359,9 @@
   font-size: 1em; 
 }
 
-/* 
-\\ CONTACT FORM ENDS HERE \\ 
-*/
+/* CONTACT FORM ENDS HERE */
 
-/* 
-\\ SHOP \\ 
-*/
+/* SHOP */
 
 .shop-info {
   font-size: 1.125em; 
@@ -1678,8 +1654,10 @@
   width: 77.605%; 
 }
 
-/* The default website's font 'Alice' is rendered with a faint colour in Sfari. 
-   Setting it to 'bold' or '900' doesn't help. */
+/*
+The default website's font 'Alice' is rendered with a faint colour in Sfari.
+Setting it to 'bold' or '900' doesn't help.
+*/
 .btn_add-to-basket_safari-font-fix {
   font-family: serif; 
 }
@@ -1787,13 +1765,9 @@
   width: 50%; 
 }
 
-/* 
-\\ SHOP ENDS HERE \\ 
-*/
+/* SHOP ENDS HERE */
 
-/* 
-\\ BASKET \\ 
-*/
+/* BASKET */
 
 .purchase-completed,
 .basket-empty {
@@ -1893,7 +1867,7 @@
 
 .btn-basket {
   background: hsl(306, 24%, 80%); /* Prevents 'Remove', 'Remove All' and 'Continue shopping' links in       
-                                             basket.php loose the background colour when tapped. */
+                                  basket.php loose the background colour when tapped. */
   border-radius: 0.188rem;
   box-shadow: 0 1px 3px rgb(170, 170, 170, 0.5);
   text-decoration: none;
@@ -2072,13 +2046,9 @@
   outline-offset: -0.1em; 
 }
 
-/* 
-\\ BASKET ENDS HERE \\
-*/
+/* BASKET ENDS HERE */
 
-/* 
-\\ MEDIA QUERIES \\
-*/ 
+/* MEDIA QUERIES */ 
 
 /* calc() is used for fluid changing of values between different widths of screens. */
 
@@ -2103,7 +2073,10 @@
 /* Fluid changing ends here. */
 
 @media only screen and (min-width: 120.063em) { /* 1921px */
-  /* On screens wider than 1920px images can't be displayed in full page, so the slideshow lightbox needs to be scrollable again. */
+  /*
+  On screens wider than 1920px images can't be displayed in full page,
+  so the slideshow lightbox needs to be scrollable again.
+  */
   .slideshow {
     overflow-y: scroll; 
   }
@@ -2326,7 +2299,10 @@
   .nav__basket {
     right: 52px; 
   }
-  /* Adjust position of the number of products next to the basket icon, so it's like in basket.php. */  
+  /*
+  Adjust position of the number of products next to the basket icon,
+  so it's like in basket.php.
+  */  
   .basket__number_main-nav {
     right: 7%; 
   }
@@ -2334,7 +2310,13 @@
     font-size: 13px;
     font-weight: 600; 
   }
-  /* There are two different navigation bars, one when there are items in the basket for all the pages, and another one only for basket.php when the basket is empty. Class .nav__basket just above is used in both to position the basket element but if the basket is empty there is no hamburger menu icon on the right side, next to the basket icon basket.php, so its position needs to be adjusted with the class below. */
+  /*
+  There are two different navigation bars, one when there are items in the basket
+  for all the pages, and another one only for basket.php when the basket is empty.
+  Class '.nav__basket' just above is used in both to position the basket element
+  but if the basket is empty there is no hamburger menu icon on the right side,
+  next to the basket icon basket.php, so its position needs to be adjusted with the class below.
+  */
   .nav__basket_margin-right_smaller { 
     margin-right: -50px; 
   } 
@@ -2431,14 +2413,21 @@
 }
 
 @media only screen and (max-width: 66.063em) { /* 1057 px */
-  /* On screens narrower than 1058px images can't be displayed in full page, so the slideshow lightbox needs to be scrollable again. */
+  /*
+  On screens narrower than 1058px images can't be displayed in full page,
+  so the slideshow lightbox needs to be scrollable again.
+  */
   .slideshow {
     overflow-y: scroll; 
   }
   .slide {
     flex-direction: column; 
   }
-    /* Disable any interaction with a currently visible slide so the parent slideshow element can be tapped anywhere. Depending on which half of the screen is tapped previous or next image is displayed. */
+  /*
+  Disable any interaction with a currently visible slide so the parent slideshow
+  element can be tapped anywhere. Depending on which half of the screen is tapped
+  previous or next image is displayed.
+  */
   .slide_visible {
     pointer-events: none; 
   }
@@ -2551,7 +2540,10 @@
   .body__thumbnail-position {
     width: 50%; 
   } 
-  /* 'Pangur Ban' image centered in 'All Works' section to make clear separation from other images belonging to different sections while being all on the same page. */
+  /*
+  'Pangur Ban' image centered in 'All Works' section to make clear separation
+  from other images belonging to different sections while being all on the same page.
+  */
   .body__thumbnail-container div:nth-last-child(19) {
     width: 100%; 
   }
@@ -2784,8 +2776,10 @@
 /* Single-column float layout for thumbnail images. */
 @media only screen and (max-width: 49.438em) { /* 791px */
   .body__thumbnail-position {
-    /* Height changed from 'em' to '%' to maintain same space between images in a single column layout.
-      '%' breaks multiple-column layout. */
+    /*
+    Height changed from 'em' to '%' to maintain same space between images
+    in a single column layout. '%' breaks multiple-column layout.
+    */
     height: 2812.5%;
     margin: 26px 0;
     width: 100%; 
@@ -3287,9 +3281,7 @@
   } 
 }
 
-/*
-\\ TOUCHSCREEN DEVICES \\
-*/
+/* TOUCHSCREEN DEVICES */
 
 @media (pointer: coarse) {
   .logo_hover:hover, 
@@ -3311,8 +3303,10 @@
   .list-item_all-works_background-like-subnav:hover {
     background-color: hsl(306, 24%, 82%); 
   }
-  .list-item:hover .subnav { /* For big touch screen devices on which the non -hamburger menu is used. It cancels the 
-                                hover effect which activates the subnav and lets the visibility of the subnav be toggled with .subnav_visible_if-touchstart below via touchstart event. */
+  .list-item:hover .subnav { /* For big touch screen devices on which the non -hamburger menu is used.
+                             It cancels the hover effect which activates the subnav and lets the
+                             visibility of the subnav be toggled with .subnav_visible_if-touchstart
+                             below via touchstart event. */
     opacity: 0;
     transform: scale(0); 
   }
@@ -3355,17 +3349,11 @@
   } 
 }
 
-/*
-\\ TOUCHSCREEN DEVICES END HERE \\
-*/
+/* TOUCHSCREEN DEVICES END HERE */
 
-/* 
-\\ MEDIA QUERIES END HERE \\
-*/
+/* MEDIA QUERIES END HERE */
 
-/*
-\\ ANIMATION WITH THE SAME SETTINGS FOR DIFFERENT ELEMENTS 
-*/
+/* ANIMATION WITH THE SAME SETTINGS FOR DIFFERENT ELEMENTS */
 
 .slideshow_visible,
 .shop__extra-img_visible,
@@ -3425,7 +3413,7 @@
   } 
 }
 
-/* Added with JS to all focusable elements when mouse is used.  */
+/* Added with JS to all focusable elements when mouse is used. */
 .outline-none:focus {
   outline: none; 
 }
