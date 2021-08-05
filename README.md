@@ -97,15 +97,9 @@ of all works        |            |       |       |     |
 
  [x] Load Fotorama gallery plug-in only for touchscreens narrower than 1170px.
 
-<<<<<<< HEAD
  [x] Find a working hack for blurred images in Chrome in the slideshow gallery.
 
- [ ] Load JavaScript modules only when they are needed.
-=======
  [x] Load JavaScript modules only when they are needed.
-
- [x] Find a working hack for blurred images in Chrome in the slideshow gallery.
->>>>>>> refactor
 
  [ ] Prepared statements instead of MySQL stored procedures.
 
@@ -128,11 +122,8 @@ of all works        |            |       |       |     |
  [ ] The following refers to Chrome only: Faster rendering of the images when they are seen first time in the lightbox gallery. Event though they are all cached when the lightbox is open for the first time, the initial rendering is slower. When navigating to the same image again, it renders faster. 
 
  [ ] Hover effect stays active on a thumbnail image when closing the slideshow gallery lightbox.
-<<<<<<< HEAD
 
 
 ## Hacks used  
 
 'image-rendering: pixelated' for images in the slideshow gallery when they are not shown in full-page to give illusion of sharpness. Chrome is not able to render downscaled images without blurring them.
-=======
->>>>>>> refactor
