@@ -15,6 +15,15 @@ export function showOrHideSubNavOnTouchscreensWiderThan1170px (event) {
   }
 }
 
+function makeAllWorksItemNotBeLinkButActivatorOfSubNav () {
+  const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
+  const subNav = document.querySelector('.subnav');
+  const allWorksItem = document.querySelector('#all-works');
+  allWorksLink.removeAttribute('href');
+  subNav.classList.toggle('subnav_visible');
+  allWorksItem.classList.toggle('all-works-background-like-subnav');
+}
+
 function letSubNavLinksDoTheirJob (event) {
   const subNavLinks = document.querySelectorAll('.subnav__link');
   for (const linkWontReactToMethodHidingSubNav of subNavLinks) {
@@ -32,18 +41,9 @@ function hideSubNavUponTappingAnywhere () {
   makeAllWorksItemBeLinkAgainOnNonTouchscreens();
 }
 
-export function makeAllWorksItemBeLinkAgainOnNonTouchscreens (event) {
+export function makeAllWorksItemBeLinkAgainOnNonTouchscreens () {
   const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
   if (!allWorksLink.hasAttribute('href')) {
     allWorksLink.setAttribute('href', 'all-works.php');
   }
-}
-
-function makeAllWorksItemNotBeLinkButActivatorOfSubNav () {
-  const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
-  const subNav = document.querySelector('.subnav');
-  const allWorksItem = document.querySelector('#all-works');
-  allWorksLink.removeAttribute('href');
-  subNav.classList.toggle('subnav_visible');
-  allWorksItem.classList.toggle('all-works-background-like-subnav');
 }

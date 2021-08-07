@@ -136,7 +136,6 @@ function loadModule_Fotorama_ () {
   if (window.location.href.includes('shop')) {
     import('./modules/fotorama.js')
     .then(module => {
-      const fotoramaModule = module;
       module.insertFotoramaForScreensNarrowerThan1170px();
       reactToViewportSizeChangedInDevTools(module);
     });
@@ -171,7 +170,7 @@ function loadModule_OperationsInsideBasket_ () {
 function importModule_OperationsInsideBasket_ (event) {
   import('./modules/operations-inside-basket.js')
   .then(module => {
-    module.controlBasket(event)
+    module.controlBasket(event);
   });
 }
 

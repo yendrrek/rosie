@@ -2,7 +2,7 @@
 
 import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js'; 
 
-export function openShopExtraImgLightbox (index) {
+export function openShopExtraImgLightbox () {
   const extraImgActivators = document.querySelectorAll('.extra-img-activator');
   for (const [index] of extraImgActivators.entries()) {
     if (event.target === extraImgActivators[index] && (event.type === 'click' || event.key === 'Enter')) {
@@ -42,7 +42,7 @@ export function closeShopExtraImgLightbox () {
   const extraImgCloseBtns = document.querySelectorAll('.close-popup-btn_shop-extra-image');
   for (const [index] of extraImgCloseBtns.entries()) {
     if ((event.target === extraImgCloseBtns[index] && event.type === 'click') || event.key === 'Escape') {
-      runAnimationClosingShopExtraImgLightbox(index)
+      runAnimationClosingShopExtraImgLightbox(index);
       restoreBodyState();
     } 
   }
