@@ -266,12 +266,10 @@ export const SlideshowLightbox = {
 
   userWantsToHideFullPageImg () {
     const imgFullPage = this.closeIcon.classList.contains('icon_close-img-fullpage');
-    if (imgFullPage &&
-      ((event.target === this.closeIcon && event.type === 'click') ||
-      (document.activeElement === this.closeIcon && event.key === 'Enter') ||
-      (event.key === 'Escape'))
-      ) {
-      return true;
+    if (imgFullPage) {
+      if ((event.target === this.closeIcon && event.type === 'click') || (event.key === 'Escape')) {
+        return true;
+      }
     }
   },
 
