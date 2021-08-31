@@ -126,4 +126,4 @@ of all works        |            |       |       |     |
 
 ## Hacks used  
 
-'image-rendering: pixelated' for images in the slideshow gallery when they are not shown in full-page to give illusion of sharpness. Chrome is not able to render downscaled images without blurring them.
+'image-rendering: pixelated' for images in the slideshow gallery when they are not shown in full-page to give illusion of sharpness. Chrome does not render downscaled images without blurring them.
