@@ -994,6 +994,12 @@ The outline is made of three overlapping triangles.
   transform-origin: 30.53% 9.4%; 
 }
 
+.slide__img-rectangle_zoom-in,
+.slide__img-square_zoom-in {
+  -webkit-animation: zoomin 0.1s ease-out;
+          animation: zoomin 0.1s ease-out;
+}
+
 .slide_scrollable {
   overflow-y:  auto;
 }
