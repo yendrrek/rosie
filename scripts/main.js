@@ -188,10 +188,8 @@ function loadModule_PostageReturnsPolicyLightbox_ () {
 
 function loadModule_SafariFixStyles_() {
   const isSafari = (
-    (
-      /Apple Computer/.test(navigator.vendor) &&
-      /Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent)
-    )
+    /Apple Computer/.test(navigator.vendor) &&
+    (/Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent))
   );
   if (isSafari) {
     import('./modules/safari-fix-styles.js')
