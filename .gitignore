@@ -8,5 +8,7 @@ fotorama-4.6.4.dev/fotorama-minified.css
 fotorama-4.6.4.dev/fotorama-minified.js
 img/img-slideshow/slideshow-images-info.txt
 PHPMailer/
-shop-files/cacert.pem
-shop-files/vendor/
+.idea/
+vendor/
+.php_cs.cache
+log/
