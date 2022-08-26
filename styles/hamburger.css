@@ -11,7 +11,7 @@
   margin-left: 33px;
   margin-top: -62px;
   opacity: 0.8;
-  overflow: visible; 
+  overflow: visible;
   position: relative;
   text-transform: none;
   transition: 0.1s ease-out;
@@ -35,22 +35,22 @@
 
 .hamburger-inner {
   display: block;
-  margin-top: 1px; 
+  margin-top: 1px;
   top: 50%;
 }
 
-.hamburger-inner, 
-.hamburger-inner::before, 
+.hamburger-inner,
+.hamburger-inner::before,
 .hamburger-inner::after {
   background-color: hsl(0, 0%, 10%);
   border-radius: 4px;
   height: 4px;
   position: absolute;
-  transition: 0.1s ease-out; 
+  transition: 0.1s ease-out;
   width: 26px;
 }
 
-.hamburger-inner::before, 
+.hamburger-inner::before,
 .hamburger-inner::after {
   content: "";
   display: block;
