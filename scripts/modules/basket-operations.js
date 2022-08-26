@@ -2,21 +2,27 @@
 
 import { isInViewport } from './helper-methods.js';
 
+// This function is executed when a product is removed form the basket with the 'Remove' button using a GET request,
+// and when the drop-down menu is used with 'change' event.
+// This means that value for the variable 'productName' needs to be obtained accounting for either situations.
 export function controlBasket (event) {
   const url = (event.type === 'click' && $(event.currentTarget).attr('href'));
   const removeProductOrRemoveAllLinkClicked = (url !== false);
-  const qtyDropDownMenuID = (event.type === 'change' && $(event.currentTarget).attr('id').replace('productId', ''));
+  const quantityDropDownMenuIdInBasket = (event.type === 'change' && $(event.currentTarget).attr('id').replace('productId', ''));
+  const productName = $(event.currentTarget).siblings('input[name="nameOfProductWithQuantityUpdatedInBasket"]').val() || $('input[name="nameOfProductWithQuantityUpdatedInBasket"]').val();
   const updatedQty = (event.type === 'change' && $(event.currentTarget).val());
-  const formToken = (event.type === 'change' && $('input').val());
+  const formToken = $(event.currentTarget).siblings('input[name="tokenCsrf"]').val();
+
   $.ajax({
     url: url,
     method: 'POST',
     data: {
-      qtyDropDownMenuId: qtyDropDownMenuID,
+      quantityDropDownMenuIdInBasket: quantityDropDownMenuIdInBasket,
+      nameOfProductWithQuantityUpdatedInBasket: productName,
       newQty: updatedQty,
       tokenCsrf: formToken
     },
-    success(response) {
+    success: function (response) {
       if (removeProductOrRemoveAllLinkClicked) {
         if (url.includes('removeSingleProduct')) {
           removeSingleProductFromBasket(event);
@@ -27,7 +33,7 @@ export function controlBasket (event) {
       } else if (updatedQty > 0) {
         increaseOrDecreaseQtyInBasket(response);
       } else {
-        removeProductWithZeroQtyFromBasket(qtyDropDownMenuID);
+        removeProductWithZeroQtyFromBasket(quantityDropDownMenuIdInBasket);
         loadElementsForBasketEmptyPage(response, url);
       }
       updateTotalPriceOfOrderInBasket(response);
@@ -36,7 +42,7 @@ export function controlBasket (event) {
       hideRemoveAllBtn();
     },
     error() {
-      alert('Problem with receiving reply from the server. Please come back later.');
+      console.error('Problem with receiving reply from the server.');
     }
   });
 }
@@ -54,7 +60,7 @@ function loadElementsForBasketEmptyPage (response, url) {
   const basketEmptyPageBody = $('<div/>').append(response).find('.basket-empty');
   if ($('form').length === 0 || ($('form').length > 0 && url !== false && url.includes('removeAllProducts'))) {
     $('header').html(basketEmptyPageHeader);
-    $('.body__table-container').replaceWith(basketEmptyPageBody);
+    $('.table-container').replaceWith(basketEmptyPageBody);
     $('#breadcrumbs-basket-icon-qty').html('0');
     $('#paypal-smart-button-script, #paypal-sdk-head-script, #returns-policy-outer-modal').remove();
   }
@@ -68,9 +74,10 @@ function increaseOrDecreaseQtyInBasket (response) {
   });
 }
 
-function removeProductWithZeroQtyFromBasket (qtyDropDownMenuID) {
-  $.each($('.table__form-basket-qty-menu'), function (index) {
-    if ($($('.table__form-basket-qty-menu')[index]).attr('id') === qtyDropDownMenuID) {
+function removeProductWithZeroQtyFromBasket (quantityDropDownMenuIdInBasket) {
+  const containerFormOfQuantityDropDownMenu =  $('.table__form-basket-qty-menu');
+  $.each(containerFormOfQuantityDropDownMenu, function (index) {
+    if ($(containerFormOfQuantityDropDownMenu[index]).attr('id') === quantityDropDownMenuIdInBasket) {
       $($('.table__form-basket-qty-menu')[index]).closest('tbody').remove();
     }
   });
