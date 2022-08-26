@@ -168,7 +168,7 @@ function loadModule_OperationsInsideBasket_ () {
 }
 
 function importModule_OperationsInsideBasket_ (event) {
-  import('./modules/operations-inside-basket.js')
+  import('./modules/basket-operations.js')
   .then(module => {
     module.controlBasket(event);
   });
