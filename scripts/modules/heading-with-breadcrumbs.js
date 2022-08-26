@@ -1,7 +1,7 @@
 'use strict';
 
 export function controlHeadingWithBreadcrumbs () {
-  const headingWithBreadCrumbs = document.querySelector('.body__breadcrumbs');
+  const headingWithBreadCrumbs = document.querySelector('.breadcrumbs');
   const basketIcon = document.querySelector('.basket__icon_breadcrumbs_hidden');
   const wordBasket = document.querySelector('.basket__txt_hidden');
   const productQty = document.querySelector('.number_hidden');
