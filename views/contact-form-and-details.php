@@ -1,59 +1,40 @@
-<div class="body__contact-form-container">
-    <div class="contact-form body__contact-form">
+<div class="contact-form-container">
+    <div class="contact-form">
+        <?php
+        if (!empty($this->contactDepCont->generalNotification)) :
+            $suffixes = [true => 'success', false => 'error'];
+            ?>
 
-    <?php if ($generalNotification === 'Message not sent, please see below.'): ?>
-
-        <span class="contact-form__msg-error"><?php echo $generalNotification; ?></span>
-
-    <?php elseif ($generalNotification === 'Message sent. Thank you.'): ?>
-
-        <span class="contact-form__msg-success"><?php echo $generalNotification; ?></span>
-
-    <?php endif; ?> 
-
-        <form class="contact-form__items" name="contact" 
-              action="contact.php" method="post">
+        <span class='contact-form__msg-<?php
+        echo $suffixes[str_contains($this->contactDepCont->generalNotification, 'Message sent')];?>'>
+            <?php echo $this->contactDepCont->generalNotification; ?>
+        </span>
+        <?php endif; ?>
+        <!-- If you try to make the below lines shorter and break them it will give unexpected results; for example,
+        if the 'name' field's outline is red, and then corrected, the red outline will remain.
+        I tried commenting out the white space after breaking those lines, but it didn't help. -->
+        <form class="contact-form__items" name="contact" action="contact.php" method="post">
             <label class="contact-form__asterisk-before">Name:
-                <span class="contact-form__error" id="sender-name-error"><!--
-              --><?php if (isset($senderNameError)) echo $senderNameError; ?><!--
-             --></span><br>
-                <input class="contact-form__input contact-form-field-outline
-
-                <?php
-                if (!empty($senderNameError)) echo 'contact-form__error-outline_red';
-                ?>"
-
-                       type="text" maxlength="50" name="senderName" size="50" required 
-                       value="<?php echo $senderName; ?>">
+                <span class="contact-form__error" id="sender-name-error"><?php echo $this->contactDepCont->contactFormValidation->contactFormErrors->setSenderNameError();?></span><br>
+                <input class="contact-form__input contact-form__input-and-msg-field contact-form-field-outline
+                <?php echo !empty($this->contactFormValidation->senderNameError) ? 'contact-form__error-outline_red' : null; ?>"
+                       type="text" maxlength="50" name="senderName" size="50" required value="<?php echo $this->contactDepCont->contactFormValidation->contactFormFields->getSenderName(); ?>">
             </label><br>
             <label class="contact-form__asterisk-before">E-mail address:
-                <span class="contact-form__error" id="sender-email-error"><!--
-             --><?php if (isset($senderEmailError)) echo $senderEmailError; ?><!--
-             --></span><br>
-                <input class="contact-form__input contact-form-field-outline
-
-                <?php 
-                if (!empty($senderEmailError)) echo 'contact-form__error-outline_red'; 
-                ?>"
-
-                       type="email" name="senderEmail" size="50" maxlength="254" required 
-                       value="<?php echo $senderEmail; ?>">
+                <span class="contact-form__error" id="sender-email-error"><?php echo $this->contactDepCont->contactFormValidation->contactFormErrors->setSenderEmailAddressError(); ?></span><br>
+                <input class="contact-form__input contact-form__input-and-msg-field contact-form-field-outline
+                <?php echo !empty($this->contactFormValidation->senderEmailAddressError) ? 'contact-form__error-outline_red' : null; ?>"
+                       type="email" name="senderEmail" size="50" maxlength="254" required value="<?php echo $this->contactDepCont->contactFormValidation->contactFormFields->getSenderEmailAddress(); ?>">
             </label><br>
             <label class="contact-form__asterisk-before">Message:
-                <span class="contact-form__error" id="msg-error"><!--
-             --><?php if (isset($msgError)) echo $msgError; ?><!--
-             --></span><br>
-                <textarea class="contact-form__msg-field contact-form-field-outline
-
-                <?php 
-                if (!empty($msgError)) echo 'contact-form__error-outline_red'; 
-                ?>"
-
-                          name="msg" rows="10" cols="60" wrap="hard" required><?php echo $msg; ?></textarea>
+                <span class="contact-form__error" id="msg-error"><?php echo $this->contactDepCont->contactFormValidation->contactFormErrors->setMessageError(); ?></span><br>
+                <textarea class="contact-form__msg-field contact-form__input-and-msg-field contact-form-field-outline
+                <?php echo !empty($this->contactDepCont->contactFormValidation->messageError) ? 'contact-form__error-outline_red' : null; ?>"
+                          name="msg" rows="10" cols="60" wrap="hard" required><?php echo $this->contactDepCont->contactFormValidation->contactFormFields->getMessage(); ?></textarea>
             </label><br>
-            <input class="btn contact-form__btn btn_send-contact-form contact-form__btn_hover ff-inner-ring-hidden btn_send-contact-form_outline" 
-                   type="submit" value="Send">
-            <input type="hidden" name="tokenCsrf" value="<?php echo $tokenCsrf; ?>">
+            <input class="btn contact-form__btn btn_send-contact-form contact-form__btn_hover ff-inner-ring-hidden btn_send-contact-form_outline"
+                   type="submit" value="Send" name="contactFormButton">
+            <input type="hidden" name="tokenCsrf" value="<?php echo $this->contactDepCont->token->getCSRFToken(); ?>">
         </form>
     </div>
 
