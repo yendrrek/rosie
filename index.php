@@ -1,287 +1,169 @@
 <?php
+
 session_start();
 
-require 'config/db-conn.php';
+require __DIR__ . '/vendor/autoload.php';
 
-function loadClasses()
-{
-    $classLoaded = '';
-
-    spl_autoload_register(function($classToLoad) {
-        $classLoaded = stream_resolve_include_path('classes/' . $classToLoad . '.php');
-        if ($classLoaded !== false) {
-            include $classLoaded;
-        }
-    });
-} 
-loadClasses();
-
-$pagesWillIncludeMainNav = $existingPages = [];
-
-$currentPage = $_SERVER['REQUEST_URI'];
-$allWorksPageIsLoaded = (strpos($currentPage, 'all-works') !== false);
-$geometryPageIsLoaded = (strpos($currentPage, 'geometry') !== false);
-$stainedGlassPageIsLoaded = (strpos($currentPage, 'stained-glass') !== false);
-$ceramicTilesPageIsLoaded = (strpos($currentPage, 'ceramic-tiles') !== false);
-$paintingsPageIsLoaded = (strpos($currentPage, 'paintings') !== false);
-$aboutPageIsLoaded = (strpos($currentPage, 'about') !== false);
-$contactPageIsLoaded = (strpos($currentPage, 'contact') !==  false);
-$shopPageIsLoaded = (strpos($currentPage, 'shop') !==  false);
-$basketPageIsLoaded = (strpos($currentPage, 'basket') !==  false);
-$purchaseCompletedPageIsLoaded = (strpos($currentPage, 'purchase-completed') !== false);
-$purchaseCompletedPageIsNOTLoaded = (strpos($currentPage, 'purchase-completed') === false);
-$errorTransactionPageIsNOTLoaded = (strpos($currentPage, 'capture-transaction-error') === false);
-$errorTransactionPageIsLoaded = (strpos($currentPage, 'capture-transaction-error') !== false);
-
-$existingPages = [
-    $allWorksPageIsLoaded,
-    $allWorksPageIsLoaded,
-    $geometryPageIsLoaded,
-    $stainedGlassPageIsLoaded,
-    $ceramicTilesPageIsLoaded,
-    $paintingsPageIsLoaded,
-    $aboutPageIsLoaded,
-    $contactPageIsLoaded,
-    $shopPageIsLoaded,
-    $basketPageIsLoaded,
-    $basketPageIsLoaded,
-    $purchaseCompletedPageIsLoaded,
-    $errorTransactionPageIsLoaded
-];
-
-function checkIfPageExists()
-{
-    global $existingPages;
-
-    if (in_array(true, $existingPages)) {
-        $existingPages = null;
-    } else {
-        echo '<p>The page requested does not exist.</p><br><br><a href="all-works.php">Go to Homepage</a>';
-    }
-}
-checkIfPageExists();
-
-$contentSecurityPolicy = new ContentSecurityPolicy();
-$contentSecurityPolicy->setContentSecurityPolicyHeaders();
-
-$colorOfTAndFullStopInLogo = new ColorOfTAndFullStopInLogo();
-$colorOfTAndFullStopInLogo->setTAndFullStopColor();
-$colorOfTInLogo = $colorOfTAndFullStopInLogo->colorOfTInLogo;
-$colorOfFullStopInLogo = $colorOfTAndFullStopInLogo->colorOfFullStopInLogo;
-
-$pageName = new PageName();
-$pageName->setPageName();
-$pageTitle = $pageName->pageTitle;
-$breadcrumbsPageTitle = $pageName->breadcrumbsPageTitle;
-$artworkSectionTitle = $pageName->artworkSectionTitle;
-$slideshowSectionTitle1 = $pageName->slideshowSectionTitle1;
-$slideshowSectionTitle2 = $pageName->slideshowSectionTitle2;
-
-if ($contactPageIsLoaded) {
-
-    EnvironmentVariablesValidation::validatePHPMailerEnvVars();
-    $sellerEmail = EnvironmentVariablesValidation::$sellerEmail;
-    $sellerPhone = EnvironmentVariablesValidation::$sellerPhone;
-    $sellerMobile = EnvironmentVariablesValidation::$sellerMobile;
-
-    $tokenCsrf = new Token();
-    if (!isset($_SESSION['tokenCsrf'])) {
-        $_SESSION['tokenCsrf'] = $tokenCsrf->tokenCsrf;
-    }
-    $tokenCsrf = $_SESSION['tokenCsrf'];
-
-    $contactFormValidation = new ContactFormValidation();
-    $contactFormValidation->validateContactForm();
-    $senderName = $contactFormValidation->senderName;
-    $senderEmail = $contactFormValidation->senderEmail;
-    $msg = $contactFormValidation->msg;
-    $senderNameError = $contactFormValidation->senderNameError;
-    $senderEmailError = $contactFormValidation->senderEmailError;
-    $msgError = $contactFormValidation->msgError;
-    $generalNotification = $contactFormValidation->generalNotification;
-    $msgValidatedWillBeSubmited = $contactFormValidation->msgValidatedWillBeSubmited;
-
-    if ($msgValidatedWillBeSubmited) {
-
-        $contactFormSubmition = new ContactFormSubmition();
-        $contactFormSubmition->sendMsg($contactFormValidation);
-        $generalNotification = $contactFormSubmition->generalNotification;
-        $msgSentWillAmendDb = $contactFormSubmition->msgSentWillAmendDb;
-
-        if ($msgSentWillAmendDb) {
-
-            $contactFormDb = new ContactFormDb($pdo);
-            $userId = new UserId();
-            $userId->setUserId();
-            $contactFormDb->insertContactFormDb($contactFormValidation, $userId);
-        }
-    }
-}
-    
-if ($shopPageIsLoaded) {
+use Rosie\Config\DatabaseConnection;
+use Rosie\Controllers\Breadcrumbs;
+use Rosie\Controllers\Head;
+use Rosie\Controllers\Footer;
+use Rosie\Controllers\NavigationItemsForDifferentScreenSizes;
+use Rosie\Controllers\PageNotFoundContent;
+use Rosie\Controllers\PayPalTransactionErrorContent;
+use Rosie\Services\Basket\AddingProductBasket;
+use Rosie\Services\Basket\BasketDatabase;
+use Rosie\Services\Basket\BasketDatabaseDataPreparation;
+use Rosie\Services\Basket\BasketFullContent;
+use Rosie\Services\Basket\RemovingProductBasket;
+use Rosie\Services\Basket\UpdatingProductQtyViaDropDownInBasket;
+use Rosie\Services\Contact\ContactFormDatabase;
+use Rosie\Services\Contact\ContactFormDatabaseDataPreparation;
+use Rosie\Services\Contact\ContactFormErrors;
+use Rosie\Services\Contact\ContactFormFields;
+use Rosie\Services\Contact\ContactFormSubmission;
+use Rosie\Services\Contact\ContactFormValidation;
+use Rosie\Services\ContentDatabaseQuery\ContentDatabaseQuery;
+use Rosie\Services\PurchaseCompleted\PurchaseCompleted;
+use Rosie\Utils\RetailPrices;
+use Rosie\Utils\ContentSecurityPolicy;
+use Rosie\Utils\EnvironmentVariables;
+use Rosie\Utils\FormValidation;
+use Rosie\Utils\Logging;
+use Rosie\Utils\NameOfClass;
+use Rosie\Utils\NewLogger;
+use Rosie\Utils\RequestMethod;
+use Rosie\Utils\Token;
+use Rosie\Utils\TokenValidation;
 
 if (PageNotFoundContent::showPageNotFoundInfo()) {
     return;
 }
 
-if ($basketPageIsLoaded) {
-
-    if (isset($_SESSION['tokenCsrf'])) {
-        $tokenCsrf = $_SESSION['tokenCsrf'];
-    }
-
-    EnvironmentVariablesValidation::validatePayPalEnvVars();
-    $clientId = EnvironmentVariablesValidation::$payPalClientId;
-
-    $retailPrices = new RetailPrices();
-    $retailPrices->getRetailPrices();
-    $productsRetailPrices = $retailPrices->productsRetailPrices;
-    $_SESSION['productsRetailPrices'] = $productsRetailPrices;
-
-    $addingProductToBasket = new AddingProductToBasket();
-    $addingProductToBasket->addProductToBasket(); 
-    $productAddedToBasketWillAmendDbNow = $addingProductToBasket->productAddedToBasketWillAmendDbNow;
-    $showStockLimitInfoLightbox = $addingProductToBasket->showStockLimitInfoLightbox;
-
-    $removingProductFromBasket = new RemovingProductFromBasket();
-    $removingProductFromBasket->removeProductFromBasket();
-    $removedProductFromBasketWillAmendDbNow = $removingProductFromBasket->removedProductFromBasketWillAmendDbNow;
-
-    $updatingQtyViaBasketDropDownMenu = new UpdatingQtyViaBasketDropDownMenu();
-    $updatingQtyViaBasketDropDownMenu->updateQtyViaBasketDropDownMenu();
-    $updatedQtyWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->updatedQtyWillAmendDbNow;
-    $zeroQtySelectedWillAmendDbNow = $updatingQtyViaBasketDropDownMenu->zeroQtySelectedWillAmendDbNow;
-
-    $basketDb = new BasketDb($pdo);
-
-    $userId = new UserId();
-    $userId->setUserId();
-
-    if ($productAddedToBasketWillAmendDbNow) {
-
-        $basketDb->addProductToBasketDb($userId);
-
-    } elseif ($removedProductFromBasketWillAmendDbNow || $zeroQtySelectedWillAmendDbNow) {
-
-        $basketDb->removeProductFromBasketDb($userId);
-
-    } elseif ($updatedQtyWillAmendDbNow && !$zeroQtySelectedWillAmendDbNow) {
-
-        $basketDb->updateQtyViaBasketDropDownMenuDb($userId);
-    }
+if (PayPalTransactionErrorContent::showPayPalTransactionErrorInfo()) {
+    return;
 }
 
-if ($purchaseCompletedPageIsLoaded) {
+EnvironmentVariables::getEnvVars();
 
-    $_SESSION = [];
-    session_destroy();
-}
+$newLogger = new NewLogger();
 
-if ($errorTransactionPageIsNOTLoaded) {
+$databaseConnection = new DatabaseConnection(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class DatabaseConnection'))
+);
+$databaseConnection = $databaseConnection->connectToDb();
 
-    include 'views/head.php';
-}
+$contentSecurityPolicy = new ContentSecurityPolicy(
+    new Token(
+        new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
+    )
+);
+$contentSecurityPolicy->setContentSecurityPolicyHeader();
 
-$pagesWillIncludeMainNav = [
-    $allWorksPageIsLoaded, 
-    $geometryPageIsLoaded, 
-    $stainedGlassPageIsLoaded, 
-    $ceramicTilesPageIsLoaded, 
-    $paintingsPageIsLoaded, 
-    $aboutPageIsLoaded, 
-    $contactPageIsLoaded, 
-    $shopPageIsLoaded
+$formValidation = new FormValidation(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class FormValidation')),
+    new RequestMethod(),
+    new TokenValidation()
+);
+
+// Contact Form
+$contactFormFields = new ContactFormFields();
+
+$contactFormErrors = new ContactFormErrors($contactFormFields);
+
+$contactFormValidation = new ContactFormValidation(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormValidation')),
+    $formValidation,
+    $contactFormErrors,
+    $contactFormFields
+);
+$contactFormSubmission = new ContactFormSubmission(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormSubmission')),
+    $contactFormFields
+);
+$contactFormDatabase = new ContactFormDatabase(
+    $databaseConnection,
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormDatabase')),
+    new ContactFormDatabaseDataPreparation($contactFormFields)
+);
+
+// Basket
+$clientId = EnvironmentVariables::$payPalClientId;
+$_SESSION['productsRetailPrices'] = RetailPrices::getRetailPrices();
+$addingProductBasket = new AddingProductBasket(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class AddingProductBasket')),
+    $formValidation
+);
+$removingProductBasket = new RemovingProductBasket(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class RemovingProductBasket'))
+);
+$updatingProductQtyViaDropDownInBasket = new UpdatingProductQtyViaDropDownInBasket(
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class UpdatingProductQtyViaDropDownInBasket')),
+    $formValidation
+);
+$basketDatabase = new BasketDatabase(
+    $databaseConnection,
+    new BasketDatabaseDataPreparation(),
+    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class BasketDatabaseDataPreparation'))
+);
+
+// Services injected into controllers via dependencies containers.
+// Below logic needs to run before parts of a page are inserted.
+$containerDependencies = [
+    'ArtworkDepCont' => [new ContentDatabaseQuery($databaseConnection)],
+    'AboutDepCont' => [new ContentDatabaseQuery($databaseConnection)],
+    'ContactDepCont' => [
+        new ContentDatabaseQuery($databaseConnection),
+        new Token(
+            new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
+        ),
+        $contactFormValidation,
+        $contactFormSubmission,
+        $contactFormDatabase
+    ],
+    'ShopDepCont' => [
+        new ContentDatabaseQuery($databaseConnection),
+        new Token(
+            new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
+        )
+    ],
+    'BasketDepCont' => [
+        $addingProductBasket,
+        $removingProductBasket,
+        $updatingProductQtyViaDropDownInBasket,
+        $basketDatabase,
+        new BasketFullContent(
+            new Token(new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token')))
+        )
+    ],
+    'PurchaseCompletedDepCont' => [new PurchaseCompleted()],
+    'CaptureTransactionErrorDepCont' => []
 ];
 
-if  (in_array(true, $pagesWillIncludeMainNav)) {
+$dependenciesContainerClassName = NameOfClass::getClassName($instance = null);
+$dependenciesContainer = "Rosie\\DependenciesContainers\\$dependenciesContainerClassName";
+$dependenciesContainerInstance = new $dependenciesContainer(...$containerDependencies[$dependenciesContainerClassName]);
+$dependenciesContainerInstance->runDependencies();
 
-    $resultMainNav = $pdo->query('SELECT * FROM mainNavItems ORDER BY id ASC');
+Head::getHead();
 
-    $resultSubNav = $pdo->query('SELECT * FROM subNavItems ORDER BY id ASC');
+$navigationItemsForDifferentScreenSizes = new NavigationItemsForDifferentScreenSizes($databaseConnection);
+$navigationItemsForDifferentScreenSizes->getNavigationItemsForDifferentScreenSizes();
 
-    include 'views/main-navigation-screens-1171px-up.php';
+Breadcrumbs::getBreadcrumbs();
 
-    $resultMainNav = null;
-    $resultSubNav = null;
-
-    $resultSmallMainNav = $pdo->query('SELECT * FROM smallMainNavItems ORDER BY id ASC');
-
-    $resultSmallSubNav = $pdo->query('SELECT * FROM smallSubNavItems ORDER BY id ASC'); 
-
-    include 'views/main-navigation-screens-1170px-down.php';
-
-    $resultSmallMainNav = null;
-    $resultSmallSubNav = null;
-
-} elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
-
-    $resultBasket = $pdo->query('SELECT * FROM basketMainNavItems ORDER BY id ASC');
-
-    $resultBasketSmallNav = $pdo->query('SELECT * FROM basketSmallMainNavItems ORDER BY id ASC');
-
-    include 'views/basket-navigation.php';
-
-    $resultBasket = null;
-    $resultBasketSmallNav = null;
-}
-
-if ($purchaseCompletedPageIsNOTLoaded && $errorTransactionPageIsNOTLoaded) {
-
-    include 'views/breadcrumbs.php';
-}
-
-$pagesWillIncludeSlideshow = [
-    $allWorksPageIsLoaded, 
-    $geometryPageIsLoaded, 
-    $stainedGlassPageIsLoaded, 
-    $ceramicTilesPageIsLoaded, 
-    $paintingsPageIsLoaded
+$contentControllerDependencies = [
+    'Artwork' => [$dependenciesContainerInstance],
+    'About' => [$dependenciesContainerInstance],
+    'Contact' => [$dependenciesContainerInstance],
+    'Shop' => [$dependenciesContainerInstance],
+    'Basket' => [$dependenciesContainerInstance],
+    'PurchaseCompleted' => [$dependenciesContainerInstance]
 ];
 
-if (in_array(true, $pagesWillIncludeSlideshow)) {
+$contentControllerClassName = NameOfClass::getClassName($instance = 'controller');
+$contentController = "Rosie\\Controllers\\$contentControllerClassName";
+$contentControllerInstance = new $contentController(...$contentControllerDependencies[$contentControllerClassName]);
+$contentControllerInstance->runPage();
 
-    $resultSlideshowImgs = $pdo->query("CALL getSlideshowImgs('$artworkSectionTitle')"); 
-
-    include 'views/slideshow.php';
-
-    $resultSlideshowImgs = null;
-
-    $resultThumbnailImgs = $pdo->query("CALL getThumbnailImgs('$artworkSectionTitle')");
-
-    include 'views/thumbnail-imgs.php';
-
-    $resultThumbnailImgs = null;
-
-} elseif ($aboutPageIsLoaded) {
-
-    $resultAbout = $pdo->query('SELECT * FROM aboutContent ORDER BY id ASC');
-
-    include 'views/about-content.php';
-
-    $resultAbout = null;
-
-} elseif ($contactPageIsLoaded) {
-
-    include 'views/contact-form-and-details.php';
-
-} elseif ($shopPageIsLoaded) {
-
-    $resultCards = $pdo->query('CALL getCards()');
-
-    include 'views/shop-content.php';
-
-    $resultCards = null;
-
-} elseif ($basketPageIsLoaded || $purchaseCompletedPageIsLoaded) {
-
-    include 'views/basket-content.php';
-}
-
-if ($errorTransactionPageIsNOTLoaded) {
-
-    include 'views/footer.php';
-
-} else {
-
-    include 'views/capture-transaction-error.html';
-}
+Footer::getFooter();
