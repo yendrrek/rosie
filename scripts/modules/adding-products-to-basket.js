@@ -17,7 +17,7 @@ export function addProductToBasket (event) {
     data: $(event.currentTarget).serialize(),
     dataType: 'text',
     success: function(response) {
-      showQtyInBasketIcon();
+      showQtyInBasketIcon(response);
       if ($('#stock-limit-info-outer-modal', response).length) {
         openStockLimitInfoLightbox(response);
       } else {
@@ -25,13 +25,13 @@ export function addProductToBasket (event) {
       }
     },
     error() {
-      alert('Problem with receiving reply from the server. Please come back later.');
+      alert('Problem with receiving reply from the server.');
     }
   });
 }
 
-function showQtyInBasketIcon () {
-  $('.number span, .number_hidden span').load('basket.php #number');
+function showQtyInBasketIcon (response) {
+  $('.number span, .number_hidden span').replaceWith($('#number', response));
 }
 
 function openStockLimitInfoLightbox (response) {
