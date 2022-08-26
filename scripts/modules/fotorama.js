@@ -18,7 +18,7 @@ export function insertFotoramaForScreensNarrowerThan1170px () {
   fotoramaCss.rel = 'stylesheet';
   fotoramaJs.src = 'fotorama-4.6.4.dev/fotorama.dev.js';
   if (!fotoramaJsAlreadyInDom && !fotoramaCssAlreadyInDom) {
-    if (screen.width < 1170 && shopPageIsLoaded ) {
+    if (document.body.clientWidth < 1170 && shopPageIsLoaded ) {
       head.append(fotoramaCss);
       head.append(fotoramaJs);
     }
@@ -30,7 +30,7 @@ export function removeFotoramaForScreensWiderThan1169px () {
   const fotoramaCssAlreadyInDom = document.querySelector('link[href*="fotorama"]');
   const shopPageIsLoaded = (document.querySelector('.breadcrumbs__title').innerText === 'Shop');
   if (fotoramaJsAlreadyInDom && fotoramaCssAlreadyInDom) {
-    if (screen.width > 1169 && shopPageIsLoaded) {
+    if (document.body.clientWidth > 1169 && shopPageIsLoaded) {
       fotoramaJsAlreadyInDom.remove();
       fotoramaCssAlreadyInDom.remove();
     }
