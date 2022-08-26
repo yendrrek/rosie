@@ -16,32 +16,32 @@
             <div>
                 <td align="left">
                     <div class="purchase-confirmation-email">
-                        Dear <?php echo $this->buyerFirstName; ?>,<br>
+                        Dear <?php echo $this->captureOrder->buyerFirstName; ?>,<br>
                         Thank you for your purchase.<br><br>
                         Order details:<br><br>
 
                         <?php
                         $qtyOfTypesOfProductsPurchased = count($items[0]);
-                        for ($i = 0; $i < $qtyOfTypesOfProductsPurchased; $i++):
+                        for ($i = 0; $i < $qtyOfTypesOfProductsPurchased; $i++) :
                             $totalPriceOfSingleProduct[$i] = $items[0][$i]['value'] * $items[0][$i]['qty'];
-                        ?>
+                            ?>
 
                         <i><?php echo $items[0][$i]['name']; ?></i><br>
                         Price: &pound; <?php echo $items[0][$i]['value']; ?><br>
                         Quantity: <?php echo $items[0][$i]['qty']; ?><br>
                         Subtotal: &pound; <?php echo number_format($totalPriceOfSingleProduct[$i], 2); ?><br><br>
 
-                        <?php
+                            <?php
                             $totalQtyOfSingleProduct[$i] = $items[0][$i]['qty'];
                         endfor;
                         $totalQtyOfAllProducts = array_sum($totalQtyOfSingleProduct);
                         ?>
 
                         Total quantity purchased: <?php echo $totalQtyOfAllProducts; ?><br> 
-                        <strong>Total price: &pound; <?php echo $this->totalPrice; ?></strong><br>
+                        <strong>Total price: &pound; <?php echo $this->captureOrder->totalPrice; ?></strong><br>
                         Postage included<br><br>
                         You will receive a separate email when your order has been posted to<br> 
-                        <?php echo $this->buyerFullAddress; ?><br><br>
+                        <?php echo $this->captureOrder->buyerFullAddress; ?><br><br>
                         In the meantime, if you have any questions, please do not hesitate to 
                         <a href="https://rosiepiontek.com/contact.php">contact me</a><br><br>
                         Best wishes,<br><br>
