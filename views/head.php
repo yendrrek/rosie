@@ -1,7 +1,8 @@
 <?php
-if (isset($_SESSION['noncePayPalSdk'])): 
-    $noncePayPalSdk = $_SESSION['noncePayPalSdk'];
-endif;
+
+use Rosie\Utils\EnvironmentVariables;
+
+EnvironmentVariables::getEnvVars();
 ?>
 
 <!DOCTYPE html>
@@ -19,28 +20,28 @@ endif;
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <?php
-if (strpos($pageTitle, 'Basket') !== false):
-    if (!empty($_SESSION['basket'])):
-    ?>
+    if (str_contains($pageTitle, 'Basket')) :
+        if (!empty($_SESSION['basket'])) :
+            ?>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=<?php echo $clientId; ?>&currency=GBP&intent=capture" data-csp-nonce="<?php echo $noncePayPalSdk; ?>" id="paypal-sdk-head-script"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=<?php echo EnvironmentVariables::$payPalClientId; ?>&currency=GBP&intent=capture"
+            data-csp-nonce="<?php echo $_SESSION['noncePayPalSdk'] ?? false; ?>" id="paypal-sdk-head-script"></script>
 
-    <?php
+            <?php
+        endif;
     endif;
-endif;
-if (strpos($pageTitle, 'All Works') !== false):
-    ?>
+    if (str_contains($pageTitle, 'All Works')) :
+        ?>
 
     <link rel="canonical" href="https://rosiepiontek.com">
 
-    <?php
-endif;
+        <?php
+    endif;
     ?>
 
-    <link href="styles/hamburger.css" rel="stylesheet">
-    <link href="styles/main.css" rel="stylesheet">
-    <link rel="icon" href="img/png/paloma.png">
+    <link href="../styles/hamburger.css" rel="stylesheet">
+    <link href="../styles/main.css" rel="stylesheet">
 </head>
 
 <body class="body clearfix_after">
-    <div class="body__content-above-footer">  <!-- Opening tag for all the content above the footer -->
+    <div class="content-above-footer">  <!-- Opening tag for all the content above the footer -->
