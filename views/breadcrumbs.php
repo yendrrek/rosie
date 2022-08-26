@@ -1,27 +1,31 @@
-<ul class="breadcrumbs body__breadcrumbs">
+<ul class="breadcrumbs">
 
 <?php
+
+use Rosie\Services\Basket\BasketIcon;
+
 $pageTitles = ['Geometry', 'Stained Glass', 'Ceramic Tiles', 'Paintings', 'About', 'Contact', 'Shop' ];
-if (in_array($breadcrumbsPageTitle, $pageTitles)): 
+
+if (in_array($pageName, $pageTitles)) :
     ?>
 
     <li class="breadcrumbs__item greater-than-sign-pseudo">
         <a class="link link_breadcrumbs-home link_visited link_breadcrumbs-home_outline" href="all-works.php">Home</a>
     </li>
 
-    <?php 
-endif; 
-    ?>
+    <?php
+endif;
+?>
 
     <li class="breadcrumbs__item">
         <h2 class="breadcrumbs__title
 
         <?php
-        if ($breadcrumbsPageTitle == 'Basket details' || $breadcrumbsPageTitle == 'All Works'):
+        if ($pageName == 'Basket' || $pageName == 'All Works') :
             echo 'breadcrumbs__title_margin-left_smaller';
         endif;
         ?>">
-        <?php echo $breadcrumbsPageTitle; ?>
+        <?php echo $pageName; ?>
 
         </h2>
     </li>
