@@ -120,9 +120,8 @@ if ($contactPageIsLoaded) {
     
 if ($shopPageIsLoaded) {
 
-    $tokenCsrf = new Token();
-    $tokenCsrf = $tokenCsrf->tokenCsrf;
-    $_SESSION['tokenCsrf'] = $tokenCsrf;
+if (PageNotFoundContent::showPageNotFoundInfo()) {
+    return;
 }
 
 if ($basketPageIsLoaded) {
