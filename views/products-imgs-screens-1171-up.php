@@ -16,7 +16,9 @@
 </div>
 <div class="shop__extra-img-modal-outer" tabindex="-1">
     <div class="shop__extra-img-modal-inner" tabindex="-1">
-        <button class="close-popup-btn close-popup-btn_shop-extra-image shop__close-popup-btn material-icons ff-inner-ring-hidden" type="button" value="close" tabindex="-1">close</button>
+        <button class="close-popup-btn close-popup-btn_shop-extra-image
+        shop__close-popup-btn material-icons ff-inner-ring-hidden"
+                type="button" value="close" tabindex="-1">close</button>
         <img class="shop__extra-img" width="500" height="377" 
              src="<?php echo $rowCards['shopExtraImgUrl']; ?>"
              alt="<?php echo $rowCards['shopExtraImgAlt']; ?>">
