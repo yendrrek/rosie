@@ -1,53 +1,53 @@
     <nav class="nav-small header__nav-small nav-small_hidden">
         <ul class="nav-small__ul">
 
-        <?php 
-        while ($rowSmallMainNav = $resultSmallMainNav->fetch()):
+        <?php
+        while ($rowSmallMainNav = $this->resultSmallMainNav->fetch()) :
             ?>
 
             <li class="nav-small__li">
 
             <?php
-            if ($rowSmallMainNav['smallMainNavElements'] === 'Works'):
+            if ($rowSmallMainNav['smallMainNavElements'] === 'Works') :
                 ?>
 
                 <div class="nav-small__link nav-small__link_hover" id="small-subnav-activator">
 
-                <?php 
-            else:
+                <?php
+            else :
                 ?>
 
                 <a class="nav-small__link nav-small__link_hover link link_visited" 
                    href="<?php echo $rowSmallMainNav['smallMainNavLinks']; ?>">
 
-                <?php 
-            endif; 
-                ?>   
+                <?php
+            endif;
+            ?>   
 
                     <?php echo $rowSmallMainNav['smallMainNavElements']; ?>
 
                 <?php
-            if ($rowSmallMainNav['smallMainNavElements'] === 'Works'):
-                ?>
+                if ($rowSmallMainNav['smallMainNavElements'] === 'Works') :
+                    ?>
 
                 </div>
 
-                <?php
-            else:
-                ?>
+                    <?php
+                else :
+                    ?>
 
                 </a>
 
-                <?php 
-            endif;
-            if ($rowSmallMainNav['smallMainNavElements'] === 'Works'):
-                ?>
+                    <?php
+                endif;
+                if ($rowSmallMainNav['smallMainNavElements'] === 'Works') :
+                    ?>
 
                 <ul class="subnav-small nav__subnav-small subnav-small_hidden">
 
-                <?php
-                while ($rowSmallSubNav = $resultSmallSubNav->fetch()):
-                    ?>
+                    <?php
+                    while ($rowSmallSubNav = $this->resultSmallSubNav->fetch()) :
+                        ?>
 
                     <li class="subnav-small__items_hidden">
                         <a class="link_subnav-small link_subnav-small_hover subnav-small__link link link_visited" 
@@ -56,30 +56,32 @@
                         </a>
 
                         <?php
-                        if ($rowSmallSubNav['smallSubNavElements'] !== 'Paintings'):
-                        ?>
+                        if ($rowSmallSubNav['smallSubNavElements'] !== 'Paintings') :
+                            ?>
 
                         <hr class="subnav-small__line-horizontal">
 
-                        <?php 
-                    endif; 
+                            <?php
+                        endif;
                         ?>
 
                     </li>
 
-                    <?php 
-                endwhile;
-                ?>
+                        <?php
+                        $rowSmallSubNav = null;
+                    endwhile;
+                    ?>
 
                 </ul>
 
-            <?php 
-            endif; 
-            ?>    
+                    <?php
+                endif;
+                ?>    
 
             </li>
 
             <?php
+            $rowSmallMainNav = null;
         endwhile;
         ?>
 
