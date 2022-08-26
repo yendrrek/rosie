@@ -1,11 +1,5 @@
-<?php
-if (isset($_SESSION['noncePayPalSmartBtn'])):
-    $noncePayPalSmartBtn = $_SESSION['noncePayPalSmartBtn'];
-endif;
-?>
-
-<script nonce="<?php echo $noncePayPalSmartBtn; ?>" id="paypal-smart-button-script">
-const basketPage = document.querySelector('.body__table-container');
+<script nonce="<?php echo $_SESSION['noncePayPalSmartBtn'] ?? false; ?>" id="paypal-smart-button-script">
+const basketPage = document.querySelector('.table-container');
 if (basketPage) {
   paypal.Buttons({
     style: {
@@ -23,7 +17,7 @@ if (basketPage) {
         modals.classList.add('please-wait-processing-visible');
         document.body.style.overflow = 'hidden';
       }
-      return fetch('shop-files/create-order.php', {
+      return fetch('scripts/pay-pal/create-order.php', {
         method: 'post'
       }).then(function (res) {
         return res.json();
@@ -41,10 +35,10 @@ if (basketPage) {
       window.location = './basket.php';
     },
     onError() {
-      window.location = 'views/capture-transaction-error.html';
+      window.location = '../../views/capture-transaction-error.html';
     },
     onApprove(data) {
-      return fetch('shop-files/capture-transaction.php', {
+      return fetch('scripts/pay-pal/capture-transaction.php', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ orderID: data.orderID })
