@@ -2,14 +2,15 @@
 namespace Sample;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use Rosie\Utils\EnvironmentVariables;
 
-require '../classes/EnvironmentVariablesValidation.php'; 
+require '../../classes/Utils/EnvironmentVariables.php';
 
-\EnvironmentVariablesValidation::validatePayPalEnvVars();
-$payPalEnvironment = \EnvironmentVariablesValidation::$payPalEnvironment;
-$pathToClass = 'vendor/paypal/paypal-checkout-sdk/lib/PayPalCheckoutSdk/Core/';
+EnvironmentVariables::getEnvVars();
+$payPalEnvironment = EnvironmentVariables::$payPalEnvironment;
+$pathToClass = '../../vendor/paypal/paypal-checkout-sdk/lib/PayPalCheckoutSdk/Core/';
 if ($payPalEnvironment === 'sandbox') {
     require_once $pathToClass . 'SandboxEnvironment.php';
 } elseif ($payPalEnvironment === 'production') {
@@ -24,8 +25,8 @@ ini_set('display_startup_errors', '1');
 
 class PayPalClient
 {
-    /* Returns PayPal HTTP client instance with environment that has access credentials context. 
-    This instance invokes PayPal APIs, provided the credentials have access. */
+    // Returns PayPal HTTP client instance with environment that has access credentials context.
+    // This instance invokes PayPal APIs, provided the credentials have access.
 
     public static function client()
     {
@@ -35,10 +36,10 @@ class PayPalClient
     // Set up and return PayPal PHP SDK environment with PayPal access credentials.
     public static function environment()
     {
-        \EnvironmentVariablesValidation::validatePayPalEnvVars();
-        $payPalEnvironment = \EnvironmentVariablesValidation::$payPalEnvironment;
-        $clientId = \EnvironmentVariablesValidation::$payPalClientId;
-        $clientSecret = \EnvironmentVariablesValidation::$payPalClientSecret;
+        EnvironmentVariables::getEnvVars();
+        $payPalEnvironment = EnvironmentVariables::$payPalEnvironment;
+        $clientId = EnvironmentVariables::$payPalClientId;
+        $clientSecret = EnvironmentVariables::$payPalClientSecret;
         if ($payPalEnvironment === 'sandbox') {
             return new SandboxEnvironment($clientId, $clientSecret);
         } elseif ($payPalEnvironment === 'production') {
