@@ -32,24 +32,10 @@ endif;
     <li class="breadcrumbs__item">
         <a class="basket breadcrumbs__basket link link_visited" href="basket.php" tabindex="-1">
             <img class="basket__icon basket__icon_hover basket__icon_breadcrumbs_hidden" 
-                 src="img/png/basket1a1a1a.png" alt="Basket icon">
+                 src="../img/png/basket1a1a1a.png" alt="Basket icon">
             <div class="number basket__number number_hidden">
-
-            <?php
-if (!empty($_SESSION['basket'])): ?>
-
-                <span id="breadcrumbs-basket-icon-qty"><?php echo $totalQty; ?></span>
-
-                <?php
-else: 
-                ?>
-                <span>0</span>
-
-                <?php 
-endif; 
-                ?>
-
-                </div>
+                <span id="breadcrumbs-basket-icon-qty"><?php echo BasketIcon::$totalQty; ?></span>
+            </div>
             <span class="basket__txt basket__txt_hidden">basket</span>
         </a>
     </li>
