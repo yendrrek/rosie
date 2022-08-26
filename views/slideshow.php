@@ -2,19 +2,19 @@
     
     <?php
     include 'includes/slideshow-nav.php';
-    while ($rowSlideshowImgs = $resultSlideshowImgs->fetch()): 
-    ?>
+    while ($rowSlideshowImgs = $resultSlideshow->fetch()) :
+        ?>
 
     <div class="slide">
         <img class="
             
             <?php
             $slideshowImgSquare = [12, 13, 14, 15, 20, 22, 23, 24, 28];
-            if (in_array($rowSlideshowImgs['id'], $slideshowImgSquare)):
+            if (in_array($rowSlideshowImgs['id'], $slideshowImgSquare)) :
                 echo 'slide__img-square';
-            else:
+            else :
                 echo 'slide__img-rectangle';
-            endif; 
+            endif;
             ?>"
              
             srcset="<?php echo $rowSlideshowImgs['414px']; ?> 414w,
@@ -43,21 +43,21 @@
                 
             </div>
 
-            <?php 
-        $slideshowImgSoldInfo = [1, 2, 3, 4, 6, 9, 11, 12, 16, 17, 19, 24];
-        if  (in_array($rowSlideshowImgs['id'], $slideshowImgSoldInfo)): 
-            ?>
+            <?php
+            $slideshowImgSoldInfo = [1, 2, 3, 4, 6, 9, 11, 12, 16, 17, 19, 24];
+            if (in_array($rowSlideshowImgs['id'], $slideshowImgSoldInfo)) :
+                ?>
 
             <div class="slide__artwork-more-info"><?php echo $rowSlideshowImgs['slideshowSoldInfo']; ?></div>
 
-            <?php
-        endif;
+                <?php
+            endif;
             ?>
 
         </div>
     </div>
 
-    <?php
+        <?php
     endwhile;
     ?>
 
