@@ -1,10 +1,13 @@
 <?php
 include 'includes/shop-info-header.html';
-while ($rowCards = $resultCards->fetch()):  
-?>
 
-<div class="shop body__shop">
-    <span class="extra-img-activator word-more-pseudo shop__extra-img-activator extra-img-activator_hover extra-img-activator_outline fas fa-camera-retro" tabindex="0"></span>
+$result = $this->shopDepCont->runDependencies();
+while ($rowCards = $result->fetch()) :
+    ?>
+
+<div class="shop">
+    <span class="extra-img-activator word-more-pseudo shop__extra-img-activator
+    extra-img-activator_hover extra-img-activator_outline fas fa-camera-retro" tabindex="0"></span>
 
     <?php
     include 'products-imgs-screens-1170-down.php';
@@ -16,38 +19,37 @@ while ($rowCards = $resultCards->fetch()):
         <li class="shop__product-name">
             <?php echo $rowCards['product']; ?></li>
             
-        <?php 
-    if (isset($rowCards['stock'])):
-        if ($rowCards['stock'] > 5): 
-        ?>      
+        <?php
+        if (isset($rowCards['stock'])) :
+            if ($rowCards['stock'] > 5) :
+                ?>      
 
         <li class="shop__stock-info shop__stock-info_available">In stock</li>
 
-        <?php
-        elseif ($rowCards['stock'] > 0):
-        ?>
+                <?php
+            elseif ($rowCards['stock'] > 0) :
+                ?>
 
         <li class="shop__stock-info shop__stock-info_available">
             <span class="shop__stock-info_number"><?php echo $rowCards['stock']; ?></span> left</li> 
 
-        <?php 
-        else:  
-        ?>
+                <?php
+            else :
+                ?>
                
         <li class="shop__stock-info shop__stock-info_unavailable">Currently unavailable <br> 
         More on the way</li> 
 
-        <?php 
-        endif; 
-    else:
-    error_log('Stock amount not fetched from database at rosiepiontek.com/shop', 1, 'yendrrek@gmail.com'); 
-        ?>
+                <?php
+            endif;
+        else :
+            ?>
 
         <li class="shop__stock-info shop__stock-info_unavailable">An error has occurred <br> 
             Stock is unknown at the moment <br> Please return later</li>
 
-        <?php 
-    endif; 
+            <?php
+        endif;
         ?>
 
         <li class="shop__product-info">Size: A6</li>
@@ -61,20 +63,20 @@ while ($rowCards = $resultCards->fetch()):
         <li class="shop__form-as-list-item">
     
         <?php
-    if (isset($rowCards['stock'])):
-        if ($rowCards['stock'] > 0):
-            include 'views/shop-form-active.php';
-        else:
-            include 'includes/shop-form-inactive-no-stock.html';
+        if (isset($rowCards['stock'])) :
+            if ($rowCards['stock'] > 0) :
+                include 'views/shop-form-active.php';
+            else :
+                include 'includes/shop-form-inactive-no-stock.html';
+            endif;
         endif;
-    endif; 
         ?>
 
         </li>
     </ul>
 </div>
 
-<?php
+    <?php
     $shopProductsData[] = $rowCards;
 endwhile;
 // Accessed in 'basket.php' to extract individual prices.
