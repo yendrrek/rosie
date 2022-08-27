@@ -1,36 +1,35 @@
 # Painter's portfolio website with a shop 
-
-This is my debut project which I started in November 2019 to learn web development and design.  
-Project's address:  *https://rosiepiontek.com*
+ 
+Project's URL:  *https://rosiepiontek.com*
 
 ## Content
 
-* Presentation of the painter and her artwork in a form of thumbnail images and more detailed full-page slideshow gallery with short description of each artwork
+* Presentation of painter's artwork
 * Contact form 
-* Shop selling greetings cards based on some of the artwork
+* Shop
 
 ## Technologies used
 
-* Apache, MySQL, PHP 7.1
+* Apache, MySQL, PHP 8.0.18
 
-* jQuery  for Ajax calls when processing the basket and the contact form
+* pure JavaScipt, jQuery  
    
 * PayPal API with the Smart Button  
 *https://developer.paypal.com/docs/checkout/integrate/*  
 *https://developer.paypal.com/docs/checkout/reference/server-integration/capture-transaction/*  
 *https://developer.paypal.com/demo/checkout/#/pattern/server*
 
-* PHP Mailer for sending purchase confirmation to clients  
+* PHP Mailer  
 
-* Composer dependency manager for installing PayPal SDK and PHP Mailer
+* Composer
 
-### Visual third-party components  
+## Visual third-party components  
 
 * Google fonts and icons
 
 * Icons from *https://fontawesome.com/*
 
-* Animated hamburger icon for activating main menu on touchscreens narrower than 1170px
+* Hamburger icon for activating main menu on touchscreens narrower than 1170px
 *https://jonsuh.com/hamburgers/*
 
 * Fotorama image gallery for displaying photos of products in the shop on touchscreens narrower than 1170px
@@ -38,43 +37,29 @@ Project's address:  *https://rosiepiontek.com*
 
 ## General description
 
-This project uses MVC pattern.
+The idea was to use the MVC pattern in this project without a framework.  
+There are controllers, services and dependency containers which pass services to controllers.
 
-There is one central controller (*index.php*) via which all other pages are loaded.
+All requests are passed to *index.php*.
 
 Main components are located in *views* folder.  Smaller parts which are included in the main components are located in *includes*.
 
-PHP code uses classes.
-
 JavaScript code uses ES6 modules imported dynamically.
 
-Contact form is validated and sanitised on the server side.
-
-In some cases insertion into database or fetching data from it is performed using MySQL stored procedures. These cases are:  
-&nbsp;&nbsp;&nbsp;&nbsp;a) basket operations (adding, removing products);  
-&nbsp;&nbsp;&nbsp;&nbsp;b) pulling images of the artworks and their descriptions.
-
-Prepared statements are used for database insertion of:  
-&nbsp;&nbsp;&nbsp;&nbsp;a) user input from the contact form;  
-&nbsp;&nbsp;&nbsp;&nbsp;b) completed orders and customer details.
-  
-Nonces and Content Security Policy headers are applied with PHP to increase security of the website.
-
-Environment variables are used to hide all sensitive data and to distinguish between development and production environment in code related with the shop.
+Database is queried using MySQL stored procedures or prepared statements.
 
 Website can be fully keyboard-only navigated.
 
 ## Shop description
 
-All operations are performed using AJAX for a smooth user experience and their results are recorded in the database (adding, removing products, updating quantity, order and customer details).
 
-Online payment is possible via PayPal Smart Button integrated on the sever side.
+Online payment uses PayPal Smart Button integrated on the sever side.
 
 When order is created and sent to PayPal all its details are also stored in a PHP session superglobal which upon successful capturing of the transaction is used for further processing (database insertion and sending purchase confirmation to the client).
 
 Stock is fully controlled.
 Number of products available always reflects the stock amount in the database which gets automatically updated after a completed purchase.  
-If the quantity of a product which is to be added to the basket is going to be greater than the stock amount, a notification will appear, saying how many copies of a particular product user has been trying to add, and how many are currently available. In such case the amount automatically added to the basket will be the maximum quantity available in the stock.
+If the quantity of a product which is to be added to the basket is going to be greater than the stock amount, a notification will appear, saying how many copies of a particular product user has tried to add and how many are currently available. In such case the amount automatically added to the basket will be the maximum quantity available in the stock.
 
 ## Website structure
 
@@ -114,12 +99,6 @@ of all works        |            |       |       |     |
  [ ] When user submits the contact form, a notification above it saying "Sending...", in the same place where "Message sent. Thank you" is displayed later.
 
  [ ] An animated placeholder for images being loaded in the lightbox gallery.
-
- [ ] Progressive enhancement. Better functionality without JavaScript.
-
- [ ] Server-side automatic minification.
-
- [ ] The following refers to Chrome only: Faster rendering of the images when they are seen first time in the lightbox gallery. Event though they are all cached when the lightbox is open for the first time, the initial rendering is slower. When navigating to the same image again, it renders faster. 
 
  [ ] Hover effect stays active on a thumbnail image when closing the slideshow gallery lightbox.
 
