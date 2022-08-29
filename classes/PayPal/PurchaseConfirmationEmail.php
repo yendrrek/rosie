@@ -36,8 +36,7 @@ class PurchaseConfirmationEmail
                 $product['value'] = $productDetail['unit_amount']['value'];
                 $products[] = $product;
             }
-            // Variable used below in purchase-confirmation-email.php
-            $items[] = $products;
+            $items[] = $products; // $items[] is used in purchase-confirmation-email.php
         }
         $mail = new PHPMailer(true);
         if ($payPalEnvironment === 'production') {
@@ -66,9 +65,9 @@ class PurchaseConfirmationEmail
             $mail->send();
             // https://github.com/PHPMailer/PHPMailer/blob/master/examples/exceptions.phps
         } catch (Exception $prettyPHPMailerErrorMessage) {
-//            $prettyPHPMailerErrorMessage->errorMessage()
+            $this->logging->logMessage('alert', $prettyPHPMailerErrorMessage->errorMessage());
         } catch (\Exception $standardErrorMessage) {
-//            $standardErrorMessage->getMessage()
+            $this->logging->logMessage('alert', $standardErrorMessage->getMessage());
         }
     }
 }
