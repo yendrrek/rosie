@@ -3,7 +3,8 @@
 namespace Rosie\PayPal\PayPalSDK;
 
 use Rosie\Config\DatabaseConnection;
-use Rosie\PayPal\OrderInsertionIntoDatabase;
+use Rosie\PayPal\PurchaseDatabase;
+use Rosie\PayPal\StockUpdate;
 use Rosie\PayPal\PurchaseConfirmationEmail;
 use Rosie\Utils\Logging;
 use Rosie\Utils\NewLogger;
@@ -15,10 +16,10 @@ require 'paypal-client.php';
 
 $newLogger = new NewLogger();
 
-$dbConn = new DatabaseConnection(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class DatabaseConnection'))
+$databaseConnection = new DatabaseConnection(
+    new Logging($newLogger->injectNewLogger('DatabaseConnection'))
 );
-$dbConn = $dbConn->connectToDb();
+$databaseConnection = $databaseConnection->connectToDb();
 
 $OrderIDJsonRowData = file_get_contents('php://input');
 $OrderIDArray = json_decode($OrderIDJsonRowData, true);
