@@ -3,7 +3,7 @@
 namespace Rosie\PayPal;
 
 use PDO;
-use Rosie\PayPal\PayPalSDK\CaptureOrder;
+use Rosie\PayPal\PayPalSDK\OrderCapture;
 use Rosie\Utils\Logging;
 use Rosie\Utils\UserId;
 
@@ -11,7 +11,7 @@ class PurchaseDatabase
 {
     public function __construct(
         private PDO $pdo,
-        public CaptureOrder $captureOrder,
+        public OrderCapture $orderCapture,
         private Logging $logging
     ) {
     }
@@ -34,11 +34,11 @@ class PurchaseDatabase
         );
 
         $customerData = [
-            ':buyerName' => $this->captureOrder->buyerName,
+            ':buyerName' => $this->orderCapture->buyerName,
             ':userId' => $userId,
-            ':buyerFullAddress' => $this->captureOrder->buyerFullAddress,
-            ':buyerEmail' => $this->captureOrder->buyerEmail,
-            ':orderId' => $this->captureOrder->orderId
+            ':buyerFullAddress' => $this->orderCapture->buyerFullAddress,
+            ':buyerEmail' => $this->orderCapture->buyerEmail,
+            ':orderId' => $this->orderCapture->orderId
         ];
 
         $this->insertDataIntoDatabase($customerData, $stmt1);
@@ -55,12 +55,12 @@ class PurchaseDatabase
 
         $orderData = [
             ':userId' => $userId,
-            ':orderId' => $this->captureOrder->orderId,
-            ':totalPrice' => $this->captureOrder->totalPrice
+            ':orderId' => $this->orderCapture->orderId,
+            ':totalPrice' => $this->orderCapture->totalPrice
         ];
 
         $this->insertDataIntoDatabase($orderData, $stmt2);
-        $this->logging->logMessage('info', "Inserting order {$this->captureOrder->orderId} into database.");
+        $this->logging->logMessage('info', "Inserting order {$this->orderCapture->orderId} into database.");
         $stmt2 = null;
     }
 

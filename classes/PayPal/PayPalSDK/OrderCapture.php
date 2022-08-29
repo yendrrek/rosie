@@ -6,7 +6,7 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use Rosie\Utils\Logging;
 use Sample\PayPalClient;
 
-class CaptureOrder
+class OrderCapture
 {
     public function __construct(private Logging $logging)
     {

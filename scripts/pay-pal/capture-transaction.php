@@ -26,11 +26,11 @@ $OrderIDArray = json_decode($OrderIDJsonRowData, true);
 $orderId = $OrderIDArray['orderID'];
 
 if (!count(debug_backtrace())) {
-    $captureOrder = new CaptureOrder(
+    $orderCapture = new OrderCapture(
         new Logging($newLogger->injectNewLogger('CaptureOrder'))
     );
 
-    if ($captureOrder->captureOrder($orderId)) {
+    if ($orderCapture->captureOrder($orderId)) {
         $stockUpdate = new StockUpdate(
             $databaseConnection,
             new Logging($newLogger->injectNewLogger('StockUpdate'))
@@ -39,13 +39,13 @@ if (!count(debug_backtrace())) {
 
         $purchaseDatabase = new PurchaseDatabase(
             $databaseConnection,
-            $captureOrder,
+            $orderCapture,
             new Logging($newLogger->injectNewLogger('PurchaseDatabase'))
         );
         $purchaseDatabase->processPurchaseDataInDatabase();
 
         $customerEmail = new PurchaseConfirmationEmail(
-            $captureOrder,
+            $orderCapture,
             $stockUpdate,
             new Logging($newLogger->injectNewLogger('PurchaseConfirmationEmail'))
         );

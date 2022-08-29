@@ -4,14 +4,14 @@ namespace Rosie\PayPal;
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use Rosie\PayPal\PayPalSDK\CaptureOrder;
+use Rosie\PayPal\PayPalSDK\OrderCapture;
 use Rosie\Utils\EnvironmentVariables;
 use Rosie\Utils\Logging;
 
 class PurchaseConfirmationEmail
 {
     public function __construct(
-        public CaptureOrder $captureOrder,
+        public OrderCapture $orderCapture,
         public StockUpdate $orderInsertionIntoDatabase,
         private Logging $logging
     ) {
@@ -51,13 +51,13 @@ class PurchaseConfirmationEmail
         try {
             $mail->setFrom($sellerEmail, 'Rosie Piontek Art');
             if ($payPalEnvironment === 'production') {
-                $mail->addAddress($this->captureOrder->buyerEmail, $this->captureOrder->buyerName);
+                $mail->addAddress($this->orderCapture->buyerEmail, $this->orderCapture->buyerName);
             } elseif ($payPalEnvironment === 'sandbox') {
-                $mail->addAddress('testRosie@protonmail.com', $this->captureOrder->buyerName);
+                $mail->addAddress('testRosie@protonmail.com', $this->orderCapture->buyerName);
             }
             $mail->addReplyTo($sellerEmail, 'Rosie Piontek Art');
             $mail->isHTML();
-            $mail->Subject = 'Purchase confirmation from Rosie Piontek Art. Order ID: ' . $this->captureOrder->orderId;
+            $mail->Subject = 'Purchase confirmation from Rosie Piontek Art. Order ID: ' . $this->orderCapture->orderId;
             ob_start();
             include '/home/andrzej/dev/rosie/views/purchase-confirmation-email.php';
             $mail->Body = ob_get_clean();
