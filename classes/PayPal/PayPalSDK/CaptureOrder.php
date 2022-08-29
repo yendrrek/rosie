@@ -19,20 +19,22 @@ class CaptureOrder
     public string $buyerEmail = '';
     public string $buyerFullAddress = '';
 
-    public function captureOrder($orderId): void
+    public function captureOrder($orderId): bool
     {
         $request = new OrdersCaptureRequest($orderId);
         $client = PayPalClient::client();
         $response = $client->execute($request);
 
         if (empty($response)) {
-            $this->logging->logMessage('alert', 'Error getting response from PayPal');
-            return;
+            $this->logging->logMessage('alert', 'Error getting response from PayPal. Order not captured.');
+            return false;
         }
 
         $this->getOrderDetails($response);
 
         echo json_encode($response->result);
+        $this->logging->logMessage('info', "Order $orderId captured successfully.");
+        return true;
     }
 
     private function getOrderDetails($response): void

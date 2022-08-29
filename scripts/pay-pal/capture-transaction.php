@@ -26,21 +26,28 @@ $orderId = $OrderIDArray['orderID'];
 
 if (!count(debug_backtrace())) {
     $captureOrder = new CaptureOrder(
-        new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class CaptureOrder'))
+        new Logging($newLogger->injectNewLogger('CaptureOrder'))
     );
-    $captureOrder->captureOrder($orderId);
 
-    $orderInsertionDb = new OrderInsertionIntoDatabase(
-        $dbConn,
-        $captureOrder,
-        new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class OrderInsertionIntoDatabase'))
-    );
-    $orderInsertionDb->insertOrderIntoDatabase();
+    if ($captureOrder->captureOrder($orderId)) {
+        $stockUpdate = new StockUpdate(
+            $databaseConnection,
+            new Logging($newLogger->injectNewLogger('StockUpdate'))
+        );
+        $stockUpdate->updateStock();
 
-    $customerEmail = new PurchaseConfirmationEmail(
-        $captureOrder,
-        $orderInsertionDb,
-        new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class PurchaseConfirmationEmail'))
-    );
-    $customerEmail->notifyCustomer();
+        $purchaseDatabase = new PurchaseDatabase(
+            $databaseConnection,
+            $captureOrder,
+            new Logging($newLogger->injectNewLogger('PurchaseDatabase'))
+        );
+        $purchaseDatabase->processPurchaseDataInDatabase();
+
+        $customerEmail = new PurchaseConfirmationEmail(
+            $captureOrder,
+            $stockUpdate,
+            new Logging($newLogger->injectNewLogger('PurchaseConfirmationEmail'))
+        );
+        $customerEmail->notifyCustomer();
+    }
 }
