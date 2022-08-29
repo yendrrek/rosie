@@ -12,7 +12,7 @@ class PurchaseConfirmationEmail
 {
     public function __construct(
         public CaptureOrder $captureOrder,
-        public OrderInsertionIntoDatabase $orderInsertionIntoDatabase,
+        public StockUpdate $orderInsertionIntoDatabase,
         private Logging $logging
     ) {
     }
