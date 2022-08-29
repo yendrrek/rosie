@@ -48,42 +48,40 @@ EnvironmentVariables::getEnvVars();
 
 $newLogger = new NewLogger();
 
+$token = new Token(
+    new Logging($newLogger->injectNewLogger('Token'))
+);
+
 $databaseConnection = new DatabaseConnection(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class DatabaseConnection'))
+    new Logging($newLogger->injectNewLogger('DatabaseConnection'))
 );
 $databaseConnection = $databaseConnection->connectToDb();
 
-$contentSecurityPolicy = new ContentSecurityPolicy(
-    new Token(
-        new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
-    )
-);
+$contentSecurityPolicy = new ContentSecurityPolicy($token);
 $contentSecurityPolicy->setContentSecurityPolicyHeader();
 
 $formValidation = new FormValidation(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class FormValidation')),
+    new Logging($newLogger->injectNewLogger('FormValidation')),
     new RequestMethod(),
     new TokenValidation()
 );
 
 // Contact Form
 $contactFormFields = new ContactFormFields();
-
 $contactFormErrors = new ContactFormErrors($contactFormFields);
-
 $contactFormValidation = new ContactFormValidation(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormValidation')),
+    new Logging($newLogger->injectNewLogger('ContactFormValidation')),
     $formValidation,
     $contactFormErrors,
     $contactFormFields
 );
 $contactFormSubmission = new ContactFormSubmission(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormSubmission')),
+    new Logging($newLogger->injectNewLogger('ContactFormSubmission')),
     $contactFormFields
 );
 $contactFormDatabase = new ContactFormDatabase(
     $databaseConnection,
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class ContactFormDatabase')),
+    new Logging($newLogger->injectNewLogger('ContactFormDatabase')),
     new ContactFormDatabaseDataPreparation($contactFormFields)
 );
 
@@ -91,20 +89,20 @@ $contactFormDatabase = new ContactFormDatabase(
 $clientId = EnvironmentVariables::$payPalClientId;
 $_SESSION['productsRetailPrices'] = RetailPrices::getRetailPrices();
 $addingProductBasket = new AddingProductBasket(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class AddingProductBasket')),
+    new Logging($newLogger->injectNewLogger('AddingProductBasket')),
     $formValidation
 );
 $removingProductBasket = new RemovingProductBasket(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class RemovingProductBasket'))
+    new Logging($newLogger->injectNewLogger('RemovingProductBasket'))
 );
 $updatingProductQtyViaDropDownInBasket = new UpdatingProductQtyViaDropDownInBasket(
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class UpdatingProductQtyViaDropDownInBasket')),
+    new Logging($newLogger->injectNewLogger('UpdatingProductQtyViaDropDownInBasket')),
     $formValidation
 );
 $basketDatabase = new BasketDatabase(
     $databaseConnection,
     new BasketDatabaseDataPreparation(),
-    new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class BasketDatabaseDataPreparation'))
+    new Logging($newLogger->injectNewLogger('BasketDatabase'))
 );
 
 // Services injected into controllers via dependencies containers.
@@ -114,27 +112,21 @@ $containerDependencies = [
     'AboutDepCont' => [new ContentDatabaseQuery($databaseConnection)],
     'ContactDepCont' => [
         new ContentDatabaseQuery($databaseConnection),
-        new Token(
-            new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
-        ),
+        $token,
         $contactFormValidation,
         $contactFormSubmission,
         $contactFormDatabase
     ],
     'ShopDepCont' => [
         new ContentDatabaseQuery($databaseConnection),
-        new Token(
-            new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token'))
-        )
+        $token
     ],
     'BasketDepCont' => [
         $addingProductBasket,
         $removingProductBasket,
         $updatingProductQtyViaDropDownInBasket,
         $basketDatabase,
-        new BasketFullContent(
-            new Token(new Logging($newLogger->injectNewLogger('rosiepiontek.com >> class Token')))
-        )
+        new BasketFullContent($token)
     ],
     'PurchaseCompletedDepCont' => [new PurchaseCompleted()],
     'CaptureTransactionErrorDepCont' => []
