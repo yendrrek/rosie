@@ -16,7 +16,7 @@
             <div>
                 <td align="left">
                     <div class="purchase-confirmation-email">
-                        Dear <?php echo $this->captureOrder->buyerFirstName; ?>,<br>
+                        Dear <?php echo $this->orderCapture->buyerFirstName; ?>,<br>
                         Thank you for your purchase.<br><br>
                         Order details:<br><br>
 
@@ -38,10 +38,10 @@
                         ?>
 
                         Total quantity purchased: <?php echo $totalQtyOfAllProducts; ?><br> 
-                        <strong>Total price: &pound; <?php echo $this->captureOrder->totalPrice; ?></strong><br>
+                        <strong>Total price: &pound; <?php echo $this->orderCapture->totalPrice; ?></strong><br>
                         Postage included<br><br>
                         You will receive a separate email when your order has been posted to<br> 
-                        <?php echo $this->captureOrder->buyerFullAddress; ?><br><br>
+                        <?php echo $this->orderCapture->buyerFullAddress; ?><br><br>
                         In the meantime, if you have any questions, please do not hesitate to 
                         <a href="https://rosiepiontek.com/contact.php">contact me</a><br><br>
                         Best wishes,<br><br>
