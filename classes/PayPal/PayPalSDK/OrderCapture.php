@@ -8,16 +8,16 @@ use Sample\PayPalClient;
 
 class OrderCapture
 {
-    public function __construct(private Logging $logging)
-    {
-    }
-
     public string $orderId = '';
     public string $totalPrice = '';
     public string $buyerName = '';
     public string $buyerFirstName = '';
     public string $buyerEmail = '';
     public string $buyerFullAddress = '';
+
+    public function __construct(private Logging $logging)
+    {
+    }
 
     public function captureOrder($orderId): bool
     {

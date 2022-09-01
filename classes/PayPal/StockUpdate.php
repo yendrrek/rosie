@@ -25,8 +25,7 @@ class StockUpdate
                 $stmt1->execute();
                 $this->logging->logMessage(
                     'info',
-                    "Stock updated for product id {$productDetail['id']}. 
-                    Quantity subtracted: {$productDetail['quantity']}"
+                    "Stock updated for product id {$productDetail['id']}. Quantity subtracted: {$productDetail['quantity']}"
                 );
             }
             $stmt1 = null;
