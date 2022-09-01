@@ -12,14 +12,15 @@ class PurchaseDatabase
     public function __construct(
         private PDO $pdo,
         public OrderCapture $orderCapture,
-        private Logging $logging
+        private Logging $logging,
+        private UserId $userId
     ) {
     }
 
     public function processPurchaseDataInDatabase(): void
     {
         $dbConn = $this->pdo;
-        $userId = UserId::setUserId();
+        $userId = $this->userId->getUserId();
 
         $this->insertCustomerIntoDatabase($dbConn, $userId);
         $this->insertOrderIntoDatabase($dbConn, $userId);
@@ -74,7 +75,7 @@ class PurchaseDatabase
 
     private function removeProductFromBasketDatabase($dbConn): void
     {
-        $userId = UserId::setUserId();
+        $userId = $this->userId->getUserId();
         $dbConn->query("CALL removeFromBasket('$userId', 0)");
         $this->logging->logMessage('info', 'Removing all products from basket in database after successful purchase.');
     }

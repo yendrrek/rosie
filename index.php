@@ -35,6 +35,7 @@ use Rosie\Utils\NewLogger;
 use Rosie\Utils\RequestMethod;
 use Rosie\Utils\Token;
 use Rosie\Utils\TokenValidation;
+use Rosie\Utils\UserId;
 
 if (PageNotFoundContent::showPageNotFoundInfo()) {
     return;
@@ -47,13 +48,14 @@ if (PayPalTransactionErrorContent::showPayPalTransactionErrorInfo()) {
 EnvironmentVariables::getEnvVars();
 
 $newLogger = new NewLogger();
+$userId = new UserId();
 
 $token = new Token(
-    new Logging($newLogger->injectNewLogger('Token'))
+    new Logging($newLogger->injectNewLogger('Token'), $userId)
 );
 
 $databaseConnection = new DatabaseConnection(
-    new Logging($newLogger->injectNewLogger('DatabaseConnection'))
+    new Logging($newLogger->injectNewLogger('DatabaseConnection'), $userId)
 );
 $databaseConnection = $databaseConnection->connectToDb();
 
@@ -61,7 +63,7 @@ $contentSecurityPolicy = new ContentSecurityPolicy($token);
 $contentSecurityPolicy->setContentSecurityPolicyHeader();
 
 $formValidation = new FormValidation(
-    new Logging($newLogger->injectNewLogger('FormValidation')),
+    new Logging($newLogger->injectNewLogger('FormValidation'), $userId),
     new RequestMethod(),
     new TokenValidation()
 );
@@ -70,39 +72,41 @@ $formValidation = new FormValidation(
 $contactFormFields = new ContactFormFields();
 $contactFormErrors = new ContactFormErrors($contactFormFields);
 $contactFormValidation = new ContactFormValidation(
-    new Logging($newLogger->injectNewLogger('ContactFormValidation')),
+    new Logging($newLogger->injectNewLogger('ContactFormValidation'), $userId),
     $formValidation,
     $contactFormErrors,
     $contactFormFields
 );
 $contactFormSubmission = new ContactFormSubmission(
-    new Logging($newLogger->injectNewLogger('ContactFormSubmission')),
+    new Logging($newLogger->injectNewLogger('ContactFormSubmission'), $userId),
     $contactFormFields
 );
 $contactFormDatabase = new ContactFormDatabase(
     $databaseConnection,
-    new Logging($newLogger->injectNewLogger('ContactFormDatabase')),
-    new ContactFormDatabaseDataPreparation($contactFormFields)
+    new Logging($newLogger->injectNewLogger('ContactFormDatabase'), $userId),
+    new ContactFormDatabaseDataPreparation($contactFormFields),
+    $userId
 );
 
 // Basket
 $clientId = EnvironmentVariables::$payPalClientId;
 $_SESSION['productsRetailPrices'] = RetailPrices::getRetailPrices();
 $addingProductBasket = new AddingProductBasket(
-    new Logging($newLogger->injectNewLogger('AddingProductBasket')),
+    new Logging($newLogger->injectNewLogger('AddingProductBasket'), $userId),
     $formValidation
 );
 $removingProductBasket = new RemovingProductBasket(
-    new Logging($newLogger->injectNewLogger('RemovingProductBasket'))
+    new Logging($newLogger->injectNewLogger('RemovingProductBasket'), $userId)
 );
 $updatingProductQtyViaDropDownInBasket = new UpdatingProductQtyViaDropDownInBasket(
-    new Logging($newLogger->injectNewLogger('UpdatingProductQtyViaDropDownInBasket')),
+    new Logging($newLogger->injectNewLogger('UpdatingProductQtyViaDropDownInBasket'), $userId),
     $formValidation
 );
 $basketDatabase = new BasketDatabase(
     $databaseConnection,
     new BasketDatabaseDataPreparation(),
-    new Logging($newLogger->injectNewLogger('BasketDatabase'))
+    new Logging($newLogger->injectNewLogger('BasketDatabase'), $userId),
+    $userId
 );
 
 // Services injected into controllers via dependencies containers.

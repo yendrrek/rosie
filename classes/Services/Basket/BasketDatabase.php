@@ -9,9 +9,10 @@ use Rosie\Utils\UserId;
 class BasketDatabase
 {
     public function __construct(
-        private PDO                           $pdo,
+        private PDO $pdo,
         private BasketDatabaseDataPreparation $basketDataPreparationForDatabase,
-        private Logging                       $logging,
+        private Logging $logging,
+        private UserId $userId
     ) {
     }
 
@@ -58,7 +59,7 @@ class BasketDatabase
 
     private function executeMySqlStoredProcedure($procedure, $productId, $quantity = null): string
     {
-        $userId = UserId::setUserId();
+        $userId = $this->userId->getUserId();
         $removeProductProcedure  = "CALL $procedure('$userId', '$productId')";
         $updateQuantityProcedure = "CALL $procedure('$userId', '$productId', '$quantity')";
 

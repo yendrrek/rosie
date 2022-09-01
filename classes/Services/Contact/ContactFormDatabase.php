@@ -9,9 +9,10 @@ use Rosie\Utils\UserId;
 class ContactFormDatabase
 {
     public function __construct(
-        private PDO                                $pdo,
-        private Logging                            $logging,
-        private ContactFormDatabaseDataPreparation $contactFormDatabaseDataPreparation
+        private PDO $pdo,
+        private Logging $logging,
+        private ContactFormDatabaseDataPreparation $contactFormDatabaseDataPreparation,
+        private UserId $userId
     ) {
     }
 
@@ -21,7 +22,7 @@ class ContactFormDatabase
             VALUES (:userId, :senderName, :senderEmailAddress, :message)');
 
         $contactFormData = [
-            ':userId' => UserId::setUserId(),
+            ':userId' => $this->userId->getUserId(),
             ':senderName' => $this->contactFormDatabaseDataPreparation->prepareDataForDatabase()[0],
             ':senderEmailAddress' => $this->contactFormDatabaseDataPreparation->prepareDataForDatabase()[1],
             ':message' => $this->contactFormDatabaseDataPreparation->prepareDataForDatabase()[2]
