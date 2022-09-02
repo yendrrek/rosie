@@ -5,10 +5,11 @@ namespace Rosie\PayPal\PayPalSDK;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalHttp\HttpResponse;
 use Rosie\Utils\Logging;
-use Sample\PayPalClient;
 
 class OrderCreation
 {
+    private string $error = 'Error creating PayPal order.';
+
     public function __construct(
         private OrdersCreateRequest $ordersCreateRequest,
         private Logging $logging
@@ -17,7 +18,12 @@ class OrderCreation
 
     public function getOrder(): void
     {
-        $payPalClient = PayPalClient::client();
+        if (is_null(PayPalClient::getPayPalClient())) {
+            $this->logging->logMessage('alert', "PayPal Client is null. $this->error");
+            return;
+        }
+
+        $payPalClient = PayPalClient::getPayPalClient();
 
         echo json_encode($this->getHttpResponse($payPalClient)->result);
     }
@@ -56,7 +62,7 @@ class OrderCreation
     private function getPurchaseUnitsAmount($currency_code): array
     {
         if (!isset($_SESSION['orderTotal'])) {
-            $this->logging->logMessage('alert', 'No order total price. Cannot create PayPal order');
+            $this->logging->logMessage('alert', "No order total price. $this->error");
             return [];
         }
 
@@ -76,7 +82,7 @@ class OrderCreation
         $purchaseUnitsItems = [];
 
         if (empty($_SESSION['basket'])) {
-            $this->logging->logMessage('alert', 'No products in the basket. Cannot create PayPal order.');
+            $this->logging->logMessage('alert', "No products in the basket. $this->error");
             return [];
         }
 

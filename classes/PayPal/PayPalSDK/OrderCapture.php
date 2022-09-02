@@ -4,7 +4,6 @@ namespace Rosie\PayPal\PayPalSDK;
 
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use Rosie\Utils\Logging;
-use Sample\PayPalClient;
 
 class OrderCapture
 {
@@ -21,12 +20,24 @@ class OrderCapture
 
     public function captureOrder($orderId): bool
     {
-        $request = new OrdersCaptureRequest($orderId);
-        $client = PayPalClient::client();
-        $response = $client->execute($request);
+        $error = 'Error capturing order.';
 
-        if (empty($response)) {
-            $this->logging->logMessage('alert', 'Error getting response from PayPal. Order not captured.');
+        if (!isset($orderId)) {
+            $this->logging->logMessage('alert', "No order id. $error");
+            return  false;
+        }
+
+        if (is_null(PayPalClient::getPayPalClient())) {
+            $this->logging->logMessage('alert', "PayPal Client is null. $error");
+            return false;
+        }
+
+        $request = new OrdersCaptureRequest($orderId);
+        $payPalClient = PayPalClient::getPayPalClient();
+        $response = $payPalClient->execute($request);
+
+        if (!isset($response)) {
+            $this->logging->logMessage('alert', "No response from PayPal. $error");
             return false;
         }
 
