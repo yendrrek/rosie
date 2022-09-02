@@ -1,49 +1,21 @@
 <?php
+
 namespace Sample;
 
-use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
-use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use Rosie\Utils\EnvironmentVariables;
 
 require '../../classes/Utils/EnvironmentVariables.php';
 
 EnvironmentVariables::getEnvVars();
-$payPalEnvironment = EnvironmentVariables::$payPalEnvironment;
+
+$environments = [
+    'sandbox' => 'SandboxEnvironment.php',
+    'production' => 'ProductionEnvironment.php'
+];
 $pathToClass = '../../vendor/paypal/paypal-checkout-sdk/lib/PayPalCheckoutSdk/Core/';
-if ($payPalEnvironment === 'sandbox') {
-    require_once $pathToClass . 'SandboxEnvironment.php';
-} elseif ($payPalEnvironment === 'production') {
-    require_once $pathToClass . 'ProductionEnvironment.php';
-} else {
-    error_log('PayPal environment not set at rosiepiontek.com in paypal-client.php', 1, 'yendrrek@gmail.com');
-}
+
+require_once "$pathToClass{$environments[EnvironmentVariables::$payPalEnvironment]}";
 
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
-
-class PayPalClient
-{
-    // Returns PayPal HTTP client instance with environment that has access credentials context.
-    // This instance invokes PayPal APIs, provided the credentials have access.
-
-    public static function client()
-    {
-        return new PayPalHttpClient(self::environment());
-    }
-
-    // Set up and return PayPal PHP SDK environment with PayPal access credentials.
-    public static function environment()
-    {
-        EnvironmentVariables::getEnvVars();
-        $payPalEnvironment = EnvironmentVariables::$payPalEnvironment;
-        $clientId = EnvironmentVariables::$payPalClientId;
-        $clientSecret = EnvironmentVariables::$payPalClientSecret;
-        if ($payPalEnvironment === 'sandbox') {
-            return new SandboxEnvironment($clientId, $clientSecret);
-        } elseif ($payPalEnvironment === 'production') {
-            return new ProductionEnvironment($clientId, $clientSecret);
-        }
-    }
-}
