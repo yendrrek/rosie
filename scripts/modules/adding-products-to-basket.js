@@ -1,148 +1,156 @@
 'use strict';
 
 import {
-  preventJerkingOfLightbox,
+  preventJerkingOfFullPageElement,
   restoreBodyScrollbar,
   restoreBodyState
 } from './helper-methods.js';
 
 import { continuationOfTabbingFrom } from '../main.js';
 
-export function addProductToBasket (event) {
-  continuationOfTabbingFrom.addToBasketBtnWhichOpenedAddedToBasketNotificationLightbox = $(
-    event.currentTarget).find('.btn_add-to-basket');
+export function addProductToBasket(event) {
+  continuationOfTabbingFrom.addToBasketBtn = $(event.currentTarget).find($('.btn_add-to-basket'));
   $.ajax({
     url: 'basket',
     method: 'POST',
     data: $(event.currentTarget).serialize(),
     dataType: 'text',
+
     success: function(response) {
-      showQtyInBasketIcon(response);
-      if ($('#stock-limit-info-outer-modal', response).length) {
-        openStockLimitInfoLightbox(response);
-      } else {
-        openAddedToBasketLightbox();
+      const $stockLimitInfoOuterModal = $('#stock-limit-info-outer-modal');
+      showQuantityInBasketIcon(response);
+      if (quantityOfProductsAddedToBasketIsNotExceedingStockAmount(response)) {
+        openAddedToBasketInfo();
+        return;
       }
+      openStockLimitInfoInfo($stockLimitInfoOuterModal, response);
     },
+
     error() {
       alert('Problem with receiving reply from the server.');
     }
   });
 }
 
-function showQtyInBasketIcon (response) {
+function showQuantityInBasketIcon(response) {
   $('.number span, .number_hidden span').replaceWith($('#number', response));
 }
 
-function openStockLimitInfoLightbox (response) {
-  removeStockLimitInfoLightboxOfPreviousProduct();
-  preventJerkingOfLightbox();
-  $('.shop-info').append($('#stock-limit-info-outer-modal', response));
-  $('#stock-limit-info-outer-modal, .modal-inner_stock-info').addClass('stock-info-lightbox-visible');
-  makeStockLimitInfoLightboxTabable(); 
-  $(document).on('click keydown', controlStockLimitInfoLightbox);
+function quantityOfProductsAddedToBasketIsNotExceedingStockAmount(response) {
+  return !$('#stock-limit-info-outer-modal', response).length;
 }
 
-function removeStockLimitInfoLightboxOfPreviousProduct () {
-  if ($('#stock-limit-info-outer-modal').length) {
-    $('#stock-limit-info-outer-modal').remove();
+function openAddedToBasketInfo() {
+  preventJerkingOfFullPageElement();
+  showInfo('#added-to-basket-outer-modal, #added-to-basket-inner-modal', 'product-added-lightbox-visible');
+  $('#added-to-basket-inner-modal').focus();
+  $(document).on('click keydown', controlAddedToBasketInfo);
+}
+
+function controlAddedToBasketInfo(event) {
+  const addedToBasketCloseButton = document.querySelector('#close-added-to-basket');
+
+  if ((event.key === 'Tab') || (event.shiftKey && event.key === 'Tab')) {
+    event.preventDefault();
+  }
+
+  if (event.key === 'Escape' || event.target === addedToBasketCloseButton) {
+    closeAddedToBasketInfo();
   }
 }
 
-function makeStockLimitInfoLightboxTabable () {
+function closeAddedToBasketInfo() {
+  const addedToBasketLightbox = document.querySelectorAll('#added-to-basket-outer-modal, #added-to-basket-inner-modal');
+
+  hideInfo(addedToBasketLightbox, 'product-added-lightbox-visible', 'product-added-confirmation-close-anim');
+  restoreBodyState();
+  $(document).off('click keydown', controlAddedToBasketInfo);
+  continueTabbing();
+}
+
+function openStockLimitInfoInfo($stockLimitInfoOuterModal, response) {
+  removeStockLimitInfoOfPreviousProduct($stockLimitInfoOuterModal);
+  preventJerkingOfFullPageElement();
+  insertStockLimitInfoIntoShopPage(response);
+  showInfo('#stock-limit-info-outer-modal, .modal-inner_stock-info', 'stock-info-lightbox-visible');
+  makeStockLimitInfoTabable();
+  $(document).on('click keydown', controlStockLimitInfo);
+}
+
+function removeStockLimitInfoOfPreviousProduct($stockLimitInfoOuterModal) {
+  if ($($stockLimitInfoOuterModal).length) {
+    $($stockLimitInfoOuterModal).remove();
+  }
+}
+
+function insertStockLimitInfoIntoShopPage(response) {
+  $('.shop-info').append($('#stock-limit-info-outer-modal', response));
+}
+
+function makeStockLimitInfoTabable() {
   $('.modal-inner__stock-limit-info').focus();
   $('#stock-limit-info-close-btn').attr('tabindex', '0');
 }
 
-function controlStockLimitInfoLightbox () {
+function controlStockLimitInfo(event) {
+  const stockLimitInfoCloseBtn = document.querySelector('#stock-limit-info-close-btn');
+
   if ((event.shiftKey && event.key === 'Tab') || (event.key === 'Tab')) {
-    trapFocusInStockLimitInfoLightbox();
-  } else if (userWantsToCloseStockLimitInfoLightbox()) {
-    closeStockLimitInfoLightbox();
+    trapFocusInStockLimitInfo(event);
+  }
+
+  if (event.key === 'Escape' || (event.target === stockLimitInfoCloseBtn && event.type === 'click')) {
+    closeStockLimitInfo();
     restoreBodyScrollbar();
   }
 }
 
-function trapFocusInStockLimitInfoLightbox () {
-  const stockLimitInfoCloseBtn = document.querySelector('#stock-limit-info-close-btn');
+function trapFocusInStockLimitInfo(event) {
+  const stockLimitInfoCloseButton = document.querySelector('#stock-limit-info-close-btn');
   const stockLimitInfoLinkToContactForm = document.querySelector('#stock-info-link');
-  if (document.activeElement === stockLimitInfoCloseBtn) {
+
+  if (document.activeElement === stockLimitInfoCloseButton) {
     event.preventDefault();
     stockLimitInfoLinkToContactForm.focus();
-  } else {
-    event.preventDefault();
-    stockLimitInfoCloseBtn.focus();
+    return;
   }
+  event.preventDefault();
+  stockLimitInfoCloseButton.focus();
 }
 
-function userWantsToCloseStockLimitInfoLightbox () {
-  const stockLimitInfoCloseBtn = document.querySelector('#stock-limit-info-close-btn');
-  if (event.key === 'Escape' ||
-    (event.key === 'Enter' && event.target === stockLimitInfoCloseBtn) ||
-    (event.type === 'click' && event.target === stockLimitInfoCloseBtn)) {
-    return true;
-  }
-}
+function closeStockLimitInfo() {
+  const stockLimitInfoLightbox = document.querySelectorAll('#stock-limit-info-outer-modal, .modal-inner__stock-limit-info');
 
-function closeStockLimitInfoLightbox () {
-  const stockLimitInfoLightbox = document.querySelectorAll(
-    '#stock-limit-info-outer-modal, .modal-inner__stock-limit-info'
-  );
-  for (const modals of stockLimitInfoLightbox) {
-    modals.classList.remove('stock-info-lightbox-visible');
-    modals.classList.add('stock-info-lightbox-hidden');
-    modals.addEventListener('animationend', () => {
-      modals.classList.remove('stock-info-lightbox-hidden');
-    });
-  }
+  hideInfo(stockLimitInfoLightbox, 'stock-info-lightbox-visible', 'stock-info-lightbox-hidden');
   restoreBodyState();
-  $(document).off('click keydown', controlStockLimitInfoLightbox);
+  $(document).off('click keydown', controlStockLimitInfo);
   continueTabbing();
 }
 
-function continueTabbing () {
+function showInfo(lightbox, cssClassWhichShowsLightbox) {
+  $(lightbox).addClass(cssClassWhichShowsLightbox);
+}
+
+function hideInfo(lightbox, cssClassWhichShowsLightbox, cssClassWhichHidesLightbox) {
+  for (const modals of lightbox) {
+    modals.classList.remove(cssClassWhichShowsLightbox);
+    modals.classList.add(cssClassWhichHidesLightbox);
+    endAnimationWhichHidesInfo(modals, 'animationend', cssClassWhichHidesLightbox);
+  }
+}
+
+function endAnimationWhichHidesInfo(modals, eventType, cssClassWhichHidesLightbox) {
+  modals.addEventListener(eventType, () => {
+    modals.classList.remove(cssClassWhichHidesLightbox);
+  });
+}
+
+function continueTabbing() {
   const stockLimitInfoCloseBtn = document.querySelector('#stock-limit-info-close-btn');
+
   if (stockLimitInfoCloseBtn) {
     stockLimitInfoCloseBtn.setAttribute('tabindex', '-1');
   }
-  continuationOfTabbingFrom.addToBasketBtnWhichOpenedAddedToBasketNotificationLightbox.focus();
-}
 
-function openAddedToBasketLightbox () {
-  preventJerkingOfLightbox();
-  $('#added-to-basket-outer-modal, #added-to-basket-inner-modal').addClass('product-added-lightbox-visible');
-  $('#added-to-basket-inner-modal').focus();
-  $(document).on('click keydown', controlAddedToBasketLightbox);
+  continuationOfTabbingFrom.addToBasketBtn.focus();
 }
-
-function controlAddedToBasketLightbox () {
-  if ((event.key === 'Tab') || (event.shiftKey && event.key === 'Tab')) {
-    event.preventDefault();
-  } else if (userWantsToCloseAddedToBasketLightbox()) {
-    closeAddedToBasketLightbox();
-  }
-}
-
-function userWantsToCloseAddedToBasketLightbox () {
-  const addedToBasketCloseBtn = document.querySelector('#close-added-to-basket');
-  if (event.key === 'Escape' || event.target === addedToBasketCloseBtn) {
-    return true;
-  }
-}
-
-function closeAddedToBasketLightbox () {
-  const addedToBasketLightbox = document.querySelectorAll(
-    '#added-to-basket-outer-modal, #added-to-basket-inner-modal'
-  );
-  for (const modals of addedToBasketLightbox) {
-    modals.classList.remove('product-added-lightbox-visible');
-    modals.classList.add('product-added-confirmation-close-anim');
-    modals.addEventListener('animationend', () => {
-      modals.classList.remove('product-added-confirmation-close-anim');
-    });
-  }
-  restoreBodyState();
-  $(document).off('click keydown', controlAddedToBasketLightbox);
-  continueTabbing();
-}
-  
