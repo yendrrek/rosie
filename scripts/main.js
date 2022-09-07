@@ -42,7 +42,7 @@ function loadModulesActivatedByScrollEvent() {
 function loadModuleBackToTopButton() {
   import('./modules/back-to-top-btn.js')
   .then(module => {
-    module.controlBackToTopBtn();
+    module.controlBackToTopButton();
   });
 }
 

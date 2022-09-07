@@ -1,27 +1,17 @@
 'use strict';
   
-export function controlBackToTopBtn () {
-  const backToTopBtn = document.querySelector('.back-to-top-btn');
-  const viewportHeight = window.innerHeight;
-  const noOfPxsAtWhichBackToTopBtnAppears = viewportHeight * 4;
-  const pageScrolledDownBy = document.documentElement.scrollTop;
-  if (backToTopBtn) {
-    if (pageScrolledDownBy >= noOfPxsAtWhichBackToTopBtnAppears) {
-      showBackToTopBtn(backToTopBtn);
-    } else {
-      hideBackToTopBtn(backToTopBtn);
-    }
+export function controlBackToTopButton() {
+  const backToTopButton = document.querySelector('.back-to-top-btn');
+  const styles = isVisibleBackToTopButton() ? ['back-to-top-btn_visible', 'back-to-top-btn_hidden'] : ['back-to-top-btn_hidden', 'back-to-top-btn_visible'];
+
+  if (!backToTopButton) {
+    return;
   }
+
+   backToTopButton.classList.remove(styles[1]);
+   backToTopButton.classList.add(styles[0]);
 }
 
-function showBackToTopBtn (backToTopBtn) {
-  if (backToTopBtn.classList.contains('back-to-top-btn_hidden')) {
-    backToTopBtn.classList.remove('back-to-top-btn_hidden');
-    backToTopBtn.classList.add('back-to-top-btn_visible');
-  }
-}
-
-function hideBackToTopBtn (backToTopBtn) {
-  backToTopBtn.classList.remove('back-to-top-btn_visible');
-  backToTopBtn.classList.add('back-to-top-btn_hidden');
+function isVisibleBackToTopButton() {
+  return document.documentElement.scrollTop >= window.innerHeight * 4;
 }
