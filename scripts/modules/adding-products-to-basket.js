@@ -127,21 +127,21 @@ function closeStockLimitInfo() {
   continueTabbing();
 }
 
-function showInfo(lightbox, cssClassWhichShowsLightbox) {
-  $(lightbox).addClass(cssClassWhichShowsLightbox);
+function showInfo(lightbox, styleToShowLightbox) {
+  $(lightbox).addClass(styleToShowLightbox);
 }
 
-function hideInfo(lightbox, cssClassWhichShowsLightbox, cssClassWhichHidesLightbox) {
+function hideInfo(lightbox, styleToShowLightbox, styleToHideLightbox) {
   for (const modals of lightbox) {
-    modals.classList.remove(cssClassWhichShowsLightbox);
-    modals.classList.add(cssClassWhichHidesLightbox);
-    endAnimationWhichHidesInfo(modals, 'animationend', cssClassWhichHidesLightbox);
+    modals.classList.remove(styleToShowLightbox);
+    modals.classList.add(styleToHideLightbox);
+    endAnimationWhichHidesInfo(modals, 'animationend', styleToHideLightbox);
   }
 }
 
-function endAnimationWhichHidesInfo(modals, eventType, cssClassWhichHidesLightbox) {
+function endAnimationWhichHidesInfo(modals, eventType, styleToHideLightbox) {
   modals.addEventListener(eventType, () => {
-    modals.classList.remove(cssClassWhichHidesLightbox);
+    modals.classList.remove(styleToHideLightbox);
   });
 }
 
