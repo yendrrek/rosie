@@ -1,13 +1,13 @@
 'use strict';
 
-import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';  
+import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
 
 export function openPPRPolicyLightbox () {
   const policyLightbox = document.querySelectorAll('#returns-policy-outer-modal, #returns-policy-inner-modal');
   for (const modals of policyLightbox) {
     modals.classList.add('policy-open-anim');
   }
-  preventJerkingOfLightbox();
+  preventJerkingOfFullPageElement();
   preparePPRPolicyLightboxKeyboardNavigation();    
 }
 

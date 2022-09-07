@@ -1,73 +1,73 @@
 /**
  * All modules are loaded dynamically. It is probably overkill as loading all code 
- * even if it is not immediately needed does not cause any performance issues but 
- * I wanted to practice dynamic loading. It also helped me simplify some parts of code. 
+ * even if it is not immediately needed does not cause any performance issues, but
+ * I wanted to try dynamic loading. It also helped me simplify some parts of code.
  *
  * All lightboxes are shown in full-page and consist of two animated modals, 
- * one is the background, the other is in the centre and contains the content.
+ * one is a background, the other is in the centre and contains text.
 */
 
 'use strict';
 
 export const continuationOfTabbingFrom = { 
   thumbnailImgWhichOpenedSlideshow: null,
-  addToBasketBtnWhichOpenedAddedToBasketNotificationLightbox: null 
+  addToBasketBtn: null
 };
 
-function loadModulesOnDemand () {
+function loadModulesOnDemand() {
   loadModulesActivatedByScrollEvent();
-  loadModule_AddingProductsToBasket_();
-  loadModule_ContactForm_();
-  loadModule_ControlActivationOfSubNavOnBigTouchscreens_();
-  loadModule_ExtraImgLightboxInShop_();
+  loadModuleAddingProductsToBasket();
+  loadModuleContactForm();
+  loadModuleControlActivationOfSubNavOnBigTouchscreens();
+  loadModuleExtraImgLightboxInShop();
   loadModulesForKeyboardUsers();
-  loadModule_Fotorama_();
-  loadModule_NavigationForTouchscreensNarrowerThan1171px_();
-  loadModule_OperationsInsideBasket_();
-  loadModule_PostageReturnsPolicyLightbox_();
-  loadModule_SafariFixStyles_();
-  loadModule_SlideshowLightbox_();
-  document.addEventListener('mousedown', loadModule_ContactForm_FieldsOutline);
+  loadModuleFotorama();
+  loadModuleNavigationForTouchscreensNarrowerThan1171px();
+  loadModuleOperationsInsideBasket();
+  loadModulePostageReturnsPolicyLightbox();
+  loadModuleSafariFixStyles();
+  loadModuleSlideshowLightbox();
+  document.addEventListener('mousedown', loadModuleContactFormFieldsOutline);
 }
 
 loadModulesOnDemand();
 
-function loadModulesActivatedByScrollEvent () {
+function loadModulesActivatedByScrollEvent() {
   document.addEventListener('scroll', () => {
-    loadModule_BackToTopButton_();
-    loadModule_HeadingWithBreadcrumbs_();
+    loadModuleBackToTopButton();
+    loadModuleHeadingWithBreadcrumbs();
   });
 }
 
-function loadModule_BackToTopButton_ () {
+function loadModuleBackToTopButton() {
   import('./modules/back-to-top-btn.js')
   .then(module => {
     module.controlBackToTopBtn();
   });
 }
 
-function loadModule_HeadingWithBreadcrumbs_ () {
+function loadModuleHeadingWithBreadcrumbs() {
   import('./modules/heading-with-breadcrumbs.js')
   .then(module => {
     module.controlHeadingWithBreadcrumbs();
   });
 }
 
-function loadModule_AddingProductsToBasket_ () {
-  $('form:not(.contact-form__items)').on('submit', event => {
+function loadModuleAddingProductsToBasket() {
+  $('form:not(.contact-form__items)').on('submit', e => {
     stayOnPage();
     import('./modules/adding-products-to-basket.js')
     .then(module => {
-      module.addProductToBasket(event);
+      module.addProductToBasket(e);
     });
   });
 }
 
-function stayOnPage () {
+function stayOnPage() {
   event.preventDefault();
 }
 
-function loadModule_ContactForm_ () {
+function loadModuleContactForm() {
   $('.contact-form__items').on('submit', event => {
     stayOnPage();
     import('./modules/contact-form.js')
@@ -78,7 +78,7 @@ function loadModule_ContactForm_ () {
   });
 }
 
-function loadModule_ControlActivationOfSubNavOnBigTouchscreens_ () {
+function loadModuleControlActivationOfSubNavOnBigTouchscreens() {
   document.addEventListener('touchstart', event => {
     import('./modules/control-activation-of-subnav-on-big-touchscreens.js')
     .then(module => {
@@ -87,7 +87,7 @@ function loadModule_ControlActivationOfSubNavOnBigTouchscreens_ () {
   });
 }
 
-function loadModule_ExtraImgLightboxInShop_ () {
+function loadModuleExtraImgLightboxInShop() {
   if (window.location.href.includes('shop')) {
     import('./modules/extra-img-lightbox-in-shop.js')
     .then(module => {
@@ -99,24 +99,24 @@ function loadModule_ExtraImgLightboxInShop_ () {
   }
 }
 
-function loadModulesForKeyboardUsers () {
+function loadModulesForKeyboardUsers() {
   document.addEventListener('keydown', event => {
     if (event.key === 'Tab' || (event.shiftKey && event.key === 'Tab')) {
-      loadModule_EnabledOutlineForKeyboardUsers_();
-      loadModule_ContactForm_FieldsOutline();
-      loadModule_TabbingThroughNavigation_(event);
+      loadModuleEnabledOutlineForKeyboardUsers();
+      loadModuleContactFormFieldsOutline();
+      loadModuleTabbingThroughNavigation(event);
     }
   });
 }
 
-function loadModule_EnabledOutlineForKeyboardUsers_ () {
+function loadModuleEnabledOutlineForKeyboardUsers() {
   import('./modules/enabled-outline-for-keyboard-users.js')
   .then(module => {
     module.enableOutline();
   });
 }
 
-function loadModule_ContactForm_FieldsOutline () {
+function loadModuleContactFormFieldsOutline() {
   if (window.location.href.includes('contact')) {
     import('./modules/contact-form-fields-outline.js')
     .then(module => {
@@ -125,14 +125,14 @@ function loadModule_ContactForm_FieldsOutline () {
   }
 }
 
-function loadModule_TabbingThroughNavigation_ (event) {
+function loadModuleTabbingThroughNavigation(event) {
   import ('./modules/tabbing-through-nav.js')
   .then(module => {
     module.tabThroughNav(event);
   });
 }
 
-function loadModule_Fotorama_ () {
+function loadModuleFotorama() {
   if (window.location.href.includes('shop')) {
     import('./modules/fotorama.js')
     .then(module => {
@@ -142,7 +142,7 @@ function loadModule_Fotorama_ () {
   }
 }
 
-function loadModule_NavigationForTouchscreensNarrowerThan1171px_ () {
+function loadModuleNavigationForTouchscreensNarrowerThan1171px() {
   const hamburgerMenuIcon = document.querySelector('.hamburger');
   const subNavActivatorForScreensNarrowerThan1171px = document.querySelector('#small-subnav-activator');
   if (hamburgerMenuIcon) {
@@ -156,25 +156,25 @@ function loadModule_NavigationForTouchscreensNarrowerThan1171px_ () {
   }
 }
 
-function loadModule_OperationsInsideBasket_ () {
+function loadModuleOperationsInsideBasket() {
   $('.btn-basket_remove-product-single, .btn-basket_remove-product-all').on('click', event => {
     stayOnPage();
-    importModule_OperationsInsideBasket_(event);
+    importModuleOperationsInsideBasket(event);
   });
   $('.table__product-qty-menu').on('change', event => {
     stayOnPage();
-    importModule_OperationsInsideBasket_(event);
+    importModuleOperationsInsideBasket(event);
   });
 }
 
-function importModule_OperationsInsideBasket_ (event) {
+function importModuleOperationsInsideBasket(event) {
   import('./modules/basket-operations.js')
   .then(module => {
     module.controlBasket(event);
   });
 }
 
-function loadModule_PostageReturnsPolicyLightbox_ () {
+function loadModulePostageReturnsPolicyLightbox() {
   const policyActivators = document.querySelectorAll('.policy-activator');
   for (const activator of policyActivators) {
     activator.addEventListener('click', () => {
@@ -186,7 +186,7 @@ function loadModule_PostageReturnsPolicyLightbox_ () {
   }
 }
 
-function loadModule_SafariFixStyles_() {
+function loadModuleSafariFixStyles() {
   const isSafari = (
     /Apple Computer/.test(navigator.vendor) &&
     (/Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent))
@@ -199,7 +199,7 @@ function loadModule_SafariFixStyles_() {
   }
 }
 
-function loadModule_SlideshowLightbox_ () {
+function loadModuleSlideshowLightbox() {
   const pagesWithSlideshowGallery = (
     window.location.href.includes('all-works') ||
     window.location.href.includes('geometry') ||
@@ -218,7 +218,7 @@ function loadModule_SlideshowLightbox_ () {
   }
 }
 
-function reactToViewportSizeChangedInDevTools (module) {
+function reactToViewportSizeChangedInDevTools(module) {
   if (module.SlideshowLightbox) {
     window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized());
   } else if (module.insertFotoramaForScreensNarrowerThan1170px &&

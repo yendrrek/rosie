@@ -1,13 +1,13 @@
 'use strict';
 
-import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js'; 
+import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
 
 export function openShopExtraImgLightbox () {
   const extraImgActivators = document.querySelectorAll('.extra-img-activator');
   for (const [index] of extraImgActivators.entries()) {
     if (event.target === extraImgActivators[index] && (event.type === 'click' || event.key === 'Enter')) {
       runAnimationOpeningShopExtraImgLightbox(index);
-      preventJerkingOfLightbox();
+      preventJerkingOfFullPageElement();
       const currentExtraImgInnerModal = getShopExtraImgLightbox(index)[0];
       trapFocusInShopExtraImgLightbox(currentExtraImgInnerModal);
     }

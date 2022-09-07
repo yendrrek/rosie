@@ -13,7 +13,7 @@ export function isInViewport (element) {
 }
 
 /* https://stackoverflow.com/a/41441587/12208549 */
-export function preventJerkingOfLightbox () {
+export function preventJerkingOfFullPageElement () {
   const bodyWidthBeforeScrollbarRemoved = document.body.offsetWidth;
   removeBodyScrollbar();
   const bodyWidthAfterScrollbarRemoved = document.body.offsetWidth;

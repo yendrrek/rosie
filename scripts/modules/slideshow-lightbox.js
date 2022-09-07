@@ -7,7 +7,7 @@
 
 'use strict';
 
-import { preventJerkingOfLightbox, restoreBodyState } from './helper-methods.js';
+import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
 
 import { continuationOfTabbingFrom } from '../main.js';
 
@@ -29,7 +29,7 @@ export const SlideshowLightbox = {
     for (const [currentThumbnailImg] of thumbnailImgs.entries()) {
       if (event.target === thumbnailImgs[currentThumbnailImg]) {
         if (event.type === 'click' || event.key === 'Enter') {
-          preventJerkingOfLightbox();
+          preventJerkingOfFullPageElement();
           this.slideshowLightbox.classList.add('slideshow_visible');
           this.slideshowLightbox.focus();
           currentSlide = currentThumbnailImg;
