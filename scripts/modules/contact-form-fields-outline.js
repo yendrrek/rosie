@@ -1,24 +1,19 @@
 'use strict';
 
-export function controlContactFormFieldsOutline () {
+export function controlContactFormFieldsOutline() {
   const contactFormFields = document.querySelectorAll(`
     input[name="senderName"],
     input[name="senderEmail"],
     textarea[name="msg"]
   `);
+  const makeDefaultGreenNotOverlayErrorOutline = field => field.classList.remove('contact-form-field-outline');
+  const applyDefaultGreenOutline = field => field.classList.add('contact-form-field-outline');
+
   for (const focusedField of contactFormFields) {
     if (focusedField.classList.contains('contact-form__error-outline_red')) {
       makeDefaultGreenNotOverlayErrorOutline(focusedField);
-    } else {
-      applyDefaultGreenOutline(focusedField);
+      return;
     }
+    applyDefaultGreenOutline(focusedField);
   }
-}
-
-function makeDefaultGreenNotOverlayErrorOutline (focusedField) {
-  focusedField.classList.remove('contact-form-field-outline');
-}
-
-function applyDefaultGreenOutline (focusedField) {
-  focusedField.classList.add('contact-form-field-outline'); 
 }
