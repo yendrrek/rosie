@@ -2,96 +2,113 @@
 
 import { makeAllWorksItemBeLinkAgainOnNonTouchscreens } from './control-activation-of-subnav-on-big-touchscreens.js';
 
-export function tabThroughNav () {
-  const aboutLink = document.querySelector("nav a[href='about.php']");
-  const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
-  const mainNavArrow = document.querySelector('.arrow');
-  const mainNavArrowWillReceiveFocus = document.querySelector('.arrow');
-  const pageHasMainNavWithArrow = document.querySelector('.arrow');
-  if (pageHasMainNavWithArrow) {
-    if (document.activeElement === allWorksLink ||
-      document.activeElement === aboutLink) {
-      mainNavArrowWillReceiveFocus.setAttribute('tabindex', 0);
-    }
-    mainNavArrow.addEventListener('keydown', showSubNav);
-    document.addEventListener('keydown', hideSubNavWithEscKey);
-    /** 
-     * Link 'ALL WORKS' is deactivated on touchscreens wider than 1170px 
-     * and acts only as the activator of subnavigation. If a laptop with 
-     * touchscreen is used, switching to keyboard navigation will restore 
-     * 'ALL WORKS' link's functionality. Edge case. 
-    */
-    makeAllWorksItemBeLinkAgainOnNonTouchscreens();
-  } 
+export function tabThroughNavigationBar() {
+  const about = document.querySelector('nav a[href="about.php"]');
+  const allWorks = document.querySelector('.link_all-works-more-margin-r');
+  const arrow = document.querySelector('.arrow');
+
+  if (!arrow) {
+    return;
+  }
+
+  if (document.activeElement === allWorks || document.activeElement === about) {
+    toggleTababilityOfElement(arrow, on());
+  }
+
+  arrow.addEventListener('keydown', showSubNavigation);
+  document.addEventListener('keydown', hideSubNavigationWithEscKey);
+
+   // Link 'ALL WORKS' is deactivated on touchscreens wider than 1170px
+   // and acts only as an activator of the subnavigation. If a laptop with
+   // touchscreen is used, switching to keyboard navigation will restore
+   // 'ALL WORKS' link's functionality. Edge case.
+  makeAllWorksItemBeLinkAgainOnNonTouchscreens();
 }
 
-function showSubNav (event) {
-  const allWorksItem = document.querySelector('#all-works');
-  const subNav = document.querySelector('.subnav');
-  const subNavLinks = document.querySelectorAll('.subnav__link');
+function showSubNavigation(event) {
+  const allWorks = document.querySelector('#all-works');
+  const subNavigation = document.querySelector('.subnav');
+  const subNavigationLinks = document.querySelectorAll('.subnav__link');
+
   if (event.key === 'Enter') {
-    subNav.classList.add('subnav_visible');
-    allWorksItem.classList.add('all-works-background-like-subnav');
-    for (const linkWillBeFocusable of subNavLinks) {
-      linkWillBeFocusable.setAttribute('tabindex', '0');
+    subNavigation.classList.add('subnav_visible');
+    allWorks.classList.add('all-works-background-like-subnav');
+    for (const link of subNavigationLinks) {
+      toggleTababilityOfElement(link, on());
     }
-    document.addEventListener('keydown', trapFocusInSubnav);
-    document.addEventListener('click', hideSubNavUponClickingAnywhere);
+    document.addEventListener('keydown', trapFocusInSubNavigation);
+    document.addEventListener('click', hideSubNavigationUponClickingAnywhere);
   }
 }
 
-function hideSubNavWithEscKey (event) {
-  const mainNavArrowWontReceiveFocus = document.querySelector('.arrow');
+function hideSubNavigationWithEscKey(event) {
+  const arrow = document.querySelector('.arrow');
+
   if (event.key === 'Escape') {
-    hideSubNav();
-    mainNavArrowWontReceiveFocus.setAttribute('tabindex', '-1');
+    hideSubNavigation();
+    toggleTababilityOfElement(arrow, off());
   }
 }
 
-function hideSubNav () {
-  const allWorksItem = document.querySelector('#all-works');
-  const subNav = document.querySelector('.subnav');
-  const subNavLinks = document.querySelectorAll('.subnav__link');
-  allWorksItem.classList.remove('all-works-background-like-subnav');
-  subNav.classList.remove('subnav_visible');
-  for (const linkWontBeFocusable of subNavLinks) {
-    linkWontBeFocusable.setAttribute('tabindex', '-1');
+function hideSubNavigation() {
+  const allWorks = document.querySelector('#all-works');
+  const subNavigation = document.querySelector('.subnav');
+  const subNavigationLinks = document.querySelectorAll('.subnav__link');
+
+  allWorks.classList.remove('all-works-background-like-subnav');
+  subNavigation.classList.remove('subnav_visible');
+
+  for (const link of subNavigationLinks) {
+    toggleTababilityOfElement(link, off());
   }
-  document.removeEventListener('keydown', trapFocusInSubnav);
-  document.removeEventListener('keydown', hideSubNav);
+
+  document.removeEventListener('keydown', trapFocusInSubNavigation);
+  document.removeEventListener('keydown', hideSubNavigation);
 }
 
-function trapFocusInSubnav (event) {
+function trapFocusInSubNavigation(event) {
   if (event.shiftKey && event.key === 'Tab') {
     focusPaintingsLink(event);
-  } else if (event.key === 'Tab') {
+    return;
+  }
+
+  if (event.key === 'Tab') {
     focusGeometryLink(event);
   }
 }
 
-function focusPaintingsLink (event) {
-  const geometrySubNavLink = document.querySelectorAll('.subnav__link')[0];
-  const mainNavArrow = document.querySelector('.arrow');
-  const paintingsSubNavLink = document.querySelectorAll('.subnav__link')[3];
-  if (document.activeElement === mainNavArrow ||
-    document.activeElement === geometrySubNavLink) {
+function focusPaintingsLink(event) {
+  const geometrySubNavigationLink = document.querySelectorAll('.subnav__link')[0];
+  const arrow = document.querySelector('.arrow');
+  const paintingsSubNavigationLink = document.querySelectorAll('.subnav__link')[3];
+
+  if (document.activeElement === arrow || document.activeElement === geometrySubNavigationLink) {
     event.preventDefault();
-    paintingsSubNavLink.focus();
+    paintingsSubNavigationLink.focus();
   }
 }
 
-function focusGeometryLink (event) {
-  const geometrySubNavLink = document.querySelectorAll('.subnav__link')[0];
-  const paintingsSubNavLink = document.querySelectorAll('.subnav__link')[3];
-  if (document.activeElement === paintingsSubNavLink) {
+function focusGeometryLink(event) {
+  const geometrySubNavigationLink = document.querySelectorAll('.subnav__link')[0];
+  const paintingsSubNavigationLink = document.querySelectorAll('.subnav__link')[3];
+
+  if (document.activeElement === paintingsSubNavigationLink) {
     event.preventDefault();
-    geometrySubNavLink.focus();
+    geometrySubNavigationLink.focus();
   }
 }
 
-function hideSubNavUponClickingAnywhere () {
-  const subNavActivatedWithKeyboard = document.querySelector('.subnav');
-  if (subNavActivatedWithKeyboard && subNavActivatedWithKeyboard.classList.contains('subnav_visible')) {
-    hideSubNav();
+function hideSubNavigationUponClickingAnywhere() {
+  const subNavigationActivatedWithKeyboard = document.querySelector('.subnav');
+
+  if (subNavigationActivatedWithKeyboard && subNavigationActivatedWithKeyboard.classList.contains('subnav_visible')) {
+    hideSubNavigation();
   }
 }
+
+function toggleTababilityOfElement(element, onOff) {
+  element.setAttribute('tabindex', onOff);
+}
+
+const on = () =>'0';
+const off = () => '-1';
