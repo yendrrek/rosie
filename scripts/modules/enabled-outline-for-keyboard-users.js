@@ -1,11 +1,10 @@
 'use strict';
 
-/**
- * Function expression used instead of a variable to get the up to date 'focusableElements'
- * imported in the module 'disabled-outline-for-keyboard-users.js' when updating the HTML
- * layer of the page after an ajax call. Otherwise, clicked 'focusableElements' will get
- * outlined, which should only happen when using keyboard.
-*/
+// Function expression used to get up to date 'focusableElements'
+// imported in module 'disabled-outline-for-keyboard-users.js'
+// when updating the HTML after an ajax call.
+// Otherwise, clicked 'focusableElements' will get outlined,
+// which should only happen when using keyboard.
 
 export const focusableElements = () => document.querySelectorAll(`
   .arrow_outline, 
@@ -28,12 +27,13 @@ export const focusableElements = () => document.querySelectorAll(`
   .qty-box_outline
 `);
 
-export function enableOutline () {
+export function enableOutline() {
   document.addEventListener('focusin', showOutline());
 }
 
-function showOutline () {
+function showOutline() {
   for (const elements of focusableElements()) {
     elements.classList.remove('outline-none');
   }
+  return null; // Makes outline not appear when switching from keyboard to mouse and clicking for the first time.
 }
