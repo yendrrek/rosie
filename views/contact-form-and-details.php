@@ -29,8 +29,8 @@
             <label class="contact-form__asterisk-before">Message:
                 <span class="contact-form__error" id="msg-error"><?php echo $this->contactDepCont->contactFormValidation->contactFormErrors->setMessageError(); ?></span><br>
                 <textarea class="contact-form__msg-field contact-form__input-and-msg-field contact-form-field-outline
-                <?php echo !empty($this->contactDepCont->contactFormValidation->messageError) ? 'contact-form__error-outline_red' : null; ?>"
-                          name="msg" rows="10" cols="60" wrap="hard" required><?php echo $this->contactDepCont->contactFormValidation->contactFormFields->getMessage(); ?></textarea>
+                <?php echo !empty($this->contactDepCont->contactFormValidation->messageError) ? 'contact-form__error-outline_red' : null; ?>" name="msg" rows="10" cols="60" wrap="hard" required>
+                    <?php echo $this->contactDepCont->contactFormValidation->contactFormFields->getMessage(); ?></textarea>
             </label><br>
             <input class="btn contact-form__btn btn_send-contact-form contact-form__btn_hover ff-inner-ring-hidden btn_send-contact-form_outline"
                    type="submit" value="Send" name="contactFormButton">
