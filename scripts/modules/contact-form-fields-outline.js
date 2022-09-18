@@ -12,8 +12,8 @@ export function controlContactFormFieldsOutline() {
   for (const focusedField of contactFormFields) {
     if (focusedField.classList.contains('contact-form__error-outline_red')) {
       makeDefaultGreenNotOverlayErrorOutline(focusedField);
-      return;
+    } else {
+      applyDefaultGreenOutline(focusedField);
     }
-    applyDefaultGreenOutline(focusedField);
   }
 }
