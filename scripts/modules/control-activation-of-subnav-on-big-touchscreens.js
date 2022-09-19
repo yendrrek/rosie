@@ -1,48 +1,70 @@
 'use strict';
 
-export function showOrHideSubNavOnTouchscreensWiderThan1170px (event) {
+export function toggleSubNavigationOnTouchscreensWiderThan1170px(event) {
   const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
-  const subNav = document.querySelector('.subnav');
-  if (subNav) {
-    if (event.target === allWorksLink) {
-      makeAllWorksItemNotBeLinkButActivatorOfSubNav();
-    } else {
-      if (letSubNavLinksDoTheirJob(event)) {
-        return;
-      }
-      hideSubNavUponTappingAnywhere();
-    }
+  const subNavigation = document.querySelector('.subnav');
+
+  if (!subNavigation) {
+    return;
   }
+
+  if (event.target === allWorksLink) {
+    toggleSubNavigation();
+    return;
+  }
+
+  hideSubNavigationUponTappingAnywhereApartFromSubNavigationLinks(event);
 }
 
-function makeAllWorksItemNotBeLinkButActivatorOfSubNav () {
+function toggleSubNavigation() {
   const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
-  const subNav = document.querySelector('.subnav');
+  const subNavigation = document.querySelector('.subnav');
   const allWorksItem = document.querySelector('#all-works');
+
+  disableAllWorksLinkToPreventRedirecting(allWorksLink);
+  subNavigation.classList.toggle('subnav_visible');
+  styleAllWorksItemBackground(allWorksItem);
+}
+
+function disableAllWorksLinkToPreventRedirecting(allWorksLink) {
   allWorksLink.removeAttribute('href');
-  subNav.classList.toggle('subnav_visible');
+}
+
+function styleAllWorksItemBackground(allWorksItem) {
   allWorksItem.classList.toggle('all-works-background-like-subnav');
 }
 
-function letSubNavLinksDoTheirJob (event) {
-  const subNavLinks = document.querySelectorAll('.subnav__link');
-  for (const linkWontReactToMethodHidingSubNav of subNavLinks) {
-    if (event.target === linkWontReactToMethodHidingSubNav) {
+function hideSubNavigationUponTappingAnywhereApartFromSubNavigationLinks(event) {
+  const subNav = document.querySelector('.subnav');
+
+  if (isShownSubNavigationToMakeLinksWork(event)) {
+    return;
+  }
+
+  subNav.classList.remove('subnav_visible');
+  removeAllWorksItemBackgroundStyle();
+  makeAllWorksItemBeLinkAgainOnNonTouchscreens();
+}
+
+function isShownSubNavigationToMakeLinksWork(event) {
+  const subNavigationLinks = document.querySelectorAll('.subnav__link');
+
+  for (const link of subNavigationLinks) {
+    if (event.target === link) {
       return true;
     }
   }
 }
 
-function hideSubNavUponTappingAnywhere () {
+function removeAllWorksItemBackgroundStyle() {
   const allWorksItem = document.querySelector('#all-works');
-  const subNav = document.querySelector('.subnav');
-  subNav.classList.remove('subnav_visible');
+
   allWorksItem.classList.remove('all-works-background-like-subnav');
-  makeAllWorksItemBeLinkAgainOnNonTouchscreens();
 }
 
-export function makeAllWorksItemBeLinkAgainOnNonTouchscreens () {
+export function makeAllWorksItemBeLinkAgainOnNonTouchscreens() {
   const allWorksLink = document.querySelector('.link_all-works-more-margin-r');
+
   if (!allWorksLink.hasAttribute('href')) {
     allWorksLink.setAttribute('href', 'all-works.php');
   }
