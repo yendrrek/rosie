@@ -50,7 +50,7 @@ function openAddedToBasketInfo() {
 function controlAddedToBasketInfo(event) {
   const addedToBasketCloseButton = document.querySelector('#close-added-to-basket');
 
-  if ((event.key === 'Tab') || (event.shiftKey && event.key === 'Tab')) {
+  if (event.key === 'Tab' || event.shiftKey && event.key === 'Tab') {
     event.preventDefault();
   }
 
@@ -95,11 +95,11 @@ function makeStockLimitInfoTabable() {
 function controlStockLimitInfo(event) {
   const stockLimitInfoCloseBtn = document.querySelector('#stock-limit-info-close-btn');
 
-  if ((event.shiftKey && event.key === 'Tab') || (event.key === 'Tab')) {
+  if (event.shiftKey && event.key === 'Tab' || event.key === 'Tab') {
     trapFocusInStockLimitInfo(event);
   }
 
-  if (event.key === 'Escape' || (event.target === stockLimitInfoCloseBtn && event.type === 'click')) {
+  if (event.key === 'Escape' || event.target === stockLimitInfoCloseBtn && event.type === 'click') {
     closeStockLimitInfo();
     restoreBodyScrollbar();
   }
