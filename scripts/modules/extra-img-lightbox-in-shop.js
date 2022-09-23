@@ -2,54 +2,61 @@
 
 import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
 
-export function openShopExtraImgLightbox () {
-  const extraImgActivators = document.querySelectorAll('.extra-img-activator');
-  for (const [index] of extraImgActivators.entries()) {
-    if (event.target === extraImgActivators[index] && (event.type === 'click' || event.key === 'Enter')) {
-      runAnimationOpeningShopExtraImgLightbox(index);
+export function openShopExtraImageLightbox(event) {
+  const extraImageActivators = document.querySelectorAll('.extra-img-activator');
+
+  for (const [index] of extraImageActivators.entries()) {
+    if (isExtraImageActivated(event, extraImageActivators, index)) {
+      runOpeningAnimation(index);
       preventJerkingOfFullPageElement();
-      const currentExtraImgInnerModal = getShopExtraImgLightbox(index)[0];
-      trapFocusInShopExtraImgLightbox(currentExtraImgInnerModal);
+      enableTrappingFocus(index);
     }
   }
 }
 
-function runAnimationOpeningShopExtraImgLightbox (index) {
-  for (const modals of getShopExtraImgLightbox(index)) {
+function isExtraImageActivated(event, extraImageActivators, index) {
+  return event.target === extraImageActivators[index] && (event.type === 'click' || event.key === 'Enter');
+}
+
+function runOpeningAnimation(index) {
+  for (const modals of getCurrentExtraImage(index)) {
     modals.classList.add('shop__extra-img_visible');
   }
 }
 
-function getShopExtraImgLightbox (index) {
-  const extraImgInnerModal = document.querySelectorAll('.shop__extra-img-modal-inner');
-  const extraImgOuterModal = document.querySelectorAll('.shop__extra-img-modal-outer');
-  const extraImgLightbox = [
-    extraImgInnerModal[index],
-    extraImgOuterModal[index]
-  ];
-  return extraImgLightbox;
+function getCurrentExtraImage(index) {
+  const extraImageInnerModal = document.querySelectorAll('.shop__extra-img-modal-inner');
+  const extraImageOuterModal = document.querySelectorAll('.shop__extra-img-modal-outer');
+
+  return [extraImageInnerModal[index], extraImageOuterModal[index]];
 }
 
-function trapFocusInShopExtraImgLightbox (currentExtraImgInnerModal) {
-  if ((event.key === 'Tab') || (event.shiftKey && event.key === 'Tab')) {
-    if (currentExtraImgInnerModal.classList.contains('shop__extra-img_visible')) {
+function enableTrappingFocus(index) {
+  document.addEventListener('keydown', event =>
+      trapFocus(event, getCurrentExtraImage(index)[0]));
+}
+
+function trapFocus(event, currentExtraImageInnerModal) {
+  if (event.key === 'Tab' || event.shiftKey && event.key === 'Tab') {
+    if (currentExtraImageInnerModal.classList.contains('shop__extra-img_visible')) {
       event.preventDefault();
     }
   }
 }
 
-export function closeShopExtraImgLightbox () {
-  const extraImgCloseBtns = document.querySelectorAll('.close-popup-btn_shop-extra-image');
-  for (const [index] of extraImgCloseBtns.entries()) {
-    if ((event.target === extraImgCloseBtns[index] && event.type === 'click') || event.key === 'Escape') {
-      runAnimationClosingShopExtraImgLightbox(index);
+export function closeShopExtraImageLightbox(event) {
+  const extraImageCloseButtons = document.querySelectorAll('.close-popup-btn_shop-extra-image');
+
+  for (const [index] of extraImageCloseButtons.entries()) {
+    if (event.target === extraImageCloseButtons[index] && event.type === 'click' || event.key === 'Escape') {
+      runClosingAnimation(index);
       restoreBodyState();
-    } 
+    }
   }
 }
 
-function runAnimationClosingShopExtraImgLightbox (index) {
-  for (const modals of getShopExtraImgLightbox(index)) {
+function runClosingAnimation(index) {
+  for (const modals of getCurrentExtraImage(index)) {
     if (modals.classList.contains('shop__extra-img_visible')) {
       modals.classList.remove('shop__extra-img_visible');
       modals.classList.add('shop__extra-img_hidden');

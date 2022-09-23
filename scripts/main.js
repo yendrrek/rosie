@@ -91,10 +91,10 @@ function loadModuleExtraImgLightboxInShop() {
   if (window.location.href.includes('shop')) {
     import('./modules/extra-img-lightbox-in-shop.js')
     .then(module => {
-      for (const event of ['click', 'keydown']) {
-        document.addEventListener(event, () => module.openShopExtraImgLightbox());
-        document.addEventListener(event, () => module.closeShopExtraImgLightbox()); 
-      }
+      document.addEventListener('click', event => module.openShopExtraImageLightbox(event));
+      document.addEventListener('keydown', event => module.openShopExtraImageLightbox(event));
+      document.addEventListener('click', event => module.closeShopExtraImageLightbox(event));
+      document.addEventListener('keydown', event => module.closeShopExtraImageLightbox(event));
     });
   }
 }
