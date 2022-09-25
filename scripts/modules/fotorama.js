@@ -1,38 +1,75 @@
 'use strict';
 
-/**
- * External library 'Fotorama' for showing photos of products in the shop on smaller touchscreen 
- * devices. It requires JavaScript and CSS code which get inserted in <head> dynamically
- * depending on the screen size. 
- * https://fotorama.io/
-*/
+// https://fotorama.io/
 
-export function insertFotoramaForScreensNarrowerThan1170px () {
-  const head = document.head;
-  const fotoramaCss = document.createElement('link');
-  const fotoramaJs = document.createElement('script');
-  const fotoramaJsAlreadyInDom = document.querySelector('script[src*="fotorama"]');
-  const fotoramaCssAlreadyInDom = document.querySelector('link[href*="fotorama"]');
-  const shopPageIsLoaded = (document.querySelector('.breadcrumbs__title').innerText === 'Shop');
-  fotoramaCss.href = 'fotorama-4.6.4.dev/fotorama.dev.css';
-  fotoramaCss.rel = 'stylesheet';
-  fotoramaJs.src = 'fotorama-4.6.4.dev/fotorama.dev.js';
-  if (!fotoramaJsAlreadyInDom && !fotoramaCssAlreadyInDom) {
-    if (document.body.clientWidth < 1170 && shopPageIsLoaded ) {
-      head.append(fotoramaCss);
-      head.append(fotoramaJs);
-    }
-  } 
+export function insertFotorama () {
+  if (!isDeviceUsingFotorama()) {
+    return;
+  }
+
+  if (!isShop) {
+    return;
+  }
+
+  if (!getFotoramaSourcingElements().includes(null)) {
+    return;
+  }
+
+  includeFotoramaSourcingElements();
 }
 
-export function removeFotoramaForScreensWiderThan1169px () {
-  const fotoramaJsAlreadyInDom = document.querySelector('script[src*="fotorama"]');
-  const fotoramaCssAlreadyInDom = document.querySelector('link[href*="fotorama"]');
-  const shopPageIsLoaded = (document.querySelector('.breadcrumbs__title').innerText === 'Shop');
-  if (fotoramaJsAlreadyInDom && fotoramaCssAlreadyInDom) {
-    if (document.body.clientWidth > 1169 && shopPageIsLoaded) {
-      fotoramaJsAlreadyInDom.remove();
-      fotoramaCssAlreadyInDom.remove();
-    }
+function isDeviceUsingFotorama() {
+  return document.body.clientWidth < 1169;
+}
+
+function isShop() {
+  const pageName = document.querySelector('.breadcrumbs__title').innerText;
+  return pageName === 'Shop';
+}
+
+function getFotoramaSourcingElements() {
+  const fotoramaJS = document.querySelector('script[src*="fotorama"]');
+  const fotoramaCSS = document.querySelector('link[href*="fotorama"]');
+
+  return [fotoramaJS, fotoramaCSS];
+}
+
+function includeFotoramaSourcingElements() {
+  document.head.append(makeStyleSheetElement());
+  document.head.append(makeScriptElement());
+}
+
+function makeStyleSheetElement() {
+  const fotoramaCSS = document.createElement('link');
+
+  fotoramaCSS.setAttribute('href', 'fotorama-4.6.4.dev/fotorama.dev.css');
+  fotoramaCSS.setAttribute('rel', 'stylesheet');
+
+  return fotoramaCSS;
+}
+
+function makeScriptElement() {
+  const fotoramaJS = document.createElement('script');
+
+  fotoramaJS.setAttribute('src', 'fotorama-4.6.4.dev/fotorama.dev.js');
+
+  return fotoramaJS;
+}
+
+export function removeFotorama() {
+  if (isDeviceUsingFotorama()) {
+    return;
+  }
+
+  if (!isShop()) {
+    return;
+  }
+
+  if (getFotoramaSourcingElements().includes(null)) {
+    return;
+  }
+
+  for (const element of getFotoramaSourcingElements()) {
+    element.remove();
   }
 }
