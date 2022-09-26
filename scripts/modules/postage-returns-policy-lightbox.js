@@ -1,13 +1,13 @@
 'use strict';
 
-import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
+import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 
 export function openPPRPolicyLightbox () {
   const policyLightbox = document.querySelectorAll('#returns-policy-outer-modal, #returns-policy-inner-modal');
   for (const modals of policyLightbox) {
     modals.classList.add('policy-open-anim');
   }
-  preventJerkingOfFullPageElement();
+  stopFullPageElementJerk();
   preparePPRPolicyLightboxKeyboardNavigation();    
 }
 
@@ -77,7 +77,7 @@ function closePPRPolicyLightbox () {
       modals.classList.remove('policy-close-anim');
     });
   }
-  restoreBodyState();
+  restoreBodyAfterStoppingFullPageElementJerk();
   for (const event of ['click', 'keydown']) {
     document.removeEventListener(event, controlPPRPolicyLightbox);
   }

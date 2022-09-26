@@ -1,9 +1,9 @@
 'use strict';
 
 import {
-  preventJerkingOfFullPageElement,
+  stopFullPageElementJerk,
   restoreBodyScrollbar,
-  restoreBodyState
+  restoreBodyAfterStoppingFullPageElementJerk
 } from './helper-methods.js';
 
 import { continuationOfTabbingFrom } from '../main.js';
@@ -41,7 +41,7 @@ function quantityOfProductsAddedToBasketIsNotExceedingStockAmount(response) {
 }
 
 function openAddedToBasketInfo() {
-  preventJerkingOfFullPageElement();
+  stopFullPageElementJerk();
   showInfo('#added-to-basket-outer-modal, #added-to-basket-inner-modal', 'product-added-lightbox-visible');
   $('#added-to-basket-inner-modal').focus();
   $(document).on('click keydown', controlAddedToBasketInfo);
@@ -63,14 +63,14 @@ function closeAddedToBasketInfo() {
   const addedToBasketLightbox = document.querySelectorAll('#added-to-basket-outer-modal, #added-to-basket-inner-modal');
 
   hideInfo(addedToBasketLightbox, 'product-added-lightbox-visible', 'product-added-confirmation-close-anim');
-  restoreBodyState();
+  restoreBodyAfterStoppingFullPageElementJerk();
   $(document).off('click keydown', controlAddedToBasketInfo);
   continueTabbing();
 }
 
 function openStockLimitInfoInfo($stockLimitInfoOuterModal, response) {
   removeStockLimitInfoOfPreviousProduct($stockLimitInfoOuterModal);
-  preventJerkingOfFullPageElement();
+  stopFullPageElementJerk();
   insertStockLimitInfoIntoShopPage(response);
   showInfo('#stock-limit-info-outer-modal, .modal-inner_stock-info', 'stock-info-lightbox-visible');
   makeStockLimitInfoTabable();
@@ -122,7 +122,7 @@ function closeStockLimitInfo() {
   const stockLimitInfoLightbox = document.querySelectorAll('#stock-limit-info-outer-modal, .modal-inner__stock-limit-info');
 
   hideInfo(stockLimitInfoLightbox, 'stock-info-lightbox-visible', 'stock-info-lightbox-hidden');
-  restoreBodyState();
+  restoreBodyAfterStoppingFullPageElementJerk();
   $(document).off('click keydown', controlStockLimitInfo);
   continueTabbing();
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-import { preventJerkingOfFullPageElement, restoreBodyState } from './helper-methods.js';
+import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 
 export function openShopExtraImageLightbox(event) {
   const extraImageActivators = document.querySelectorAll('.extra-img-activator');
@@ -8,7 +8,7 @@ export function openShopExtraImageLightbox(event) {
   for (const [index] of extraImageActivators.entries()) {
     if (isExtraImageActivated(event, extraImageActivators, index)) {
       runOpeningAnimation(index);
-      preventJerkingOfFullPageElement();
+      stopFullPageElementJerk();
       enableTrappingFocus(index);
     }
   }
@@ -50,7 +50,7 @@ export function closeShopExtraImageLightbox(event) {
   for (const [index] of extraImageCloseButtons.entries()) {
     if (event.target === extraImageCloseButtons[index] && event.type === 'click' || event.key === 'Escape') {
       runClosingAnimation(index);
-      restoreBodyState();
+      restoreBodyAfterStoppingFullPageElementJerk();
     }
   }
 }
