@@ -2,74 +2,93 @@
 
 import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 
-export function openPPRPolicyLightbox () {
+export function openPostageAndReturnsPolicy() {
   const policyLightbox = document.querySelectorAll('#returns-policy-outer-modal, #returns-policy-inner-modal');
+
   for (const modals of policyLightbox) {
     modals.classList.add('policy-open-anim');
   }
+
   stopFullPageElementJerk();
-  preparePPRPolicyLightboxKeyboardNavigation();    
+
+  preparePostageAndReturnsPolicyKeyboardNavigation();
 }
 
-function preparePPRPolicyLightboxKeyboardNavigation () {
-const policyInnerModal = document.querySelector('#returns-policy-inner-modal');
-  policyInnerModal.focus();
-  makePPRPolicyLightboxClickableElementsFocusable();        
+function preparePostageAndReturnsPolicyKeyboardNavigation() {
+  const innerModal = document.querySelector('#returns-policy-inner-modal');
+
+  innerModal.focus();
+
+  toggleItemFocusability(0);
+
   for (const event of ['click', 'keydown']) {
-    document.addEventListener(event, controlPPRPolicyLightbox);
+    document.addEventListener(event, navigatePostageAndReturnPolicy);
   }
 }
 
-function makePPRPolicyLightboxClickableElementsFocusable () {
-  const policyLightboxClickableElements = document.querySelectorAll(`
+function toggleItemFocusability(tabindexValue) {
+  const items = document.querySelectorAll(`
     #return-policy-close-btn,
     #first-contact-form-link,
     #second-contact-form-link,
     #third-contact-form-link
   `);
-  for (const contactFormLinksAndCloseBtn of policyLightboxClickableElements) {
-    contactFormLinksAndCloseBtn.setAttribute('tabindex', '0');
+
+  for (const item of items) {
+    item.setAttribute('tabindex', tabindexValue);
   }
 }
 
-function controlPPRPolicyLightbox () {
-  const policyCloseBtn = document.querySelector('#return-policy-close-btn');
-  trapFocusInPPRPolicyLightbox();
-  if ((event.type === 'click' && event.target === policyCloseBtn) || event.key === 'Escape') {
-    closePPRPolicyLightbox();
-    makePPRPolicyLightboxClickableElementsNotFocusable();
+function navigatePostageAndReturnPolicy(event) {
+  const closeButton = document.querySelector('#return-policy-close-btn');
+
+  trapFocusInPostageAndReturnPolicy(event);
+
+  if (event.type === 'click' && event.target === closeButton || event.key === 'Escape') {
+    closePostageAndReturnPolicy();
+
+    toggleItemFocusability(-1);
   }
 }
 
-function trapFocusInPPRPolicyLightbox () {
-  const policyCloseBtn = document.querySelector('#return-policy-close-btn');
-  const policyGetInTouchLink = document.querySelector('#third-contact-form-link');
+function trapFocusInPostageAndReturnPolicy(event) {
+  const closeButton = document.querySelector('#return-policy-close-btn');
+  const getInTouchLink = document.querySelector('#third-contact-form-link');
+
   if (event.shiftKey && event.key === 'Tab') {
-    focusGetInTouchLink();
-  } else if (event.key === 'Tab') {
-    if (document.activeElement === policyGetInTouchLink) {
-      event.preventDefault();
-      policyCloseBtn.focus();
-    }
-  } 
+    focusGetInTouchLink(event, closeButton, getInTouchLink);
+    return;
+  }
+
+  if (event.key === 'Tab') {
+    focusCloseButton(event, closeButton, getInTouchLink);
+  }
 }
 
-function focusGetInTouchLink () {
-  const policyCloseBtn = document.querySelector('#return-policy-close-btn');
-  const policyGetInTouchLink = document.querySelector('#third-contact-form-link');
+function focusGetInTouchLink(event, closeButton, getInTouchLink) {
+  if (document.activeElement === closeButton || isUserClickingAnywhere()) {
+    event.preventDefault();
+    getInTouchLink.focus();
+  }
+}
+
+function isUserClickingAnywhere() {
   const policyInnerModal = document.querySelector('#returns-policy-inner-modal');
   const policyOuterModal = document.querySelector('#returns-policy-outer-modal');
-  const userClicksAnywhere = (document.activeElement === policyOuterModal ||
-    document.activeElement === policyInnerModal
-  );
-  if (document.activeElement === policyCloseBtn || userClicksAnywhere) {
+
+  return document.activeElement === policyOuterModal || document.activeElement === policyInnerModal;
+}
+
+function focusCloseButton(event, closeButton, getInTouchLink) {
+  if (document.activeElement === getInTouchLink) {
     event.preventDefault();
-    policyGetInTouchLink.focus();
+    closeButton.focus();
   }
 }
 
-function closePPRPolicyLightbox () {
+function closePostageAndReturnPolicy() {
   const policyLightbox = document.querySelectorAll('#returns-policy-outer-modal, #returns-policy-inner-modal');
+
   for (const modals of policyLightbox) {
     modals.classList.remove('policy-open-anim');
     modals.classList.add('policy-close-anim');
@@ -77,21 +96,11 @@ function closePPRPolicyLightbox () {
       modals.classList.remove('policy-close-anim');
     });
   }
-  restoreBodyAfterStoppingFullPageElementJerk();
-  for (const event of ['click', 'keydown']) {
-    document.removeEventListener(event, controlPPRPolicyLightbox);
-  }
-}
 
-function makePPRPolicyLightboxClickableElementsNotFocusable () {
-const policyLightboxClickableElements = document.querySelectorAll(`
-  #return-policy-close-btn,
-  #first-contact-form-link,
-  #second-contact-form-link,
-  #third-contact-form-link
-`);
-  for (const contactFormLinksAndCloseBtn of policyLightboxClickableElements) {
-    contactFormLinksAndCloseBtn.setAttribute('tabindex', '-1');
-  }  
+  restoreBodyAfterStoppingFullPageElementJerk();
+
+  for (const event of ['click', 'keydown']) {
+    document.removeEventListener(event, navigatePostageAndReturnPolicy);
+  }
 }
   
