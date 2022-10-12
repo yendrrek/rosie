@@ -1,318 +1,372 @@
-/**
- * This module is left as an object literal as it is more convenient for using the variable 
- * 'currentSlide' in different methods. I don't have to iterate over all the slides to get 
- * the currently seen slide, instead, I can simply make it a property by adding it to 
- * the object 'SlideshowLightbox' and thus make it available to the methods which need it.
-*/
-
 'use strict';
 
 import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 
-import { continuationOfTabbingFrom } from '../main.js';
+import { tabbingFrom } from '../main.js';
 
 export const SlideshowLightbox = {
 
-  centerOfScreen: document.body.clientWidth / 2,
-  closeIcon: document.querySelector('.icon_close'),
+  current: null,
   slides: document.querySelectorAll('.slide'),
   slideshow: document.querySelector('.slideshow'),
-  slideshowImgs: document.querySelectorAll('.slide__img-rectangle, .slide__img-square'),
-  slideshowLightbox: document.querySelector('.slideshow'),
-  slideshowTappingArea: document.querySelector('.slideshow'),
-  touchscreensLessThan1058pxWide: window.innerWidth < 1058,
-  zoomInIcon: document.querySelector('.icon_zoom'),
+  images: document.querySelectorAll('.slide__img-rectangle, .slide__img-square'),
+  closeIcon: document.querySelector('.icon_close'),
+  zoomIcon: document.querySelector('.icon_zoom'),
+  icons: document.querySelectorAll('.icon_zoom, .icon_close'),
+  screenCenter: document.body.clientWidth / 2,
+  isTouchscreenNarrowerThan1058px: window.innerWidth < 1058,
 
-  openSlideshowLightbox() {
-    let currentSlide;
-    const thumbnailImgs = document.querySelectorAll('.thumbnail-clickable-area');
-    for (const [currentThumbnailImg] of thumbnailImgs.entries()) {
-      if (event.target === thumbnailImgs[currentThumbnailImg]) {
-        if (event.type === 'click' || event.key === 'Enter') {
-          stopFullPageElementJerk();
-          this.slideshowLightbox.classList.add('slideshow_visible');
-          this.slideshowLightbox.focus();
-          currentSlide = currentThumbnailImg;
-          this.showCurrentSlide(currentSlide);
-          this.setSlideshowLightboxNavigation();
-        }
-        if (event.key === 'Enter') {
-          continuationOfTabbingFrom.thumbnailImgWhichOpenedSlideshow = event.target;
-        }
+  showSlideshowByClickingThumbnailImage(event) {
+    const thumbnailImages = document.querySelectorAll('.thumbnail-clickable-area');
+
+    for (const [currentImage] of thumbnailImages.entries()) {
+      if (this.isActivatedThumbnailImage(event, thumbnailImages[currentImage])) {
+
+        this.slideshow.classList.add('slideshow_visible');
+
+        this.showCurrentSlide(currentImage);
+
+        this.prepareSlideshowNavigation();
+
+        this.rememberWhichThumbnailImageOpenedSlideshow(event);
+
+        stopFullPageElementJerk();
       }
-    } 
+    }
   },
 
-  setSlideshowLightboxNavigation () {
-    const zoomInAndCloseIcons = document.querySelectorAll('.icon_zoom, .icon_close');
-    for (const iconWillBeFocusable of zoomInAndCloseIcons) {
-      iconWillBeFocusable.setAttribute('tabindex', '0');
+  isActivatedThumbnailImage(event, thumbnailImage) {
+    return event.target === thumbnailImage && (event.type === 'click' || event.key === 'Enter');
+  },
+
+  showCurrentSlide(currentSlide) {
+    if (!this.slideshow) {
+      return;
     }
-    this.referenceToTabThroughZoomInAndCloseIconsInLoop = this.tabThroughZoomInAndCloseIconsInLoop.bind(this);
-    document.addEventListener('keydown', this.referenceToTabThroughZoomInAndCloseIconsInLoop);
-    this.referenceToControlSlideshowLightbox = this.controlSlideshowLightbox.bind(this);
+
+    this.hideAllOtherSlides();
+
+    this.toggleVisibility(this.slides[currentSlide], 'slide_visible', 'slide_hidden');
+
+    this.runSlideshowCounter(currentSlide);
+
+    this.current = currentSlide;
+  },
+
+  hideAllOtherSlides() {
+    for (const notCurrentSlide of this.slides) {
+      this.toggleVisibility(notCurrentSlide, 'slide_hidden', 'slide_visible');
+    }
+  },
+
+  toggleVisibility(element, styleAdded, styleRemoved) {
+    element.classList.remove(styleRemoved);
+    element.classList.add(styleAdded);
+  },
+
+  runSlideshowCounter(currentSlide) {
+    this.showCurrentSlideNumber(currentSlide);
+    this.showTotalNumberOfSlides();
+  },
+
+  showCurrentSlideNumber(currentSlide) {
+    document.querySelector('#index').innerHTML = currentSlide + 1;
+  },
+
+  showTotalNumberOfSlides() {
+    document.querySelector('#total').innerHTML = this.slides.length;
+  },
+
+  prepareSlideshowNavigation() {
+    this.slideshow.focus();
+    
+    this.makeSlideshowZoomAndCloseIconsFocusable();
+
+    document.addEventListener('keydown', this.tabThroughZoomAndCloseIcons.bind(this));
+
     for (const event of ['click', 'keydown']) {
-      document.addEventListener(event, this.referenceToControlSlideshowLightbox);
+      document.addEventListener(event, this.controlSlideshowLightbox.bind(this));
     }
   },
 
-  showCurrentSlide (currentSlide) {
-    if (this.slideshow) {
-      for (const notCurrentSlide of this.slides) {
-        notCurrentSlide.classList.remove('slide_visible');
-        notCurrentSlide.classList.add('slide_hidden');
-      }
-      this.slides[currentSlide].classList.remove('slide_hidden');
-      this.slides[currentSlide].classList.add('slide_visible');
-      this.countSlides(currentSlide);
-      this.currentSlide = currentSlide;
+  makeSlideshowZoomAndCloseIconsFocusable() {
+    for (const icon of this.icons) {
+      icon.setAttribute('tabindex', '0');
     }
   },
 
-  countSlides (currentSlide) {
-    const arrayNotFromZero = 1;
-    const displayedSlide = currentSlide + arrayNotFromZero;
-    const allSlides = this.slides.length;
-    const currentSlideNumber = document.querySelector('#index');
-    const totalNumberOfSlides = document.querySelector('#total');
-    currentSlideNumber.innerHTML = displayedSlide;
-    totalNumberOfSlides.innerHTML = allSlides;
+  tabThroughZoomAndCloseIcons(event) {
+    if (!this.isDeviceUsingZoom()) {
+      return;
+    }
+
+    if (this.isOnlyCloseIconWhenFullPageImage()) {
+      this.limitKeyboardNavigationToEscKey(event);
+      return;
+    }
+
+    this.trapFocus(event);
   },
 
-  tabThroughZoomInAndCloseIconsInLoop (event) {
-  const zoomInIconIncludedInPage = (window.innerWidth > 1057 && window.innerWidth < 1921);
-    if (zoomInIconIncludedInPage) {
-      this.reactOnlyToEscKey(event);
-      if (event.shiftKey && event.key === 'Tab') {
-        this.focusCloseIcon(event);
-      } else if (event.key === 'Tab') {
-        this.focusZoomInIcon(event);
-      }
-    } 
+  isDeviceUsingZoom() {
+    return window.innerWidth > 1057 && window.innerWidth < 1921;
   },
 
-  reactOnlyToEscKey (event) {
-    const imgFullPage = this.closeIcon.classList.contains('icon_close-img-fullpage');
-    if ((event.key === 'Tab') || (event.shiftKey && event.key === 'Tab')) {
-      if (imgFullPage) {
-        event.preventDefault();
-      }
+  isOnlyCloseIconWhenFullPageImage() {
+    return this.closeIcon.classList.contains('icon_close-img-fullpage');
+  },
+
+  limitKeyboardNavigationToEscKey(event) {
+    if (event.key === 'Tab' || event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
     }
   },
 
-  focusCloseIcon (event) {
-    if (document.activeElement === this.zoomInIcon ||
-      document.activeElement === this.slideshowLightbox) {
+  trapFocus(event) {
+    if (event.shiftKey && event.key === 'Tab') {
+      this.focusCloseIcon(event);
+    } else if (event.key === 'Tab') {
+      this.focusZoomIcon(event);
+    }
+  },
+
+  focusCloseIcon(event) {
+    if (document.activeElement === this.zoomIcon || document.activeElement === this.slideshow) {
       event.preventDefault();
       this.closeIcon.focus();
     }
   },
 
-  focusZoomInIcon (event) {
+  focusZoomIcon(event) {
     if (document.activeElement === this.closeIcon) {
       event.preventDefault();
-      this.zoomInIcon.focus();
+      this.zoomIcon.focus();
     }
   },
 
-  controlSlideshowLightbox () {
-    this.goToPreviousOrNextImg();
-    if (this.userWantsFullPageImg()) {
-      this.showFullPageImg();
-    } 
-    if (this.userWantsToHideFullPageImg()) {
-        this.hideFullPageImg();
-    } else if (this.userWantsToCloseSlideshowLightbox()) {
-        this.closeSlideshowLightbox();
+  controlSlideshowLightbox(event) {
+    if (this.userSelectedPreviousImage(event)) {
+      return;
     }
-    this.showFullPageImgByClickingOnImg();
+
+    if (this.userSelectedNextImage(event)) {
+      return;
+    }
+
+    if (this.userWantsFullPageImage(event)) {
+      this.showFullPageImage();
+      return;
+    }
+
+    if (this.userWantsToHideFullPageImage(event)) {
+      this.closeFullPageImage();
+      return;
+    }
+
+    if (this.userWantsToCloseSlideshowLightbox(event)) {
+      this.hideSlideshow();
+    }
   },
 
-  goToPreviousOrNextImg () {
-    if (this.userWantsPreviousImg()) {
-      this.goToPreviousImg();
-      this.hideFullPageImg();
-    } else if (this.userWantsNextImg()) {
-      this.goToNextImg();
-      this.hideFullPageImg();
-    }
-  },
-
-  userWantsPreviousImg () {
-    const leftHalfOfScreenTapped = (
-      this.touchscreensLessThan1058pxWide &&
-      event.target === this.slideshowTappingArea &&
-      event.clientX < this.centerOfScreen
-    );
-    const previousImgIcon = document.querySelector('.slideshow__icon_arrow-previous');
-    if (event.target === previousImgIcon || event.key === 'ArrowLeft' || leftHalfOfScreenTapped) {
+  userSelectedPreviousImage(event) {
+    if (this.isLeftArrowUsed(event) || this.isLeftHalfOfScreenTapped(event)) {
+      if (this.isRectangleImageFullPage() || this.isSquareImageFullPage()) {
+        this.closeFullPageImage();
+      }
+      this.goToPreviousImage();
       return true;
     }
+  },
+
+  userSelectedNextImage(event) {
+    if (this.isRightArrowUsed(event) || this.isRightHalfOfScreenTapped(event)) {
+      if (this.isRectangleImageFullPage() || this.isSquareImageFullPage()) {
+        this.closeFullPageImage();
+      }
+      this.goToNextImage();
+      return true;
+    }
+  },
+
+  isLeftArrowUsed(event) {
+    const previous = document.querySelector('.slideshow__icon_arrow-previous');
+    return event.target === previous || event.key === 'ArrowLeft';
+  },
+
+  isLeftHalfOfScreenTapped(event) {
+    return this.isTouchscreenNarrowerThan1058px && event.target === this.slideshow && event.clientX < this.screenCenter;
   },
   
-  goToPreviousImg () {
-    const allSlides = this.slides.length;
-    this.currentSlide = (this.currentSlide - 1 + allSlides) % allSlides;
-    this.showCurrentSlide(this.currentSlide);
+  goToPreviousImage() {
+    const totalNumberOfSlides = this.slides.length;
+    this.current = (this.current - 1 + totalNumberOfSlides) % totalNumberOfSlides;
+    this.showCurrentSlide(this.current);
   },
 
-  hideFullPageImg () {
-    if (this.slideshowLightbox) {
-      this.closeFullPageImg();
-      this.preserveTabbingOrderIfUserClicksOnSlide();
-      this.restoreSlideshowFunctionality();
+  isRectangleImageFullPage() {
+    return this.images[this.current].classList.contains('slide__img-rectangle_zoom-in');
+  },
+
+  isSquareImageFullPage() {
+    return this.images[this.current].classList.contains('slide__img-square_zoom-in');
+  },
+
+  closeFullPageImage() {
+    if (!this.slideshow) {
+      return;
     }
-  },
 
-  userWantsNextImg () {
-    const nextImgIcon = document.querySelector('.slideshow__icon_arrow-next');
-    const rightHalfOfScreenTapped = (
-      this.touchscreensLessThan1058pxWide &&
-      event.target === this.slideshowTappingArea &&
-      event.clientX > this.centerOfScreen
-    );
-    if (event.target === nextImgIcon || event.key === 'ArrowRight' || rightHalfOfScreenTapped) {
-      return true;
+    if (this.isRectangleImageFullPage()) {
+      this.toggleVisibility(this.images[this.current], 'slide__img-rectangle_zoom-out', 'slide__img-rectangle_zoom-in');
+    } else if (this.isSquareImageFullPage()) {
+      this.toggleVisibility(this.images[this.current], 'slide__img-square_zoom-out', 'slide__img-square_zoom-in');
     }
+
+    this.makeSlideNotScrollable(this.current);
+
+    this.makeSlideUnfocusableToPreserveTabbingThroughZoomAndCloseIconsIfUserClicksAnywhereOnSlide(this.current);
+
+    this.restoreSlideshowFunctionality();
   },
 
-  goToNextImg () {
-    const allSlides = this.slides.length;
-    this.currentSlide = (this.currentSlide + 1) % allSlides;
-    this.showCurrentSlide(this.currentSlide);
+  makeSlideNotScrollable(currentSlide) {
+    this.slides[currentSlide].classList.remove('slide_scrollable');
   },
 
-  closeFullPageImg () {
-    for (const img of this.slideshowImgs) {
-      if (img.classList.contains('slide__img-rectangle_zoom-in')) {
-        img.classList.remove('slide__img-rectangle_zoom-in');
-        img.classList.add('slide__img-rectangle_zoom-out');
-      } else if (img.classList.contains('slide__img-square_zoom-in')) {
-        img.classList.remove('slide__img-square_zoom-in');
-        img.classList.add('slide__img-square_zoom-out');
-      }
-    }
-    this.makeSlideNotScrollable();
+  makeSlideUnfocusableToPreserveTabbingThroughZoomAndCloseIconsIfUserClicksAnywhereOnSlide(currentSlide) {
+      this.slides[currentSlide].removeAttribute('tabindex');
   },
 
-  makeSlideNotScrollable () {
-    for (const slide of this.slides) {
-      if (slide.classList.contains('slide_scrollable')) {
-        slide.classList.remove('slide_scrollable');
-      }
-    }
-  },
-
-  preserveTabbingOrderIfUserClicksOnSlide () {
-    if (this.slideWithRecentFullPageImg) {
-      this.slideWithRecentFullPageImg.removeAttribute('tabindex');
-    }
-  },
-
-  restoreSlideshowFunctionality () {
-    this.slideshowLightbox.focus();
-    this.slideshowLightbox.classList.remove('slideshow_scrollbar_hidden');
+  restoreSlideshowFunctionality() {
+    this.slideshow.focus();
+    this.slideshow.classList.remove('slideshow_scrollbar_hidden');
     this.closeIcon.classList.remove('icon_close-img-fullpage');
   },
 
-  userWantsFullPageImg () {
-    if ((event.target === this.zoomInIcon && event.type === 'click') ||
-      (document.activeElement === this.zoomInIcon && event.key === 'Enter')) {
+  isRightArrowUsed(event) {
+    const nextImgIcon = document.querySelector('.slideshow__icon_arrow-next');
+    return event.target === nextImgIcon || event.key === 'ArrowRight';
+  },
+
+  isRightHalfOfScreenTapped(event) {
+    return this.isTouchscreenNarrowerThan1058px && event.target === this.slideshow && event.clientX > this.screenCenter;
+  },
+
+  goToNextImage() {
+    const totalNumberOfSlides = this.slides.length;
+    this.current = (this.current + 1) % totalNumberOfSlides;
+    this.showCurrentSlide(this.current);
+  },
+
+  userWantsFullPageImage(event) {
+    if (event.target === this.zoomIcon && event.type === 'click' ||
+        document.activeElement === this.zoomIcon && event.key === 'Enter' ||
+        this.isClickedImage(event)) {
       return true;
     }
   },
 
-  showFullPageImg () {
-    this.openFullPageImg();
-    this.amendSlideshowFunctionality();
+  isClickedImage(event) {
+    if (event.target === this.images[this.current]) {
+      return true;
+    }
+  },
+
+  showFullPageImage() {
+    if (this.images[this.current].classList.contains('slide__img-rectangle')) {
+      this.toggleVisibility(this.images[this.current], 'slide__img-rectangle_zoom-in', 'slide__img-rectangle_zoom-out');
+    } else if (this.images[this.current].classList.contains('slide__img-square')) {
+      this.toggleVisibility(this.images[this.current], 'slide__img-square_zoom-in', 'slide__img-square_zoom-out');
+    }
+
+    this.makeFullPageImgScrollable();
+
+    this.adjustSlideshowFunctionalityToFullPageImage();
+
     this.makeSlideVerticallyScrollableWithArrowKeys();
   },
 
-  openFullPageImg () {
-    for (const img of this.slideshowImgs) {
-      if (img.classList.contains('slide__img-rectangle')) {
-        img.classList.remove('slide__img-rectangle_zoom-out');
-        img.classList.add('slide__img-rectangle_zoom-in');
-      } else if (img.classList.contains('slide__img-square')) {
-        img.classList.remove('slide__img-square_zoom-out');
-        img.classList.add('slide__img-square_zoom-in');
-      }
-    }
-    this.makeFullPageImgScrollable();
-  },
-
-  makeFullPageImgScrollable () {
-    for (const slide of this.slides) {
-      if (slide.classList.contains('slide_visible')) {
-        slide.classList.add('slide_scrollable');
-      }
+  makeFullPageImgScrollable() {
+    if (this.slides[this.current].classList.contains('slide_visible')) {
+      this.slides[this.current].classList.add('slide_scrollable');
     }
   },
 
-  amendSlideshowFunctionality () {
+  adjustSlideshowFunctionalityToFullPageImage() {
     this.slideshow.classList.add('slideshow_scrollbar_hidden');
     this.closeIcon.classList.add('icon_close-img-fullpage');
   },
 
-  makeSlideVerticallyScrollableWithArrowKeys () {
-    for (const slide of this.slides) {
-      if (slide.classList.contains('slide_visible')) {
-        slide.setAttribute('tabindex', '0');
-        slide.focus();
-        this.slideWithRecentFullPageImg = slide;
-      }
+  makeSlideVerticallyScrollableWithArrowKeys() {
+    if (this.slides[this.current].classList.contains('slide_visible')) {
+      this.slides[this.current].setAttribute('tabindex', '0');
+      this.slides[this.current].focus();
     }
   },
 
-  userWantsToHideFullPageImg () {
-    const imgFullPage = this.closeIcon.classList.contains('icon_close-img-fullpage');
-    if (imgFullPage) {
-      if ((event.target === this.closeIcon && event.type === 'click') || (event.key === 'Escape')) {
-        return true;
-      }
+  userWantsToHideFullPageImage(event) {
+    if (!this.isOnlyCloseIconWhenFullPageImage()) {
+      return;
     }
-  },
 
-  userWantsToCloseSlideshowLightbox () {
-    if ((event.target === this.closeIcon && event.type === 'click') ||
-      (document.activeElement === this.closeIcon && event.key === 'Enter') ||
-      (event.key === 'Escape')) {
+    if (event.target === this.closeIcon && event.type === 'click' || event.key === 'Escape') {
       return true;
     }
   },
 
-  closeSlideshowLightbox () {
-    const zoomInAndCloseIcons = document.querySelectorAll('.icon_zoom, .icon_close');
-    this.slideshowLightbox.classList.remove('slideshow_visible');
-    this.slideshowLightbox.classList.add('slideshow_hidden');
-    this.slideshowLightbox.addEventListener('animationend', () => {
-      this.slideshowLightbox.classList.remove('slideshow_hidden');
-    });
-    for (const iconWontBeFocusable of zoomInAndCloseIcons) {
-      iconWontBeFocusable.removeAttribute('tabindex');
+  userWantsToCloseSlideshowLightbox(event) {
+    if (event.target === this.closeIcon && event.type === 'click' ||
+      document.activeElement === this.closeIcon && event.key === 'Enter' ||
+      event.key === 'Escape') {
+      return true;
     }
-    document.removeEventListener('keydown', this.referenceToTabThroughZoomInAndCloseIconsInLoop);
+  },
+
+  hideSlideshow() {
+    this.toggleVisibility(this.slideshow, 'slideshow_hidden', 'slideshow_visible');
+
+    this.terminateClosingAnimation();
+
+    this.makeZoomAndCloseIconsNotFocusable();
+
+    document.removeEventListener('keydown', this.tabThroughZoomAndCloseIcons.bind(this));
+
     for (const event of ['click', 'keydown']) {
-      document.removeEventListener(event, this.referenceToControlSlideshowLightbox);
+      document.removeEventListener(event, this.controlSlideshowLightbox.bind(this));
     }
 
     restoreBodyAfterStoppingFullPageElementJerk();
 
-    continuationOfTabbingFrom.thumbnailImgWhichOpenedSlideshow.focus();
+    this.continueTabbingFromThumbnailImageWhichOpenedSlideshow();
   },
 
-  showFullPageImgByClickingOnImg () {
-    for (const imgToBeFullPage of this.slideshowImgs) {
-      if (event.target === imgToBeFullPage) {
-        this.showFullPageImg();
-      }
+  terminateClosingAnimation() {
+    this.slideshow.addEventListener('animationend', () => {
+      this.slideshow.classList.remove('slideshow_hidden');
+    });
+  },
+
+  makeZoomAndCloseIconsNotFocusable() {
+    for (const icon of this.icons) {
+      icon.removeAttribute('tabindex');
     }
   },
 
-  hideFullPageImgIfResized () {
-    if (window.innerWidth < 1058 || window.innerWidth > 1920) {
-      this.hideFullPageImg();
-    }
-  }
+  continueTabbingFromThumbnailImageWhichOpenedSlideshow() {
+    tabbingFrom.thumbnailImage.focus();
+  },
 
+  hideFullPageImageIfResized() {
+    if (this.isDeviceWithFullPageImageUnavailable()) {
+      this.closeFullPageImage();
+    }
+  },
+
+  isDeviceWithFullPageImageUnavailable() {
+    return window.innerWidth < 1058 || window.innerWidth > 1920;
+  },
+
+  rememberWhichThumbnailImageOpenedSlideshow(event) {
+    tabbingFrom.thumbnailImage = event.target;
+  },
 };
