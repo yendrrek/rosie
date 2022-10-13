@@ -28,12 +28,6 @@ function extendMargin(widerBody, narrowerBody) {
 }
 
 export function restoreBodyAfterStoppingFullPageElementJerk() {
-  const pageWithThumbnailImages = document.querySelectorAll('.thumbnail-clickable-area')[0];
-
-  if (!pageWithThumbnailImages) {
-    return;
-  }
-
   restoreMargin();
   restoreBodyScrollbar();
 }

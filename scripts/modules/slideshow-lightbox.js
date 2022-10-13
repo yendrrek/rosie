@@ -1,11 +1,9 @@
 'use strict';
 
 import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
-
 import { tabbingFrom } from '../main.js';
 
 export const SlideshowLightbox = {
-
   current: null,
   slides: document.querySelectorAll('.slide'),
   slideshow: document.querySelector('.slideshow'),

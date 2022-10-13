@@ -6,10 +6,10 @@ import {
   restoreBodyAfterStoppingFullPageElementJerk
 } from './helper-methods.js';
 
-import { continuationOfTabbingFrom } from '../main.js';
+import { tabbingFrom } from '../main.js';
 
 export function addProductToBasket(event) {
-  continuationOfTabbingFrom.addToBasketBtn = $(event.currentTarget).find($('.btn_add-to-basket'));
+  tabbingFrom.addToBasketButton = $(event.currentTarget).find($('.btn_add-to-basket'));
   $.ajax({
     url: 'basket',
     method: 'POST',
@@ -114,6 +114,7 @@ function trapFocusInStockLimitInfo(event) {
     stockLimitInfoLinkToContactForm.focus();
     return;
   }
+
   event.preventDefault();
   stockLimitInfoCloseButton.focus();
 }
@@ -135,12 +136,12 @@ function hideInfo(lightbox, styleToShowLightbox, styleToHideLightbox) {
   for (const modals of lightbox) {
     modals.classList.remove(styleToShowLightbox);
     modals.classList.add(styleToHideLightbox);
-    endAnimationWhichHidesInfo(modals, 'animationend', styleToHideLightbox);
+    endAnimationWhichHidesInfo(modals, styleToHideLightbox);
   }
 }
 
-function endAnimationWhichHidesInfo(modals, eventType, styleToHideLightbox) {
-  modals.addEventListener(eventType, () => {
+function endAnimationWhichHidesInfo(modals, styleToHideLightbox) {
+  modals.addEventListener('animationend', () => {
     modals.classList.remove(styleToHideLightbox);
   });
 }
@@ -152,5 +153,5 @@ function continueTabbing() {
     stockLimitInfoCloseBtn.setAttribute('tabindex', '-1');
   }
 
-  continuationOfTabbingFrom.addToBasketBtn.focus();
+  tabbingFrom.addToBasketButton.focus();
 }

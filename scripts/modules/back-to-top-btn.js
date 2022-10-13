@@ -8,8 +8,8 @@ export function controlBackToTopButton() {
     return;
   }
 
-   backToTopButton.classList.remove(styles[1]);
-   backToTopButton.classList.add(styles[0]);
+  backToTopButton.classList.remove(styles[1]);
+  backToTopButton.classList.add(styles[0]);
 }
 
 function isVisibleBackToTopButton() {
