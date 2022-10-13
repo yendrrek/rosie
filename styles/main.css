@@ -941,6 +941,7 @@ The outline is made of three overlapping triangles.
 
 .slide_scrollable {
   overflow-y:  auto;
+  overflow-x: hidden;
 }
 
 @-webkit-keyframes zoomin {
