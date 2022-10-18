@@ -5,6 +5,8 @@ import { tabbingFrom } from '../main.js';
 
 export const SlideshowLightbox = {
   current: null,
+  boundTabThroughZoomAndCloseIcons: null,
+  boundControlSlideshowLightbox: null,
   slides: document.querySelectorAll('.slide'),
   slideshow: document.querySelector('.slideshow'),
   images: document.querySelectorAll('.slide__img-rectangle, .slide__img-square'),
@@ -19,6 +21,7 @@ export const SlideshowLightbox = {
 
     for (const [currentImage] of thumbnailImages.entries()) {
       if (this.isActivatedThumbnailImage(event, thumbnailImages[currentImage])) {
+        stopFullPageElementJerk();
 
         this.slideshow.classList.add('slideshow_visible');
 
@@ -28,7 +31,6 @@ export const SlideshowLightbox = {
 
         this.rememberWhichThumbnailImageOpenedSlideshow(event);
 
-        stopFullPageElementJerk();
       }
     }
   },
@@ -80,10 +82,12 @@ export const SlideshowLightbox = {
     
     this.makeSlideshowZoomAndCloseIconsFocusable();
 
-    document.addEventListener('keydown', this.tabThroughZoomAndCloseIcons.bind(this));
+    this.boundTabThroughZoomAndCloseIcons = this.tabThroughZoomAndCloseIcons.bind(this);
+    document.addEventListener('keydown', this.boundTabThroughZoomAndCloseIcons);
 
+    this.boundControlSlideshowLightbox = this.controlSlideshowLightbox.bind(this);
     for (const event of ['click', 'keydown']) {
-      document.addEventListener(event, this.controlSlideshowLightbox.bind(this));
+      document.addEventListener(event, this.boundControlSlideshowLightbox);
     }
   },
 
@@ -232,7 +236,7 @@ export const SlideshowLightbox = {
   },
 
   makeSlideUnfocusableToPreserveTabbingThroughZoomAndCloseIconsIfUserClicksAnywhereOnSlide(currentSlide) {
-      this.slides[currentSlide].removeAttribute('tabindex');
+    this.slides[currentSlide].removeAttribute('tabindex');
   },
 
   restoreSlideshowFunctionality() {
@@ -304,7 +308,7 @@ export const SlideshowLightbox = {
 
   userWantsToHideFullPageImage(event) {
     if (!this.isOnlyCloseIconWhenFullPageImage()) {
-      return;
+      return false;
     }
 
     if (event.target === this.closeIcon && event.type === 'click' || event.key === 'Escape') {
@@ -327,10 +331,10 @@ export const SlideshowLightbox = {
 
     this.makeZoomAndCloseIconsNotFocusable();
 
-    document.removeEventListener('keydown', this.tabThroughZoomAndCloseIcons.bind(this));
+    document.removeEventListener('keydown', this.boundTabThroughZoomAndCloseIcons);
 
     for (const event of ['click', 'keydown']) {
-      document.removeEventListener(event, this.controlSlideshowLightbox.bind(this));
+      document.removeEventListener(event, this.boundControlSlideshowLightbox);
     }
 
     restoreBodyAfterStoppingFullPageElementJerk();
