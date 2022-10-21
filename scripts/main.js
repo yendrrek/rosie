@@ -1,233 +1,126 @@
-/**
- * All modules are loaded dynamically. It is probably overkill as loading all code 
- * even if it is not immediately needed does not cause any performance issues, but
- * I wanted to try dynamic loading. It also helped me simplify some parts of code.
- *
- * All lightboxes are shown in full-page and consist of two animated modals, 
- * one is a background, the other is in the centre and contains text.
-*/
-
 'use strict';
 
-export const continuationOfTabbingFrom = { 
-  thumbnailImgWhichOpenedSlideshow: null,
-  addToBasketBtn: null
+import {controlBackToTopButton} from './modules/back-to-top-btn.js';
+import {controlHeadingWithBreadcrumbs} from './modules/heading-with-breadcrumbs.js';
+import {addProductToBasket} from './modules/adding-products-to-basket.js';
+import {sendMessageViaContactForm} from './modules/contact-form.js';
+import {dontResubmitContactFormWhenPageReloaded} from './modules/contact-form.js';
+import {toggleSubNavigationOnTouchscreensWiderThan1170px} from './modules/control-activation-of-subnav-on-big-touchscreens.js';
+import {openShopExtraImageLightbox} from './modules/extra-img-lightbox-in-shop.js';
+import {closeShopExtraImageLightbox} from './modules/extra-img-lightbox-in-shop.js';
+import {enableOutline} from './modules/enabled-outline-for-keyboard-users.js';
+import {controlContactFormFieldsOutline} from './modules/contact-form-fields-outline.js';
+import {tabThroughNavigationBar} from './modules/tabbing-through-nav.js';
+import {insertFotorama} from './modules/fotorama.js';
+import {removeFotorama} from './modules/fotorama.js';
+import {toggleNavigationViaHamburgerIcon} from './modules/navigation-for-touchscreens-narrower-than-1171px.js';
+import {toggleSubNavigation} from './modules/navigation-for-touchscreens-narrower-than-1171px.js';
+import {controlBasket} from './modules/basket-operations.js';
+import {openPostageAndReturnsPolicy} from './modules/postage-returns-policy-lightbox.js';
+import {fixStylesInSafariOnly} from './modules/safari-fix-styles.js';
+import {SlideshowLightbox} from './modules/slideshow-lightbox.js';
+import {hideOutline} from './modules/disabled-outline-for-keyboard-users.js';
+
+export const tabbingFrom = {
+  thumbnailImage: null,
+  addToBasketButton: null
 };
 
-function loadModulesOnDemand() {
-  loadModulesActivatedByScrollEvent();
-  loadModuleAddingProductsToBasket();
-  loadModuleContactForm();
-  loadModuleControlActivationOfSubNavOnBigTouchscreens();
-  loadModuleExtraImgLightboxInShop();
-  loadModulesForKeyboardUsers();
-  loadModuleFotorama();
-  loadModuleNavigationForTouchscreensNarrowerThan1171px();
-  loadModuleOperationsInsideBasket();
-  loadModulePostageReturnsPolicyLightbox();
-  loadModuleSafariFixStyles();
-  loadModuleSlideshowLightbox();
-  document.addEventListener('mousedown', loadModuleContactFormFieldsOutline);
-}
+document.addEventListener('scroll', () => {
+  controlBackToTopButton();
+  controlHeadingWithBreadcrumbs();
+});
 
-loadModulesOnDemand();
-
-function loadModulesActivatedByScrollEvent() {
-  document.addEventListener('scroll', () => {
-    loadModuleBackToTopButton();
-    loadModuleHeadingWithBreadcrumbs();
-  });
-}
-
-function loadModuleBackToTopButton() {
-  import('./modules/back-to-top-btn.js')
-  .then(module => {
-    module.controlBackToTopButton();
-  });
-}
-
-function loadModuleHeadingWithBreadcrumbs() {
-  import('./modules/heading-with-breadcrumbs.js')
-  .then(module => {
-    module.controlHeadingWithBreadcrumbs();
-  });
-}
-
-function loadModuleAddingProductsToBasket() {
-  $('form:not(.contact-form__items)').on('submit', e => {
-    stayOnPage();
-    import('./modules/adding-products-to-basket.js')
-    .then(module => {
-      module.addProductToBasket(e);
-    });
-  });
-}
-
-function stayOnPage() {
+$('form:not(.contact-form__items)').on('submit', event => {
   event.preventDefault();
-}
+  addProductToBasket(event);
+});
 
-function loadModuleContactForm() {
-  $('.contact-form__items').on('submit', event => {
-    stayOnPage();
-    import('./modules/contact-form.js')
-    .then(module => {
-      module.sendMessgeViaContactForm(event);
-      module.dontResubmitContactFormWhenPageReloaded();
-    });
-  });
-}
+$('.contact-form__items').on('submit', event => {
+  event.preventDefault();
+  sendMessageViaContactForm(event);
+  dontResubmitContactFormWhenPageReloaded();
+});
 
-function loadModuleControlActivationOfSubNavOnBigTouchscreens() {
-  document.addEventListener('touchstart', event => {
-    import('./modules/control-activation-of-subnav-on-big-touchscreens.js')
-    .then(module => {
-      module.showOrHideSubNavOnTouchscreensWiderThan1170px(event);
-    });
-  });
-}
+document.addEventListener('touchstart', event => {
+  toggleSubNavigationOnTouchscreensWiderThan1170px(event);
+});
 
-function loadModuleExtraImgLightboxInShop() {
+(() => {
   if (window.location.href.includes('shop')) {
-    import('./modules/extra-img-lightbox-in-shop.js')
-    .then(module => {
-      document.addEventListener('click', event => module.openShopExtraImageLightbox(event));
-      document.addEventListener('keydown', event => module.openShopExtraImageLightbox(event));
-      document.addEventListener('click', event => module.closeShopExtraImageLightbox(event));
-      document.addEventListener('keydown', event => module.closeShopExtraImageLightbox(event));
-    });
-  }
-}
+      const controlShopExtraImageLightbox = event => {
+        openShopExtraImageLightbox(event);
+        closeShopExtraImageLightbox(event);
+      };
+      ['click', 'keydown'].forEach(event => document.addEventListener(event, controlShopExtraImageLightbox));
 
-function loadModulesForKeyboardUsers() {
+      insertFotorama();
+      window.addEventListener('resize', () => removeFotorama());
+      window.addEventListener('resize', () => insertFotorama());
+  }
+})();
+
+(() => {
+  if (window.location.href.includes('contact')) {
+    ['mousedown', 'keydown'].forEach(event => document.addEventListener(event, controlContactFormFieldsOutline));
+  }
+})();
+
+document.addEventListener('keydown', tabThroughNavigationBar);
+
+(() => {
   document.addEventListener('keydown', event => {
-    if (event.key === 'Tab' || (event.shiftKey && event.key === 'Tab')) {
-      loadModuleEnabledOutlineForKeyboardUsers();
-      loadModuleContactFormFieldsOutline();
-      loadModuleTabbingThroughNavigation(event);
+    if (event.key === 'Tab' || event.shiftKey && event.key === 'Tab') {
+      enableOutline();
     }
   });
-}
 
-function loadModuleEnabledOutlineForKeyboardUsers() {
-  import('./modules/enabled-outline-for-keyboard-users.js')
-  .then(module => {
-    module.enableOutline();
-  });
-}
+  document.addEventListener('mousedown', () => hideOutline());
+})();
 
-function loadModuleContactFormFieldsOutline() {
-  if (window.location.href.includes('contact')) {
-    import('./modules/contact-form-fields-outline.js')
-    .then(module => {
-      module.controlContactFormFieldsOutline();
-    });
-  }
-}
-
-function loadModuleTabbingThroughNavigation(event) {
-  import ('./modules/tabbing-through-nav.js')
-  .then(module => {
-    module.tabThroughNav(event);
-  });
-}
-
-function loadModuleFotorama() {
-  if (window.location.href.includes('shop')) {
-    import('./modules/fotorama.js')
-    .then(module => {
-      module.insertFotoramaForScreensNarrowerThan1170px();
-      reactToViewportSizeChangedInDevTools(module);
-    });
-  }
-}
-
-function loadModuleNavigationForTouchscreensNarrowerThan1171px() {
+(() => {
   const hamburgerMenuIcon = document.querySelector('.hamburger');
   const subNavActivatorForScreensNarrowerThan1171px = document.querySelector('#small-subnav-activator');
+
   if (hamburgerMenuIcon) {
     hamburgerMenuIcon.addEventListener('click', () => {
-      import('./modules/navigation-for-touchscreens-narrower-than-1171px.js')
-      .then(module => {
-        module.openOrCloseHamburgerMenu();
-        subNavActivatorForScreensNarrowerThan1171px.addEventListener('click', () => module.openOrCloseSubNav());
-      });
+      toggleNavigationViaHamburgerIcon();
+      subNavActivatorForScreensNarrowerThan1171px.addEventListener('click', () => toggleSubNavigation());
     });
   }
-}
+})();
 
-function loadModuleOperationsInsideBasket() {
-  $('.btn-basket_remove-product-single, .btn-basket_remove-product-all').on('click', event => {
-    stayOnPage();
-    importModuleOperationsInsideBasket(event);
-  });
-  $('.table__product-qty-menu').on('change', event => {
-    stayOnPage();
-    importModuleOperationsInsideBasket(event);
-  });
-}
+$('.btn-basket_remove-product-single, .btn-basket_remove-product-all').on('click', event => {
+  event.preventDefault();
+  controlBasket(event);
+});
+$('.table__product-qty-menu').on('change', event => {
+  event.preventDefault();
+  controlBasket(event);
+});
 
-function importModuleOperationsInsideBasket(event) {
-  import('./modules/basket-operations.js')
-  .then(module => {
-    module.controlBasket(event);
-  });
-}
-
-function loadModulePostageReturnsPolicyLightbox() {
-  const policyActivators = document.querySelectorAll('.policy-activator');
-  for (const activator of policyActivators) {
-    activator.addEventListener('click', () => {
-      import('./modules/postage-returns-policy-lightbox.js')
-      .then(module => {
-        module.openPPRPolicyLightbox();
-      });
-    });
+(() => {
+  const isShopOrBasketPage = () => ['shop', 'basket'].some(page => window.location.href.includes(page));
+  if (isShopOrBasketPage()) {
+    const postagePolicyActivators = Array.from(document.querySelectorAll('.policy-activator'));
+    postagePolicyActivators.forEach(activator => activator.addEventListener('click', () => openPostageAndReturnsPolicy()));
   }
-}
+})();
 
-function loadModuleSafariFixStyles() {
-  const isSafari = (
-    /Apple Computer/.test(navigator.vendor) &&
-    (/Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent))
-  );
-  if (isSafari) {
-    import('./modules/safari-fix-styles.js')
-    .then(module => {
-      module.fixStylesInSafariOnly();
-    });
+(() => {
+  const isSafari = () => /Apple Computer/.test(navigator.vendor) && (/Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent));
+
+  if (isSafari()) {
+    fixStylesInSafariOnly();
   }
-}
+})();
 
-function loadModuleSlideshowLightbox() {
-  const pagesWithSlideshowGallery = (
-    window.location.href.includes('all-works') ||
-    window.location.href.includes('geometry') ||
-    window.location.href.includes('stained-glass') ||
-    window.location.href.includes('ceramic-tiles') ||
-    window.location.href.includes('paintings')
-  );
-  if (pagesWithSlideshowGallery) {
-    import('./modules/slideshow-lightbox.js')
-    .then(module => {
-      for (const event of ['click', 'keydown']) {
-        document.addEventListener(event, () => module.SlideshowLightbox.openSlideshowLightbox(event));
-      }
-      reactToViewportSizeChangedInDevTools(module);
-    });
+(() => {
+  const isArtworkPage = () => ['all-works', 'geometry', 'stained-glass', 'ceramic-tiles', 'paintings'].find(page => window.location.href.includes(page));
+
+  if (isArtworkPage()) {
+    ['click', 'keydown'].forEach(event => SlideshowLightbox.showSlideshowByClickingThumbnailImage(event));
+    window.addEventListener('resize', () => SlideshowLightbox.hideFullPageImageIfResized());
   }
-}
+})();
 
-function reactToViewportSizeChangedInDevTools(module) {
-  if (module.SlideshowLightbox) {
-    window.addEventListener('resize', () => module.SlideshowLightbox.hideFullPageImgIfResized());
-  } else if (module.insertFotoramaForScreensNarrowerThan1170px &&
-    module.removeFotoramaForScreensWiderThan1169px) {
-    window.addEventListener('resize', () => module.removeFotoramaForScreensWiderThan1169px());
-    window.addEventListener('resize', () => module.insertFotoramaForScreensNarrowerThan1170px());
-  }
-}
-
-import { hideOutline } from './modules/disabled-outline-for-keyboard-users.js';
-
-document.addEventListener('mousedown', () => hideOutline());
