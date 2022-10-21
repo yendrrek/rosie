@@ -18,7 +18,7 @@ import {toggleSubNavigation} from './modules/navigation-for-touchscreens-narrowe
 import {controlBasket} from './modules/basket-operations.js';
 import {openPostageAndReturnsPolicy} from './modules/postage-returns-policy-lightbox.js';
 import {fixStylesInSafariOnly} from './modules/safari-fix-styles.js';
-import {SlideshowLightbox} from './modules/slideshow-lightbox.js';
+import {Slideshow} from './modules/slideshow.js';
 import {hideOutline} from './modules/disabled-outline-for-keyboard-users.js';
 
 export const tabbingFrom = {
@@ -119,8 +119,8 @@ $('.table__product-qty-menu').on('change', event => {
   const isArtworkPage = () => ['all-works', 'geometry', 'stained-glass', 'ceramic-tiles', 'paintings'].find(page => window.location.href.includes(page));
 
   if (isArtworkPage()) {
-    ['click', 'keydown'].forEach(event => SlideshowLightbox.showSlideshowByClickingThumbnailImage(event));
-    window.addEventListener('resize', () => SlideshowLightbox.hideFullPageImageIfResized());
+    ['click', 'keydown'].forEach(_event => document.addEventListener(_event,event => Slideshow.showSlideshow(event)));
+    window.addEventListener('resize', () => Slideshow.hideFullPageImageIfResized());
   }
 })();
 

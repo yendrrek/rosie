@@ -3,7 +3,7 @@
 import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 import { tabbingFrom } from '../main.js';
 
-export const SlideshowLightbox = {
+export const Slideshow = {
   current: null,
   boundTabThroughZoomAndCloseIcons: null,
   boundControlSlideshowLightbox: null,
@@ -16,7 +16,7 @@ export const SlideshowLightbox = {
   screenCenter: document.body.clientWidth / 2,
   isTouchscreenNarrowerThan1058px: window.innerWidth < 1058,
 
-  showSlideshowByClickingThumbnailImage(event) {
+  showSlideshow(event) {
     const thumbnailImages = document.querySelectorAll('.thumbnail-clickable-area');
 
     for (const [currentImage] of thumbnailImages.entries()) {
