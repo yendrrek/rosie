@@ -47,13 +47,8 @@ function hideSubNavigationUponTappingAnywhereApartFromSubNavigationLinks(event) 
 }
 
 function isShownSubNavigationToMakeLinksWork(event) {
-  const subNavigationLinks = document.querySelectorAll('.subnav__link');
-
-  for (const link of subNavigationLinks) {
-    if (event.target === link) {
-      return true;
-    }
-  }
+  const subNavigationLinks = Array.from(document.querySelectorAll('.subnav__link'));
+  return subNavigationLinks.some(link => event.target === link);
 }
 
 function removeAllWorksItemBackgroundStyle() {
