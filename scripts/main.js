@@ -6,8 +6,8 @@ import {addProductToBasket} from './modules/adding-products-to-basket.js';
 import {sendMessageViaContactForm} from './modules/contact-form.js';
 import {dontResubmitContactFormWhenPageReloaded} from './modules/contact-form.js';
 import {toggleSubNavigationOnTouchscreensWiderThan1170px} from './modules/control-activation-of-subnav-on-big-touchscreens.js';
-import {openShopExtraImageLightbox} from './modules/extra-img-lightbox-in-shop.js';
-import {closeShopExtraImageLightbox} from './modules/extra-img-lightbox-in-shop.js';
+import {openShopExtraImage} from './modules/extra-img-lightbox-in-shop.js';
+import {closeShopExtraImage} from './modules/extra-img-lightbox-in-shop.js';
 import {enableOutline} from './modules/enabled-outline-for-keyboard-users.js';
 import {controlContactFormFieldsOutline} from './modules/contact-form-fields-outline.js';
 import {tabThroughNavigationBar} from './modules/tabbing-through-nav.js';
@@ -48,11 +48,11 @@ document.addEventListener('touchstart', event => {
 
 (() => {
   if (window.location.href.includes('shop')) {
-      const controlShopExtraImageLightbox = event => {
-        openShopExtraImageLightbox(event);
-        closeShopExtraImageLightbox(event);
+      const controlShopExtraImage = event => {
+        openShopExtraImage(event);
+        closeShopExtraImage(event);
       };
-      ['click', 'keydown'].forEach(event => document.addEventListener(event, controlShopExtraImageLightbox));
+      ['click', 'keydown'].forEach(_event => document.addEventListener(_event, controlShopExtraImage));
 
       insertFotorama();
       window.addEventListener('resize', () => removeFotorama());
@@ -62,7 +62,7 @@ document.addEventListener('touchstart', event => {
 
 (() => {
   if (window.location.href.includes('contact')) {
-    ['mousedown', 'keydown'].forEach(event => document.addEventListener(event, controlContactFormFieldsOutline));
+    ['mousedown', 'keydown'].forEach(_event => document.addEventListener(_event, controlContactFormFieldsOutline));
   }
 })();
 

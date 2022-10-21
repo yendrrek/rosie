@@ -2,7 +2,7 @@
 
 import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } from './helper-methods.js';
 
-export function openShopExtraImageLightbox(event) {
+export function openShopExtraImage(event) {
   const extraImageActivators = document.querySelectorAll('.extra-img-activator');
 
   for (const [index] of extraImageActivators.entries()) {
@@ -44,7 +44,7 @@ function trapFocus(event, currentExtraImageInnerModal) {
   }
 }
 
-export function closeShopExtraImageLightbox(event) {
+export function closeShopExtraImage(event) {
   const extraImageCloseButtons = document.querySelectorAll('.close-popup-btn_shop-extra-image');
 
   for (const [index] of extraImageCloseButtons.entries()) {
