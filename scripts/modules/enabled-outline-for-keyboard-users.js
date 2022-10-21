@@ -22,11 +22,10 @@ export const focusableElements = () => document.querySelectorAll(`
 `);
 
 export function enableOutline() {
-  document.addEventListener('focusin', () => showOutline);
+  document.addEventListener('focusin', showOutline());
 }
 
 function showOutline() {
-  for (const elements of focusableElements()) {
-    elements.classList.remove('outline-none');
-  }
+  focusableElements().forEach(element => element.classList.remove('outline-none'));
+  return null;
 }
