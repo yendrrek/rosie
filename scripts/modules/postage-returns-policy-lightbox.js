@@ -5,9 +5,7 @@ import { stopFullPageElementJerk, restoreBodyAfterStoppingFullPageElementJerk } 
 export function openPostageAndReturnsPolicy() {
   const policyLightbox = document.querySelectorAll('#returns-policy-outer-modal, #returns-policy-inner-modal');
 
-  for (const modals of policyLightbox) {
-    modals.classList.add('policy-open-anim');
-  }
+  policyLightbox.forEach(modals => modals.classList.add('policy-open-anim'));
 
   stopFullPageElementJerk();
 
@@ -21,9 +19,7 @@ function preparePostageAndReturnsPolicyKeyboardNavigation() {
 
   toggleItemFocusability(0);
 
-  for (const event of ['click', 'keydown']) {
-    document.addEventListener(event, navigatePostageAndReturnPolicy);
-  }
+  ['click', 'keydown'].forEach(event => document.addEventListener(event, navigatePostageAndReturnPolicy));
 }
 
 function toggleItemFocusability(tabindexValue) {
@@ -34,9 +30,7 @@ function toggleItemFocusability(tabindexValue) {
     #third-contact-form-link
   `);
 
-  for (const item of items) {
-    item.setAttribute('tabindex', tabindexValue);
-  }
+  items.forEach(item => item.setAttribute('tabindex', tabindexValue));
 }
 
 function navigatePostageAndReturnPolicy(event) {
@@ -48,6 +42,8 @@ function navigatePostageAndReturnPolicy(event) {
     closePostageAndReturnPolicy();
 
     toggleItemFocusability(-1);
+
+    ['click', 'keydown'].forEach(event => document.removeEventListener(event, navigatePostageAndReturnPolicy));
   }
 }
 
@@ -98,9 +94,5 @@ function closePostageAndReturnPolicy() {
   }
 
   restoreBodyAfterStoppingFullPageElementJerk();
-
-  for (const event of ['click', 'keydown']) {
-    document.removeEventListener(event, navigatePostageAndReturnPolicy);
-  }
 }
   
