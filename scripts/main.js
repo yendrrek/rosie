@@ -17,7 +17,7 @@ import {toggleNavigationViaHamburgerIcon} from './modules/navigation-for-touchsc
 import {toggleSubNavigation} from './modules/navigation-for-touchscreens-narrower-than-1170px.js';
 import {controlBasket} from './modules/basket-operations.js';
 import {openPostageAndReturnsPolicy} from './modules/postage-returns-policy-lightbox.js';
-import {fixStylesInSafariOnly} from './modules/safari-fix-styles.js';
+import {fixElementsInSafariOnly} from './modules/safari-fix-styles.js';
 import {Slideshow} from './modules/slideshow.js';
 import {hideOutline} from './modules/disabled-outline-for-keyboard-users.js';
 
@@ -111,7 +111,7 @@ $('.table__product-qty-menu').on('change', event => {
   const isSafari = () => /Apple Computer/.test(navigator.vendor) && (/Safari/.test(navigator.userAgent) || /Mobile/.test(navigator.userAgent));
 
   if (isSafari()) {
-    fixStylesInSafariOnly();
+    fixElementsInSafariOnly();
   }
 })();
 
