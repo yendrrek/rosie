@@ -19,9 +19,7 @@ function isExtraImageActivated(event, extraImageActivators, index) {
 }
 
 function runOpeningAnimation(index) {
-  for (const modals of getCurrentExtraImage(index)) {
-    modals.classList.add('shop__extra-img_visible');
-  }
+  getCurrentExtraImage(index).forEach(modals => modals.classList.add('shop__extra-img_visible'));
 }
 
 function getCurrentExtraImage(index) {
