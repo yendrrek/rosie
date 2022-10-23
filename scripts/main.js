@@ -13,8 +13,8 @@ import {controlContactFormFieldsOutline} from './modules/contact-form-fields-out
 import {tabThroughNavigationBar} from './modules/tabbing-through-nav.js';
 import {insertFotorama} from './modules/fotorama.js';
 import {removeFotorama} from './modules/fotorama.js';
-import {toggleNavigationViaHamburgerIcon} from './modules/navigation-for-touchscreens-narrower-than-1171px.js';
-import {toggleSubNavigation} from './modules/navigation-for-touchscreens-narrower-than-1171px.js';
+import {toggleNavigationViaHamburgerIcon} from './modules/navigation-for-touchscreens-narrower-than-1170px.js';
+import {toggleSubNavigation} from './modules/navigation-for-touchscreens-narrower-than-1170px.js';
 import {controlBasket} from './modules/basket-operations.js';
 import {openPostageAndReturnsPolicy} from './modules/postage-returns-policy-lightbox.js';
 import {fixStylesInSafariOnly} from './modules/safari-fix-styles.js';

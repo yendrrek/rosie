@@ -14,7 +14,5 @@ export function toggleSubNavigation() {
 
   smallSubNavigation.classList.toggle('subnav-small_visible');
 
-  for (const listItem of listItemsOfSmallSubNavigation) {
-    listItem.classList.toggle('subnav-small__items_visible');
-  }
+  listItemsOfSmallSubNavigation.forEach(listItem => listItem.classList.toggle('subnav-small__items_visible'));
 }
