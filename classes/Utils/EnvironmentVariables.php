@@ -18,6 +18,7 @@ class EnvironmentVariables
     public static string $sellerPhone = '';
     public static string $user = '';
     public static string $logFilePath = '';
+    public static string $purchaseConfirmationEmailPath = '';
 
     public static function getEnvVars(): void
     {
@@ -35,5 +36,6 @@ class EnvironmentVariables
         self::$sellerPhone = getenv('SELLER_PHONE');
         self::$user = getenv('USER');
         self::$logFilePath = getenv('LOG_FILE_PATH');
+        self::$purchaseConfirmationEmailPath = getenv('PURCHASE_CONFIRMATION_EMAIL_PATH');
     }
 }

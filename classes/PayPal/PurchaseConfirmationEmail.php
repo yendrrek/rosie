@@ -59,7 +59,7 @@ class PurchaseConfirmationEmail
             $mail->isHTML();
             $mail->Subject = 'Purchase confirmation from Rosie Piontek Art. Order ID: ' . $this->orderCapture->orderId;
             ob_start();
-            include '/home/andrzej/dev/rosie/views/purchase-confirmation-email.php';
+            include EnvironmentVariables::$purchaseConfirmationEmailPath . 'purchase-confirmation-email.php';
             $mail->Body = ob_get_clean();
             $mail->AltBody = 'Confirmation is in plain text for non-HTML email readers.';
             $mail->send();
