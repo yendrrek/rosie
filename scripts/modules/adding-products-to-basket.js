@@ -15,7 +15,6 @@ export function addProductToBasket(event) {
     method: 'POST',
     data: $(event.currentTarget).serialize(),
     dataType: 'text',
-
     success: function(response) {
       const $stockLimitInfoOuterModal = $('#stock-limit-info-outer-modal');
       showQuantityInBasketIcon(response);
@@ -25,7 +24,6 @@ export function addProductToBasket(event) {
       }
       openStockLimitInfoInfo($stockLimitInfoOuterModal, response);
     },
-
     error() {
       alert('Problem with receiving reply from the server.');
     }

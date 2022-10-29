@@ -44,7 +44,7 @@ class PurchaseConfirmationEmail
             $mail->Host = 'smtp.hostinger.co.uk';
             $mail->SMTPAuth = true;
             $mail->Port = 587;
-            $mail->Username = EnvironmentVariables::$sellerEmailUsername;
+            $mail->Username = EnvironmentVariables::$rosieEmail;
             $mail->Password = EnvironmentVariables::$sellerEmailPassword;
         }
 

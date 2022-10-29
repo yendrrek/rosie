@@ -2,7 +2,7 @@
 
 import { isInViewport } from './helper-methods.js';
 
-export function sendMessageViaContactForm (event) {
+export function sendMessageViaContactForm(event) {
   event.preventDefault();
   $.ajax({
     method: 'POST',

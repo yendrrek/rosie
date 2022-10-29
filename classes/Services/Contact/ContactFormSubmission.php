@@ -20,7 +20,7 @@ class ContactFormSubmission
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
 
-        $toEmail = EnvironmentVariables::$contactFormAddressee;
+        $toEmail = EnvironmentVariables::$rosieEmail;
         $subject = 'Website contact form';
         $headers = 'From ' . $senderName . '<' . $senderEmailAddress . '>';
 
