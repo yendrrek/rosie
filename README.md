@@ -84,8 +84,6 @@ of all works        |            |       |       |     |
 
  [x] Find a working hack for blurred images in Chrome in the slideshow gallery.
 
- [x] Load JavaScript modules only when they are needed.
-
  [ ] Prepared statements instead of MySQL stored procedures.
 
  [ ] reCAPTCHA in the contact form.
@@ -100,7 +98,6 @@ of all works        |            |       |       |     |
 
  [ ] An animated placeholder for images being loaded in the lightbox gallery.
 
- [ ] Hover effect stays active on a thumbnail image when closing the slideshow gallery lightbox.
 
 
 ## Hacks used  
