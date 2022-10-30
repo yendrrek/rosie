@@ -1616,9 +1616,11 @@ Setting it to 'bold' or '900' doesn't help.
   border: none;
   color: hsl(0, 0%, 20%);
   cursor: pointer;
+  float: right;
   font-family: inherit;
   font-size: 0.938em;
   font-style: italic;
+  margin: 3.368% 9.663% 1.422%
 }
 
 .policy-activator_outline:focus {
@@ -2291,6 +2293,9 @@ Setting it to 'bold' or '900' doesn't help.
     height: 3.251vw;
     width: 5.560vw;
   }
+  .policy-activator {
+    margin: 3.368% 15% 1.422% 0;
+  }
   .policy-activator_font_responsive {
     font-size: 1.283vw;
   }
@@ -2416,6 +2421,9 @@ Setting it to 'bold' or '900' doesn't help.
   .payment-cards {
     margin: 0 5.5% 5.689% 0;
     width: 27.568%;
+  }
+  .policy-activator {
+    margin: 3.368% 5.5% 1.422% 0;
   }
 }
 
