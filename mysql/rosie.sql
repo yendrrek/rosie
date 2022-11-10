@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 10, 2022 at 01:12 PM
+-- Generation Time: Nov 10, 2022 at 09:28 PM
 -- Server version: 10.5.16-MariaDB
 -- PHP Version: 8.1.12
 
@@ -20,8 +20,67 @@ SET time_zone = "+00:00";
 --
 -- Database: `rosie`
 --
-CREATE DATABASE IF NOT EXISTS `rosie` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `rosie`;
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `addToBasket` (IN `userId` CHAR(32), IN `addedProductId` MEDIUMINT, IN `addedQty` TINYINT)   BEGIN
+DECLARE productAlreadyInBasket INT;
+DECLARE currentStockAmount SMALLINT;
+DECLARE currentQty SMALLINT;
+SELECT id INTO productAlreadyInBasket FROM basket WHERE userId=userId AND productId=addedProductId;
+SELECT stock INTO currentStockAmount FROM cards WHERE id=addedProductId;
+SELECT quantity INTO currentQty FROM basket WHERE userId=userId AND productId=addedProductId;
+IF productAlreadyInBasket > 0 THEN
+    IF currentQty + addedQty > currentStockAmount THEN
+        UPDATE basket SET quantity=currentStockAmount, dateModified=NOW() WHERE id=productAlreadyInBasket;
+    ELSE
+        UPDATE basket SET quantity=quantity+addedQty, dateModified=NOW() WHERE id=productAlreadyInBasket;
+    END IF;
+ELSE
+	INSERT INTO basket (userId, productId, quantity)
+	VALUES (userId, addedProductId, addedQty);
+END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getCards` ()   SELECT * FROM cards ORDER BY id ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getSlideshowImgs` (IN `artworkSection` TEXT)   SELECT * FROM slideshow
+WHERE CASE artworkSection WHEN 'All Works'		 THEN id BETWEEN 1  AND 29
+ 					WHEN 'Geometry'      THEN id BETWEEN 12 AND 15
+					WHEN 'Stained Glass' THEN id BETWEEN 16 AND 27
+					WHEN 'Ceramic Tiles' THEN id BETWEEN 28 AND 29
+                    WHEN 'Paintings'	 THEN id BETWEEN 1  AND 11
+					ELSE true
+                    END
+ORDER BY id ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getThumbnailImgs` (IN `artworkSection` TEXT)   SELECT * 
+FROM thumbnailImgs 
+WHERE CASE artworkSection WHEN 'All Works'     THEN id BETWEEN 1  AND 29
+                          WHEN 'Geometry'     THEN id BETWEEN 12 AND 15
+                          WHEN 'Stained Glass' THEN id BETWEEN 16 AND 27
+                          WHEN 'Ceramic Tiles' THEN id BETWEEN 28 AND 29
+                          WHEN 'Paintings'	  THEN id BETWEEN 1  AND 11
+                          END
+ORDER BY id ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `removeFromBasket` (IN `userId` CHAR(32), IN `inBasketProductId` INT)  NO SQL BEGIN
+IF inBasketProductId > 0 THEN
+   DELETE FROM basket WHERE userId=userId AND productId=inBasketProductId;
+ELSE
+   DELETE FROM basket WHERE userId=userId;
+END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateBasket` (IN `userId` CHAR(32), IN `inBasketProductId` MEDIUMINT, IN `newQty` TINYINT)   BEGIN
+IF newQty > 0 THEN
+UPDATE basket SET quantity=newQty, dateModified=NOW() WHERE userId=userId AND productId=inBasketProductId;
+END IF;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -246,54 +305,50 @@ CREATE TABLE `orders` (
 
 CREATE TABLE `slideshow` (
   `id` tinyint(2) UNSIGNED NOT NULL,
-  `slideshowImgSrc` varchar(500) NOT NULL,
   `slideshowImgAlt` varchar(500) NOT NULL,
   `slideshowImgTitle` varchar(500) NOT NULL,
   `slideshowImgDesc` varchar(500) NOT NULL,
   `slideshowImgDimm` varchar(500) NOT NULL,
   `slideshowSoldInfo` varchar(500) NOT NULL,
-  `1536px` varchar(255) NOT NULL,
-  `1440px` varchar(255) NOT NULL,
   `1366px` varchar(255) NOT NULL,
   `768px` varchar(255) NOT NULL,
-  `414px` varchar(255) NOT NULL,
-  `375px` varchar(255) NOT NULL
+  `414px` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `slideshow`
 --
 
-INSERT INTO `slideshow` (`id`, `slideshowImgSrc`, `slideshowImgAlt`, `slideshowImgTitle`, `slideshowImgDesc`, `slideshowImgDimm`, `slideshowSoldInfo`, `1536px`, `1440px`, `1366px`, `768px`, `414px`, `375px`) VALUES
-(1, 'img/img-slideshow/1920/1-paintings/the-nightingale-and-the-rose.jpg', 'The Nightingale and the Rose', 'The Nightingale and the Rose, 2015', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1536/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/1440/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/1366/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/768/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/414/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/375/1-paintings/the-nightingale-and-the-rose.jpg'),
-(2, 'img/img-slideshow/1920/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'Orange Tree in a Moorish Arch', 'Orange Tree in a Moorish Arch, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1536/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/1440/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/1366/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/768/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/414/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/375/1-paintings/orange-tree-in-a-moorish-arch.jpg'),
-(3, 'img/img-slideshow/1920/1-paintings/st-francis-and-the-wolf.jpg', 'St Francis and the Wolf', 'St Francis and the Wolf, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1536/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/1440/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/1366/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/768/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/414/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/375/1-paintings/st-francis-and-the-wolf.jpg'),
-(4, 'img/img-slideshow/1920/1-paintings/sacred-heart-of-jesus.jpg', 'Sacred Heart of Jesus', 'Sacred Heart of Jesus, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '57.5 x 41 cm (23 x 16 in)', '*Private collection', 'img/img-slideshow/1536/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/1440/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/1366/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/768/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/414/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/375/1-paintings/sacred-heart-of-jesus.jpg'),
-(5, 'img/img-slideshow/1920/1-paintings/icon-of-christ-pantocrator.jpg', 'Icon of Christ Pantocrator', 'Icon of Christ Pantocrator, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '25 x 20 cm (10 x 7&frac78; in)', '', 'img/img-slideshow/1536/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/1440/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/1366/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/768/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/414/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/375/1-paintings/icon-of-christ-pantocrator.jpg'),
-(6, 'img/img-slideshow/1920/1-paintings/icon-of-st-michael-the-archangel.jpg', 'Icon of St Michael the Archangel', 'Icon of St Michael the Archangel, 2016', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '20 x 15 cm (7&frac78; x 6 in)', '*Private collection', 'img/img-slideshow/1536/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/1440/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/1366/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/768/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/414/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/375/1-paintings/icon-of-st-michael-the-archangel.jpg'),
-(7, 'img/img-slideshow/1920/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'Icon of St Joseph and the Christ Child', 'Icon of St Joseph and the Christ Child, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '40 x 30 cm (15&frac34; x 12 in)', '', 'img/img-slideshow/1536/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/1440/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/1366/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/768/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/414/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/375/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg'),
-(8, 'img/img-slideshow/1920/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'Icon of the Virgin of Compassion', 'Icon of the Virgin of Compassion, 2016', 'Egg tempera, metallic acrylic,<br> natural and synthetic pigments on gesso board', '34 x 26 cm (13 x 10 in)', '', 'img/img-slideshow/1536/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/1440/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/1366/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/768/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/414/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/375/1-paintings/icon-of-the-virgin-of-compassion.jpg'),
-(9, 'img/img-slideshow/1920/1-paintings/damayanti-and-the-swan.jpg', 'Damayanti and the Swan', 'Damayanti and the Swan, 2016', 'Gum arabic, natural pigments on paper', '23 x 16 cm (9 x 6 in)', '*Private collection', 'img/img-slideshow/1536/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/1440/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/1366/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/768/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/414/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/375/1-paintings/damayanti-and-the-swan.jpg'),
-(10, 'img/img-slideshow/1920/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'Riding the Carpet of the Rolling Waves Monks in Coracles', 'Riding the Carpet of the Rolling Waves: Monks in Coracles, 2019', 'Egg tempera, natural pigments on paper', '42 x 24 cm (17 x 9 in)', '', 'img/img-slideshow/1536/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/1440/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/1366/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/768/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/414/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/375/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg'),
-(11, 'img/img-slideshow/1920/1-paintings/pangur-bán.jpg', 'Pangur Bán', 'Pangur Bán, 2018', '23ct gold leaf, egg tempera,<br> natural pigments on fabriano paper', '23 x 18 cm (9 x 7 in)', '*Sold', 'img/img-slideshow/1536/1-paintings/pangur-bán.jpg', 'img/img-slideshow/1440/1-paintings/pangur-bán.jpg', 'img/img-slideshow/1366/1-paintings/pangur-bán.jpg', 'img/img-slideshow/768/1-paintings/pangur-bán.jpg', 'img/img-slideshow/414/1-paintings/pangur-bán.jpg', 'img/img-slideshow/375/1-paintings/pangur-bán.jpg'),
-(12, 'img/img-slideshow/1920/2-geometry/ten-fold-geometry.jpg', 'Ten-Fold Geometry', 'Ten-Fold Geometry, 2016', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '*Sold', 'img/img-slideshow/1536/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/1440/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/1366/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/768/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/414/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/375/2-geometry/ten-fold-geometry.jpg'),
-(13, 'img/img-slideshow/1920/2-geometry/pink-flower.jpg', 'Pink Flower', 'Pink Flower, 2016', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1536/2-geometry/pink-flower.jpg', 'img/img-slideshow/1440/2-geometry/pink-flower.jpg', 'img/img-slideshow/1366/2-geometry/pink-flower.jpg', 'img/img-slideshow/768/2-geometry/pink-flower.jpg', 'img/img-slideshow/414/2-geometry/pink-flower.jpg', 'img/img-slideshow/375/2-geometry/pink-flower.jpg'),
-(14, 'img/img-slideshow/1920/2-geometry/red-flower.jpg', 'Red Flower', 'Red Flower, 2018', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1536/2-geometry/red-flower.jpg', 'img/img-slideshow/1440/2-geometry/red-flower.jpg', 'img/img-slideshow/1366/2-geometry/red-flower.jpg', 'img/img-slideshow/768/2-geometry/red-flower.jpg', 'img/img-slideshow/414/2-geometry/red-flower.jpg', 'img/img-slideshow/375/2-geometry/red-flower.jpg'),
-(15, 'img/img-slideshow/1920/2-geometry/daffodils.jpg', 'Daffodils', 'Daffodils, 2018', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1536/2-geometry/daffodils.jpg', 'img/img-slideshow/1440/2-geometry/daffodils.jpg', 'img/img-slideshow/1366/2-geometry/daffodils.jpg', 'img/img-slideshow/768/2-geometry/daffodils.jpg', '', 'img/img-modal/375/2-geometry/daffodils.jpg'),
-(16, 'img/img-modal/1920/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'Hanging Glass Quarry – Phoenix', 'Hanging Glass Quarry – Phoenix, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Sold', 'img/img-modal/1536/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-modal/1440/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-modal/1366/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-modal/768/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-modal/414/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-modal/375/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg'),
-(17, 'img/img-modal/1920/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'Hanging Glass Quarry – Seraphin', 'Hanging Glass Quarry – Seraphin, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Private collection', 'img/img-modal/1536/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-modal/1440/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-modal/1366/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-modal/768/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-modal/414/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-modal/375/3-stained-glass/hanging-glass-quarry-seraphin.jpg'),
-(18, 'img/img-modal/1920/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'Hanging Glass Quarry – Green Foliage Motif', 'Hanging Glass Quarry – Green Foliage Motif, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '', 'img/img-modal/1536/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-modal/1440/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-modal/1366/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-modal/768/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-modal/414/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-modal/375/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg'),
-(19, 'img/img-modal/1920/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'Hanging Glass Quarry – Blue Foliage Motif', 'Hanging Glass Quarry – Blue Foliage Motif, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Private collection', 'img/img-modal/1536/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-modal/1440/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-modal/1366/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-modal/768/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-modal/414/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-modal/375/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg'),
-(20, 'img/img-modal/1920/3-stained-glass/foliage-border.jpg', 'Foliage Border', 'Foliage Border, 2016', 'Lead, solder, stained and coloured glass', '19 x 33 cm (7 x 13 in)', '', 'img/img-modal/1536/3-stained-glass/foliage-border.jpg', 'img/img-modal/1440/3-stained-glass/foliage-border.jpg', 'img/img-modal/1366/3-stained-glass/foliage-border.jpg', 'img/img-modal/768/3-stained-glass/foliage-border.jpg', 'img/img-modal/414/3-stained-glass/foliage-border.jpg', 'img/img-modal/375/3-stained-glass/foliage-border.jpg'),
-(21, 'img/img-modal/1920/3-stained-glass/hanging-tree-weeping-willow.jpg', 'Hanging Tree (Weeping Willow)', 'Hanging Tree (Weeping Willow), 2017', 'Lead, solder, stained and coloured glass', '25.5 x 17 cm (10 x 7 in)', '', 'img/img-modal/1536/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-modal/1440/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-modal/1366/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-modal/768/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-modal/414/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-modal/375/3-stained-glass/hanging-tree-weeping-willow.jpg'),
-(22, 'img/img-modal/1920/3-stained-glass/nativity-scene.jpg', 'Nativity Scene', 'Nativity Scene, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '', 'img/img-modal/1536/3-stained-glass/nativity-scene.jpg', 'img/img-modal/1440/3-stained-glass/nativity-scene.jpg', 'img/img-modal/1366/3-stained-glass/nativity-scene.jpg', 'img/img-modal/768/3-stained-glass/nativity-scene.jpg', 'img/img-modal/414/3-stained-glass/nativity-scene.jpg', 'img/img-modal/375/3-stained-glass/nativity-scene.jpg'),
-(23, 'img/img-modal/1920/3-stained-glass/annunciation-to-the-shepherds.jpg', 'Annunciation to the Shepherds', 'Annunciation to the Shepherds, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '', 'img/img-modal/1536/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-modal/1440/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-modal/1366/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-modal/768/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-modal/414/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-modal/375/3-stained-glass/annunciation-to-the-shepherds.jpg'),
-(24, 'img/img-modal/1920/3-stained-glass/three-kings.jpg', 'Three Kings', 'Three Kings, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '*Sold', 'img/img-modal/1536/3-stained-glass/three-kings.jpg', 'img/img-modal/1440/3-stained-glass/three-kings.jpg', 'img/img-modal/1366/3-stained-glass/three-kings.jpg', 'img/img-modal/768/3-stained-glass/three-kings.jpg', 'img/img-modal/414/3-stained-glass/three-kings.jpg', 'img/img-modal/375/3-stained-glass/three-kings.jpg'),
-(25, 'img/img-modal/1920/3-stained-glass/angel-1.jpg', 'Angel 1', 'Angel 1, 2016', 'Lead, solder, stained and coloured glass', '58.5 x 23.5 cm (23 x 9&frac14; in)', '', 'img/img-modal/1536/3-stained-glass/angel-1.jpg', 'img/img-modal/1440/3-stained-glass/angel-1.jpg', 'img/img-modal/1366/3-stained-glass/angel-1.jpg', 'img/img-modal/768/3-stained-glass/angel-1.jpg', 'img/img-modal/414/3-stained-glass/angel-1.jpg', 'img/img-modal/375/3-stained-glass/angel-1.jpg'),
-(26, 'img/img-modal/1920/3-stained-glass/angel-2.jpg', 'Angel 2', 'Angel 2, 2016', 'Lead, solder, stained and coloured glass', '58.5 x 23.5 cm (23 x 9&frac14; in)', '', 'img/img-modal/1536/3-stained-glass/angel-2.jpg', 'img/img-modal/1440/3-stained-glass/angel-2.jpg', 'img/img-modal/1366/3-stained-glass/angel-2.jpg', 'img/img-modal/768/3-stained-glass/angel-2.jpg', 'img/img-modal/414/3-stained-glass/angel-2.jpg', 'img/img-modal/375/3-stained-glass/angel-2.jpg'),
-(27, 'img/img-modal/1920/3-stained-glass/virgin-and-child.jpg', 'Virgin and Child', 'Virgin and Child, 2017', 'Lead, solder, stained and coloured glass', '65 x 35.5 cm (26 x 14 in)', '', 'img/img-modal/1536/3-stained-glass/virgin-and-child.jpg', 'img/img-modal/1440/3-stained-glass/virgin-and-child.jpg', 'img/img-modal/1366/3-stained-glass/virgin-and-child.jpg', 'img/img-modal/768/3-stained-glass/virgin-and-child.jpg', 'img/img-modal/414/3-stained-glass/virgin-and-child.jpg', 'img/img-modal/375/3-stained-glass/virgin-and-child.jpg'),
-(28, 'img/img-modal/1920/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'Jerusalem Cross Tiles', 'Jerusalem Cross Tiles, 2016', 'Fired, glazed red and white clay', '27 x 27 cm (11 x 11 in)', '', 'img/img-modal/1536/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-modal/1440/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-modal/1366/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-modal/768/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-modal/414/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-modal/375/4-ceramic-tiles/jerusalem-cross-tiles.jpg'),
-(29, 'img/img-modal/1920/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'Celtic Key Pattern Cross Tiles', 'Celtic Key Pattern Cross Tiles, 2016', 'Fired, glazed red and white clay', '52 x 40 cm (20 x 16 in)', '', 'img/img-modal/1536/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-modal/1440/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-modal/1366/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-modal/768/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-modal/414/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-modal/375/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg');
+INSERT INTO `slideshow` (`id`, `slideshowImgAlt`, `slideshowImgTitle`, `slideshowImgDesc`, `slideshowImgDimm`, `slideshowSoldInfo`, `1366px`, `768px`, `414px`) VALUES
+(1, 'The Nightingale and the Rose', 'The Nightingale and the Rose, 2015', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1366/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/768/1-paintings/the-nightingale-and-the-rose.jpg', 'img/img-slideshow/414/1-paintings/the-nightingale-and-the-rose.jpg'),
+(2, 'Orange Tree in a Moorish Arch', 'Orange Tree in a Moorish Arch, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1366/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/768/1-paintings/orange-tree-in-a-moorish-arch.jpg', 'img/img-slideshow/414/1-paintings/orange-tree-in-a-moorish-arch.jpg'),
+(3, 'St Francis and the Wolf', 'St Francis and the Wolf, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '27 x 19.5 cm (10&frac58; x 8 in)', '*Sold', 'img/img-slideshow/1366/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/768/1-paintings/st-francis-and-the-wolf.jpg', 'img/img-slideshow/414/1-paintings/st-francis-and-the-wolf.jpg'),
+(4, 'Sacred Heart of Jesus', 'Sacred Heart of Jesus, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '57.5 x 41 cm (23 x 16 in)', '*Private collection', 'img/img-slideshow/1366/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/768/1-paintings/sacred-heart-of-jesus.jpg', 'img/img-slideshow/414/1-paintings/sacred-heart-of-jesus.jpg'),
+(5, 'Icon of Christ Pantocrator', 'Icon of Christ Pantocrator, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '25 x 20 cm (10 x 7&frac78; in)', '', 'img/img-slideshow/1366/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/768/1-paintings/icon-of-christ-pantocrator.jpg', 'img/img-slideshow/414/1-paintings/icon-of-christ-pantocrator.jpg'),
+(6, 'Icon of St Michael the Archangel', 'Icon of St Michael the Archangel, 2016', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '20 x 15 cm (7&frac78; x 6 in)', '*Private collection', 'img/img-slideshow/1366/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/768/1-paintings/icon-of-st-michael-the-archangel.jpg', 'img/img-slideshow/414/1-paintings/icon-of-st-michael-the-archangel.jpg'),
+(7, 'Icon of St Joseph and the Christ Child', 'Icon of St Joseph and the Christ Child, 2017', '23ct gold leaf, egg tempera,<br> natural pigments on gesso board', '40 x 30 cm (15&frac34; x 12 in)', '', 'img/img-slideshow/1366/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/768/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg', 'img/img-slideshow/414/1-paintings/icon-of-st-joseph-and-the-christ-child.jpg'),
+(8, 'Icon of the Virgin of Compassion', 'Icon of the Virgin of Compassion, 2016', 'Egg tempera, metallic acrylic,<br> natural and synthetic pigments on gesso board', '34 x 26 cm (13 x 10 in)', '', 'img/img-slideshow/1366/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/768/1-paintings/icon-of-the-virgin-of-compassion.jpg', 'img/img-slideshow/414/1-paintings/icon-of-the-virgin-of-compassion.jpg'),
+(9, 'Damayanti and the Swan', 'Damayanti and the Swan, 2016', 'Gum arabic, natural pigments on paper', '23 x 16 cm (9 x 6 in)', '*Private collection', 'img/img-slideshow/1366/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/768/1-paintings/damayanti-and-the-swan.jpg', 'img/img-slideshow/414/1-paintings/damayanti-and-the-swan.jpg'),
+(10, 'Riding the Carpet of the Rolling Waves Monks in Coracles', 'Riding the Carpet of the Rolling Waves: Monks in Coracles, 2019', 'Egg tempera, natural pigments on paper', '42 x 24 cm (17 x 9 in)', '', 'img/img-slideshow/1366/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/768/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg', 'img/img-slideshow/414/1-paintings/riding-the-carpet-of-the-rolling-waves-monks-in-coracles.jpg'),
+(11, 'Pangur Bán', 'Pangur Bán, 2018', '23ct gold leaf, egg tempera,<br> natural pigments on fabriano paper', '23 x 18 cm (9 x 7 in)', '*Sold', 'img/img-slideshow/1366/1-paintings/pangur-bán.jpg', 'img/img-slideshow/768/1-paintings/pangur-bán.jpg', 'img/img-slideshow/414/1-paintings/pangur-bán.jpg'),
+(12, 'Ten-Fold Geometry', 'Ten-Fold Geometry, 2016', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '*Sold', 'img/img-slideshow/1366/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/768/2-geometry/ten-fold-geometry.jpg', 'img/img-slideshow/414/2-geometry/ten-fold-geometry.jpg'),
+(13, 'Pink Flower', 'Pink Flower, 2016', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1366/2-geometry/pink-flower.jpg', 'img/img-slideshow/768/2-geometry/pink-flower.jpg', 'img/img-slideshow/414/2-geometry/pink-flower.jpg'),
+(14, 'Red Flower', 'Red Flower, 2018', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1366/2-geometry/red-flower.jpg', 'img/img-slideshow/768/2-geometry/red-flower.jpg', 'img/img-slideshow/414/2-geometry/red-flower.jpg'),
+(15, 'Daffodils', 'Daffodils, 2018', 'Watercolour on paper', '29.5 x 29.5 cm (12 x 12 in)', '', 'img/img-slideshow/1366/2-geometry/daffodils.jpg', 'img/img-slideshow/768/2-geometry/daffodils.jpg', 'img/img-slideshow/414/2-geometry/daffodils.jpg'),
+(16, 'Hanging Glass Quarry – Phoenix', 'Hanging Glass Quarry – Phoenix, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Sold', 'img/img-slideshow/1366/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-slideshow/768/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg', 'img/img-slideshow/414/3-stained-glass/hanging-glass-quarry-phoenix-quarry.jpg'),
+(17, 'Hanging Glass Quarry – Seraphin', 'Hanging Glass Quarry – Seraphin, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Private collection', 'img/img-slideshow/1366/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-slideshow/768/3-stained-glass/hanging-glass-quarry-seraphin.jpg', 'img/img-slideshow/414/3-stained-glass/hanging-glass-quarry-seraphin.jpg'),
+(18, 'Hanging Glass Quarry – Green Foliage Motif', 'Hanging Glass Quarry – Green Foliage Motif, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '', 'img/img-slideshow/1366/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-slideshow/768/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg', 'img/img-slideshow/414/3-stained-glass/hanging-glass-quarry-green-foliage-motif.jpg'),
+(19, 'Hanging Glass Quarry – Blue Foliage Motif', 'Hanging Glass Quarry – Blue Foliage Motif, 2017', 'Lead, solder, stained and coloured glass', '23 x 15.5 cm (9 x 6 in)', '*Private collection', 'img/img-slideshow/1366/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-slideshow/768/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg', 'img/img-slideshow/414/3-stained-glass/hanging-glass-quarry-blue-foliage-motif.jpg'),
+(20, 'Foliage Border', 'Foliage Border, 2016', 'Lead, solder, stained and coloured glass', '19 x 33 cm (7 x 13 in)', '', 'img/img-slideshow/1366/3-stained-glass/foliage-border.jpg', 'img/img-slideshow/768/3-stained-glass/foliage-border.jpg', 'img/img-slideshow/414/3-stained-glass/foliage-border.jpg'),
+(21, 'Hanging Tree (Weeping Willow)', 'Hanging Tree (Weeping Willow), 2017', 'Lead, solder, stained and coloured glass', '25.5 x 17 cm (10 x 7 in)', '', 'img/img-slideshow/1366/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-slideshow/768/3-stained-glass/hanging-tree-weeping-willow.jpg', 'img/img-slideshow/414/3-stained-glass/hanging-tree-weeping-willow.jpg'),
+(22, 'Nativity Scene', 'Nativity Scene, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '', 'img/img-slideshow/1366/3-stained-glass/nativity-scene.jpg', 'img/img-slideshow/768/3-stained-glass/nativity-scene.jpg', 'img/img-slideshow/414/3-stained-glass/nativity-scene.jpg'),
+(23, 'Annunciation to the Shepherds', 'Annunciation to the Shepherds, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '', 'img/img-slideshow/1366/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-slideshow/768/3-stained-glass/annunciation-to-the-shepherds.jpg', 'img/img-slideshow/414/3-stained-glass/annunciation-to-the-shepherds.jpg'),
+(24, 'Three Kings', 'Three Kings, 2017', 'Lead, solder, stained and coloured glass', '25.5 x 25.5cm (10 x 10 in)', '*Sold', 'img/img-slideshow/1366/3-stained-glass/three-kings.jpg', 'img/img-slideshow/768/3-stained-glass/three-kings.jpg', 'img/img-slideshow/414/3-stained-glass/three-kings.jpg'),
+(25, 'Angel 1', 'Angel 1, 2016', 'Lead, solder, stained and coloured glass', '58.5 x 23.5 cm (23 x 9&frac14; in)', '', 'img/img-slideshow/1366/3-stained-glass/angel-1.jpg', 'img/img-slideshow/768/3-stained-glass/angel-1.jpg', 'img/img-slideshow/414/3-stained-glass/angel-1.jpg'),
+(26, 'Angel 2', 'Angel 2, 2016', 'Lead, solder, stained and coloured glass', '58.5 x 23.5 cm (23 x 9&frac14; in)', '', 'img/img-slideshow/1366/3-stained-glass/angel-2.jpg', 'img/img-slideshow/768/3-stained-glass/angel-2.jpg', 'img/img-slideshow/414/3-stained-glass/angel-2.jpg'),
+(27, 'Virgin and Child', 'Virgin and Child, 2017', 'Lead, solder, stained and coloured glass', '65 x 35.5 cm (26 x 14 in)', '', 'img/img-slideshow/1366/3-stained-glass/virgin-and-child.jpg', 'img/img-slideshow/768/3-stained-glass/virgin-and-child.jpg', 'img/img-slideshow/414/3-stained-glass/virgin-and-child.jpg'),
+(28, 'Jerusalem Cross Tiles', 'Jerusalem Cross Tiles, 2016', 'Fired, glazed red and white clay', '27 x 27 cm (11 x 11 in)', '', 'img/img-slideshow/1366/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-slideshow/768/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'img/img-slideshow/414/4-ceramic-tiles/jerusalem-cross-tiles.jpg'),
+(29, 'Celtic Key Pattern Cross Tiles', 'Celtic Key Pattern Cross Tiles, 2016', 'Fired, glazed red and white clay', '52 x 40 cm (20 x 16 in)', '', 'img/img-slideshow/1366/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-slideshow/768/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'img/img-slideshow/414/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg');
 
 -- --------------------------------------------------------
 
