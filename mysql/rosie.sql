@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 10, 2022 at 09:28 PM
+-- Generation Time: Nov 12, 2022 at 03:23 PM
 -- Server version: 10.5.16-MariaDB
 -- PHP Version: 8.1.12
 
@@ -202,8 +202,8 @@ CREATE TABLE `contactForm` (
   `id` int(11) NOT NULL,
   `userId` char(32) NOT NULL,
   `senderName` varchar(60) NOT NULL,
-  `senderEmail` varchar(100) NOT NULL,
-  `msg` text NOT NULL,
+  `senderEmailAddress` varchar(100) NOT NULL,
+  `message` text NOT NULL,
   `datePosted` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -211,7 +211,7 @@ CREATE TABLE `contactForm` (
 -- Dumping data for table `contactForm`
 --
 
-INSERT INTO `contactForm` (`id`, `userId`, `senderName`, `senderEmail`, `msg`, `datePosted`) VALUES
+INSERT INTO `contactForm` (`id`, `userId`, `senderName`, `senderEmailAddress`, `message`, `datePosted`) VALUES
 (1, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-09 22:00:41'),
 (2, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'f', '2021-04-09 22:01:49'),
 (3, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'fRosie Piontek', '2021-04-09 22:01:55'),
@@ -242,7 +242,9 @@ INSERT INTO `contactForm` (`id`, `userId`, `senderName`, `senderEmail`, `msg`, `
 (28, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'a@gmail.com', 'wr', '2021-04-11 22:15:32'),
 (29, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'a@gmail.com', 'wr', '2021-04-11 22:16:06'),
 (30, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'w', '2021-04-12 05:57:22'),
-(31, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'w', '2021-04-12 05:58:12');
+(31, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'w', '2021-04-12 05:58:12'),
+(32, 'iinc1f0gsntpkv5k1qvrrg6g6o', 'Stefek Burczymucha', 'stefek@stefek.com', 'ss', '2022-11-12 15:06:55'),
+(33, 'iinc1f0gsntpkv5k1qvrrg6g6o', 'Stefek Burczymucha', 'stefek@stefek.com', 'ss', '2022-11-12 15:22:19');
 
 -- --------------------------------------------------------
 
@@ -596,7 +598,7 @@ ALTER TABLE `cards`
 -- AUTO_INCREMENT for table `contactForm`
 --
 ALTER TABLE `contactForm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `customers`
