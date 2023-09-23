@@ -30,12 +30,17 @@ class ContactFormValidation
 
     private function validateFields(): bool
     {
+        $isBotSendingMessage = $this->contactFormFields->isBotSendingMessage();
+        if ($isBotSendingMessage) {
+            $this->logging->logMessage('alert', 'Spam bot trapped in honey pot. Message not sent');
+            return false;
+        }
+
         $errors = [
             $this->contactFormErrors->setSenderNameError(),
             $this->contactFormErrors->setSenderEmailAddressError(),
             $this->contactFormErrors->setMessageError()
         ];
-
 
         if (in_array(true, $errors)) {
             $this->generalNotification = "$this->messageNotSent, please see below";
@@ -52,7 +57,7 @@ class ContactFormValidation
         $errorsForLogging = [];
         foreach ($errors as $error) {
             if ($error) {
-                array_push($errorsForLogging, " $error.");
+                $errorsForLogging[] = " $error.";
             }
         }
         return $errorsForLogging;

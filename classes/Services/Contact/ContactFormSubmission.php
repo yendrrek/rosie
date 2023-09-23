@@ -1,4 +1,5 @@
 <?php
+
 namespace Rosie\Services\Contact;
 
 use Rosie\Utils\EnvironmentVariables;

@@ -2,9 +2,11 @@
 
 namespace Rosie\Services\Basket;
 
+use JetBrains\PhpStorm\Pure;
+
 class BasketDatabaseDataPreparation
 {
-    public function prepareDataForDatabase(): array
+    #[Pure] public function prepareDataForDatabase(): array
     {
         $productAddedToBasket = $_POST['id'] ?? null;
         $addedQty = $_POST['quantity'] ?? null;

@@ -35,6 +35,9 @@
             <input class="btn contact-form__btn btn_send-contact-form contact-form__btn_hover ff-inner-ring-hidden btn_send-contact-form_outline"
                    type="submit" value="Send" name="contactFormButton">
             <input type="hidden" name="tokenCsrf" value="<?php echo $this->contactDepCont->token->getCSRFToken(); ?>">
+            <label class="contact-form__website">
+                <input id="website" type="text" name="website" value="">
+            </label>
         </form>
     </div>
 

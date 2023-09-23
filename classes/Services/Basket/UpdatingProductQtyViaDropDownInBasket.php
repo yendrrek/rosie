@@ -18,11 +18,13 @@ class UpdatingProductQtyViaDropDownInBasket
         $invalidCsrfTokenMessage = 'Invalid or no token when updating product in basket';
         $isNotProductQuantityBeingAmendedFromInsideBasket = !isset($_POST['quantityDropDownMenuIdInBasket']);
 
-        if (!$this->formValidation->validateForm(
-            'post',
-            $invalidCsrfTokenMessage,
-            $isNotProductQuantityBeingAmendedFromInsideBasket
-        )) {
+        if (
+            !$this->formValidation->validateForm(
+                'post',
+                $invalidCsrfTokenMessage,
+                $isNotProductQuantityBeingAmendedFromInsideBasket
+            )
+        ) {
             return false;
         }
 

@@ -1243,6 +1243,11 @@ The outline is made of three overlapping triangles.
   padding: 0.714em;
 }
 
+/* honey-pot */
+.contact-form__website {
+  display: none;
+}
+
 .btn_send-contact-form {
   background-color: #baa27a;
   border: none;

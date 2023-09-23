@@ -2,6 +2,8 @@
 
 namespace Rosie\Utils;
 
+use JetBrains\PhpStorm\Pure;
+
 class NameOfClass
 {
     public static function getClassName($instance): string
@@ -15,7 +17,7 @@ class NameOfClass
         return self::getProfaneClassName($pageName, $instance);
     }
 
-    private static function getArtworkClassName($instance): string
+    #[Pure] private static function getArtworkClassName($instance): string
     {
         return self::getLayer($instance, 'Artwork', 'ArtworkDepCont');
     }
