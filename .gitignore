@@ -10,3 +10,4 @@ PHPMailer/
 vendor/
 .php_cs.cache
 log/
+composer.phar
