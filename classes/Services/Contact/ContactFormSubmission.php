@@ -22,7 +22,6 @@ class ContactFormSubmission
         $senderName = $this->contactFormFields->getSenderName();
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
-        $subject = 'Website contact form';
         $toEmail = EnvironmentVariables::$rosieEmail;
         $host = EnvironmentVariables::$contactFormEmailHost;
 
@@ -36,7 +35,7 @@ class ContactFormSubmission
             $phpmailer->Port = 587;
             $phpmailer->Username = EnvironmentVariables::$contactFormUserName;
             $phpmailer->Password = EnvironmentVariables::$contactFormPassword;
-            $phpmailer->Subject = $subject;
+            $phpmailer->Subject = 'Website contact form';
             $phpmailer->addAddress($toEmail, 'Rosie');
             $phpmailer->setFrom($senderEmailAddress, $senderName);
             $phpmailer->Body = $message;
