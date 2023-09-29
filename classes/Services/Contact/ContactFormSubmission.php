@@ -2,6 +2,8 @@
 
 namespace Rosie\Services\Contact;
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Rosie\Utils\EnvironmentVariables;
 use Rosie\Utils\Logging;
 
@@ -20,18 +22,35 @@ class ContactFormSubmission
         $senderName = $this->contactFormFields->getSenderName();
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
-
-        $toEmail = EnvironmentVariables::$rosieEmail;
         $subject = 'Website contact form';
-        $headers = 'From ' . $senderName . '<' . $senderEmailAddress . '>';
+        $toEmail = EnvironmentVariables::$rosieEmail;
+        $host = EnvironmentVariables::$contactFormEmailHost;
 
-        if (mail($toEmail, $subject, $message, $headers)) {
-            $this->generalNotification = 'Message sent. Thank you';
-            $this->logging->logMessage('info', 'Message sent');
-            return true;
+        $phpmailer = new PHPMailer();
+
+        try {
+            $phpmailer->isSMTP();
+            $phpmailer->Host = $host;
+            $phpmailer->SMTPAuth = true;
+            $phpmailer->SMTPSecure = 'TLS';
+            $phpmailer->Port = 587;
+            $phpmailer->Username = EnvironmentVariables::$contactFormUserName;
+            $phpmailer->Password = EnvironmentVariables::$contactFormPassword;
+            $phpmailer->Subject = $subject;
+            $phpmailer->addAddress($toEmail, 'Rosie');
+            $phpmailer->setFrom($senderEmailAddress, $senderName);
+            $phpmailer->Body = $message;
+            $phpmailer->isHTML(false);
+
+            if ($phpmailer->send()) {
+                $this->generalNotification = 'Message sent. Thank you';
+                $this->logging->logMessage('info', 'Message sent');
+                return true;
+            }
+        } catch (Exception $e) {
+            $this->logging->logMessage('alert', 'Failed sending message from contact form. ' . $e->errorMessage());
+            return false;
         }
-
-        $this->logging->logMessage('alert', 'Failed sending message from contact form');
         return false;
     }
 }
