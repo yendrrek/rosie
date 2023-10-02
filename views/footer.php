@@ -12,7 +12,6 @@ include 'includes/back-to-top-btn.html';
     <a class="fab fa-instagram link link_visited link_instagram link_instagram_hover footer__link
     link_instagram_outline" href="https://www.instagram.com/rosiepiontekart/?hl=en" target="_blank"></a>
 </footer>
-<script src="../scripts/explorer-alert.js"></script>
 <script type="module" src="../scripts/main.js"></script>
 
 <?php
