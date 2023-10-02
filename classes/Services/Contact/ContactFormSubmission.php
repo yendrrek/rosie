@@ -23,25 +23,24 @@ class ContactFormSubmission
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
         $toEmail = EnvironmentVariables::$rosieEmail;
-        $host = EnvironmentVariables::$contactFormEmailHost;
+        $host = EnvironmentVariables::$emailHost;
 
-        $phpmailer = new PHPMailer();
-
+        $mail = new PHPMailer();
         try {
-            $phpmailer->isSMTP();
-            $phpmailer->Host = $host;
-            $phpmailer->SMTPAuth = true;
-            $phpmailer->SMTPSecure = 'TLS';
-            $phpmailer->Port = 587;
-            $phpmailer->Username = EnvironmentVariables::$contactFormUserName;
-            $phpmailer->Password = EnvironmentVariables::$contactFormPassword;
-            $phpmailer->Subject = 'Website contact form';
-            $phpmailer->addAddress($toEmail, 'Rosie');
-            $phpmailer->setFrom($senderEmailAddress, $senderName);
-            $phpmailer->Body = $message;
-            $phpmailer->isHTML(false);
+            $mail->isSMTP();
+            $mail->Host = $host;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'TLS';
+            $mail->Port = 587;
+            $mail->Username = EnvironmentVariables::$emailUserName;
+            $mail->Password = EnvironmentVariables::$emailPassword;
+            $mail->Subject = 'Website contact form';
+            $mail->addAddress($toEmail, 'Rosie');
+            $mail->setFrom($senderEmailAddress, $senderName);
+            $mail->Body = $message;
+            $mail->isHTML(false);
 
-            if ($phpmailer->send()) {
+            if ($mail->send()) {
                 $this->generalNotification = 'Message sent. Thank you';
                 $this->logging->logMessage('info', 'Message sent');
                 return true;

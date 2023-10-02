@@ -21,7 +21,7 @@ class PayPalClient
           'sandbox' => 'SandboxEnvironment',
           'production' => 'ProductionEnvironment'
         ];
-        $environment = "PayPalCheckoutSdk\\Core\\{$environments[EnvironmentVariables::$payPalEnvironment]}";
+        $environment = "PayPalCheckoutSdk\\Core\\{$environments[EnvironmentVariables::$environment]}";
 
         return new $environment(
             EnvironmentVariables::$payPalClientId,
