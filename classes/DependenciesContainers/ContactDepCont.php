@@ -13,11 +13,11 @@ class ContactDepCont
     public string $generalNotification = '';
 
     public function __construct(
-        private ContentDatabaseQuery  $contentDatabaseQuery,
-        public Token                  $token,
-        public ContactFormValidation  $contactFormValidation,
+        private ContentDatabaseQuery $contentDatabaseQuery,
+        public Token $token,
+        public ContactFormValidation $contactFormValidation,
         private ContactFormSubmission $contactFormSubmission,
-        private ContactFormDatabase   $contactFormDatabase
+        private ContactFormDatabase $contactFormDatabase
     ) {
     }
 

@@ -3,11 +3,11 @@
 rosiepiontek.com.sublime-project
 rosiepiontek.com.sublime-workspace
 cgi-bin/
-fotorama-4.6.4.dev/
 img/img-slideshow/slideshow-images-info.txt
 PHPMailer/
 .idea/
 vendor/
 .php_cs.cache
+.php-cs-fixer.cache
 log/
-composer.phar
+/composer.phar

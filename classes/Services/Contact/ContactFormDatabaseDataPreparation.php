@@ -2,13 +2,15 @@
 
 namespace Rosie\Services\Contact;
 
+use JetBrains\PhpStorm\Pure;
+
 class ContactFormDatabaseDataPreparation
 {
     public function __construct(private ContactFormFields $contactFormFields)
     {
     }
 
-    public function prepareDataForDatabase(): array
+    #[Pure] public function prepareDataForDatabase(): array
     {
         $senderName = $this->contactFormFields->getSenderName();
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();

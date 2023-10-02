@@ -1,6 +1,9 @@
 <?php
+
 namespace Rosie\Services\Contact;
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Rosie\Utils\EnvironmentVariables;
 use Rosie\Utils\Logging;
 
@@ -19,18 +22,33 @@ class ContactFormSubmission
         $senderName = $this->contactFormFields->getSenderName();
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
-
         $toEmail = EnvironmentVariables::$rosieEmail;
-        $subject = 'Website contact form';
-        $headers = 'From ' . $senderName . '<' . $senderEmailAddress . '>';
+        $host = EnvironmentVariables::$emailHost;
 
-        if (mail($toEmail, $subject, $message, $headers)) {
-            $this->generalNotification = 'Message sent. Thank you';
-            $this->logging->logMessage('info', 'Message sent');
-            return true;
+        $mail = new PHPMailer();
+        try {
+            $mail->isSMTP();
+            $mail->Host = $host;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'TLS';
+            $mail->Port = 587;
+            $mail->Username = EnvironmentVariables::$emailUserName;
+            $mail->Password = EnvironmentVariables::$emailPassword;
+            $mail->Subject = 'Website contact form';
+            $mail->addAddress($toEmail, 'Rosie');
+            $mail->setFrom($senderEmailAddress, $senderName);
+            $mail->Body = $message;
+            $mail->isHTML(false);
+
+            if ($mail->send()) {
+                $this->generalNotification = 'Message sent. Thank you';
+                $this->logging->logMessage('info', 'Message sent');
+                return true;
+            }
+        } catch (Exception $e) {
+            $this->logging->logMessage('alert', 'Failed sending message from contact form. ' . $e->errorMessage());
+            return false;
         }
-
-        $this->logging->logMessage('alert', 'Failed sending message from contact form');
         return false;
     }
 }

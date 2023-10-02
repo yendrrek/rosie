@@ -20,11 +20,12 @@ class PurchaseConfirmationEmail
     public function notifyCustomer(): void
     {
         EnvironmentVariables::getEnvVars();
-
-        $payPalEnvironment = EnvironmentVariables::$payPalEnvironment;
+        $payPalEnvironment = EnvironmentVariables::$environment;
         $sellerEmail = EnvironmentVariables::$sellerEmail;
         $sellerPhone = EnvironmentVariables::$sellerPhone;
         $sellerMobile = EnvironmentVariables::$sellerMobile;
+        $host = EnvironmentVariables::$emailHost;
+        $toEmail = EnvironmentVariables::$rosieEmail;
 
         $itemsDetails = $items = $products = $subtotal = $qtyArray = [];
         $amount = $totalQty = 0;
@@ -39,21 +40,19 @@ class PurchaseConfirmationEmail
             $items[] = $products; // $items[] is used in purchase-confirmation-email.php
         }
         $mail = new PHPMailer(true);
-        if ($payPalEnvironment === 'production') {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.hostinger.co.uk';
-            $mail->SMTPAuth = true;
-            $mail->Port = 587;
-            $mail->Username = EnvironmentVariables::$rosieEmail;
-            $mail->Password = EnvironmentVariables::$sellerEmailPassword;
-        }
-
         try {
+            $mail->isSMTP();
+            $mail->Host = $host;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'TLS';
+            $mail->Port = 587;
+            $mail->Username = EnvironmentVariables::$emailUserName;
+            $mail->Password = EnvironmentVariables::$emailPassword;
             $mail->setFrom($sellerEmail, 'Rosie Piontek Art');
             if ($payPalEnvironment === 'production') {
                 $mail->addAddress($this->orderCapture->buyerEmail, $this->orderCapture->buyerName);
             } elseif ($payPalEnvironment === 'sandbox') {
-                $mail->addAddress('testRosie@protonmail.com', $this->orderCapture->buyerName);
+                $mail->addAddress($toEmail, $this->orderCapture->buyerName);
             }
             $mail->addReplyTo($sellerEmail, 'Rosie Piontek Art');
             $mail->isHTML();
@@ -63,7 +62,6 @@ class PurchaseConfirmationEmail
             $mail->Body = ob_get_clean();
             $mail->AltBody = 'Confirmation is in plain text for non-HTML email readers.';
             $mail->send();
-            // https://github.com/PHPMailer/PHPMailer/blob/master/examples/exceptions.phps
         } catch (Exception $prettyPHPMailerErrorMessage) {
             $this->logging->logMessage('alert', $prettyPHPMailerErrorMessage->errorMessage());
         } catch (\Exception $standardErrorMessage) {

@@ -1,13 +1,11 @@
-USE rosie;
-
 -- phpMyAdmin SQL Dump
--- version 5.2.0-1.fc36
+-- version 5.2.1-1.fc38
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 12, 2022 at 03:23 PM
--- Server version: 10.5.16-MariaDB
--- PHP Version: 8.1.12
+-- Generation Time: Oct 02, 2023 at 12:24 PM
+-- Server version: 10.5.21-MariaDB
+-- PHP Version: 8.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -22,11 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Database: `rosie`
 --
+CREATE DATABASE IF NOT EXISTS `rosie` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `rosie`;
 
 DELIMITER $$
 --
 -- Procedures
 --
+DROP PROCEDURE IF EXISTS `addToBasket`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `addToBasket` (IN `userId` CHAR(32), IN `addedProductId` MEDIUMINT, IN `addedQty` TINYINT)   BEGIN
 DECLARE productAlreadyInBasket INT;
 DECLARE currentStockAmount SMALLINT;
@@ -46,8 +47,10 @@ ELSE
 END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS `getCards`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getCards` ()   SELECT * FROM cards ORDER BY id ASC$$
 
+DROP PROCEDURE IF EXISTS `getSlideshowImgs`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getSlideshowImgs` (IN `artworkSection` TEXT)   SELECT * FROM slideshow
 WHERE CASE artworkSection WHEN 'All Works'		 THEN id BETWEEN 1  AND 29
  					WHEN 'Geometry'      THEN id BETWEEN 12 AND 15
@@ -58,7 +61,8 @@ WHERE CASE artworkSection WHEN 'All Works'		 THEN id BETWEEN 1  AND 29
                     END
 ORDER BY id ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getThumbnailImgs` (IN `artworkSection` TEXT)   SELECT * 
+DROP PROCEDURE IF EXISTS `getThumbnailImgs`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getThumbnailImgs` (IN `artworkSection` TEXT)   SELECT *
 FROM thumbnailImgs 
 WHERE CASE artworkSection WHEN 'All Works'     THEN id BETWEEN 1  AND 29
                           WHEN 'Geometry'     THEN id BETWEEN 12 AND 15
@@ -68,6 +72,7 @@ WHERE CASE artworkSection WHEN 'All Works'     THEN id BETWEEN 1  AND 29
                           END
 ORDER BY id ASC$$
 
+DROP PROCEDURE IF EXISTS `removeFromBasket`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `removeFromBasket` (IN `userId` CHAR(32), IN `inBasketProductId` INT)  NO SQL BEGIN
 IF inBasketProductId > 0 THEN
    DELETE FROM basket WHERE userId=userId AND productId=inBasketProductId;
@@ -76,6 +81,7 @@ ELSE
 END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS `updateBasket`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `updateBasket` (IN `userId` CHAR(32), IN `inBasketProductId` MEDIUMINT, IN `newQty` TINYINT)   BEGIN
 IF newQty > 0 THEN
 UPDATE basket SET quantity=newQty, dateModified=NOW() WHERE userId=userId AND productId=inBasketProductId;
@@ -90,10 +96,12 @@ DELIMITER ;
 -- Table structure for table `aboutContent`
 --
 
-CREATE TABLE `aboutContent` (
-  `id` int(11) NOT NULL,
-  `paragraph` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS `aboutContent`;
+CREATE TABLE IF NOT EXISTS `aboutContent` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `paragraph` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `aboutContent`
@@ -112,14 +120,18 @@ INSERT INTO `aboutContent` (`id`, `paragraph`) VALUES
 -- Table structure for table `basket`
 --
 
-CREATE TABLE `basket` (
-  `id` int(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `basket`;
+CREATE TABLE IF NOT EXISTS `basket` (
+  `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `userId` char(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `productId` mediumint(9) UNSIGNED NOT NULL,
   `quantity` tinyint(4) UNSIGNED NOT NULL,
   `dateModified` timestamp NOT NULL DEFAULT current_timestamp(),
-  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `product` (`productId`),
+  KEY `user_session_id` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=190 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -127,11 +139,13 @@ CREATE TABLE `basket` (
 -- Table structure for table `basketMainNavItems`
 --
 
-CREATE TABLE `basketMainNavItems` (
-  `id` tinyint(4) NOT NULL,
+DROP TABLE IF EXISTS `basketMainNavItems`;
+CREATE TABLE IF NOT EXISTS `basketMainNavItems` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `basketMainNavElements` char(30) NOT NULL,
-  `basketMainNavLinks` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `basketMainNavLinks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `basketMainNavItems`
@@ -139,7 +153,7 @@ CREATE TABLE `basketMainNavItems` (
 
 INSERT INTO `basketMainNavItems` (`id`, `basketMainNavElements`, `basketMainNavLinks`) VALUES
 (1, 'Continue shopping', 'shop.php'),
-(2, 'Back to home page', 'index.php');
+(2, 'Back to home page', 'all-works.php');
 
 -- --------------------------------------------------------
 
@@ -147,11 +161,13 @@ INSERT INTO `basketMainNavItems` (`id`, `basketMainNavElements`, `basketMainNavL
 -- Table structure for table `basketSmallMainNavItems`
 --
 
-CREATE TABLE `basketSmallMainNavItems` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `basketSmallMainNavItems`;
+CREATE TABLE IF NOT EXISTS `basketSmallMainNavItems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `basketSmallMainNavElements` char(30) NOT NULL,
-  `basketSmallMainNavLinks` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `basketSmallMainNavLinks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `basketSmallMainNavItems`
@@ -159,7 +175,7 @@ CREATE TABLE `basketSmallMainNavItems` (
 
 INSERT INTO `basketSmallMainNavItems` (`id`, `basketSmallMainNavElements`, `basketSmallMainNavLinks`) VALUES
 (1, 'Continue shopping', 'shop.php'),
-(2, 'Back to home page', 'index.php');
+(2, 'Back to home page', 'all-works.php');
 
 -- --------------------------------------------------------
 
@@ -167,8 +183,9 @@ INSERT INTO `basketSmallMainNavItems` (`id`, `basketSmallMainNavElements`, `bask
 -- Table structure for table `cards`
 --
 
-CREATE TABLE `cards` (
-  `id` tinyint(1) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `cards`;
+CREATE TABLE IF NOT EXISTS `cards` (
+  `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `product` varchar(50) NOT NULL,
   `imgBackUrl` varchar(255) DEFAULT NULL,
   `imgFrontUrl` varchar(255) DEFAULT NULL,
@@ -181,18 +198,19 @@ CREATE TABLE `cards` (
   `imgBasket` varchar(255) NOT NULL,
   `retailPrice` decimal(20,2) UNSIGNED NOT NULL,
   `sku` varchar(10) NOT NULL,
-  `stock` tinyint(2) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `stock` tinyint(2) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `cards`
 --
 
 INSERT INTO `cards` (`id`, `product`, `imgBackUrl`, `imgFrontUrl`, `imgMoreUrl`, `imgFrontAlt`, `imgBackAlt`, `imgMoreAlt`, `shopExtraImgUrl`, `shopExtraImgAlt`, `imgBasket`, `retailPrice`, `sku`, `stock`) VALUES
-(1, 'Virgin of Compassion', 'img/img-shop/virgin-comp/virgin-comp-back.jpg', 'img/img-shop/virgin-comp/virgin-comp-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/our-lady.jpg', 'Front of the Virgin of Compassion card', 'Back of the Virgin of Compassion card', 'The Virgin of Compassion card with an envelope', 'img/img-shop/photos-with-plants/our-lady.jpg', 'Virgin of Compassion card with background', 'img/img-shop/virgin-comp/basket/virgin-comp-basket.jpg', '3.10', 'VC', 40),
-(2, 'Sacred Heart of Jesus', 'img/img-shop/sacred-heart/sacred-heart-back.jpg', 'img/img-shop/sacred-heart/sacred-heart-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/sacred-heart.jpg', 'Front of the Sacred Heart of Jesus card', 'Back of the Sacred Heart of Jesus card', 'The Sacred Heart of Jesus card with an envelope', 'img/img-shop/photos-with-plants/sacred-heart.jpg', 'Sacred Heart of Jesus card with background', 'img/img-shop/sacred-heart/basket/sacred-heart-basket.jpg', '3.20', 'SHJ', 47),
-(3, 'Sinai Christ', 'img/img-shop/sinai-christ/sinai-christ-back.jpg', 'img/img-shop/sinai-christ/sinai-christ-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/sinai-christ.jpg', 'Front of the Sinai Christ card', 'Back of the Sinai Christ card', 'The Sinai Christ card with an envelope', 'img/img-shop/photos-with-plants/sinai-christ.jpg', 'Sinai Christ card with background', 'img/img-shop/sinai-christ/basket/sinai-christ-basket.jpg', '2.90', 'SCH', 0),
-(4, 'St Joseph & the Christ Child', 'img/img-shop/st-joseph/st-joseph-back.jpg', 'img/img-shop/st-joseph/st-joseph-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/st-joseph.jpg', 'Front of the St Joseph and the Christ Child card', 'Back of the St Joseph and the Christ Child card', 'The St Joseph and the Christ Child card with an envelope', 'img/img-shop/photos-with-plants/st-joseph.jpg', 'St Joseph and Christ Child card with background', 'img/img-shop/st-joseph/basket/st-joseph-basket.jpg', '3.00', 'SJCHCH', 45);
+(1, 'Virgin of Compassion', 'img/img-shop/virgin-comp/virgin-comp-back.jpg', 'img/img-shop/virgin-comp/virgin-comp-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/our-lady.jpg', 'Front of the Virgin of Compassion card', 'Back of the Virgin of Compassion card', 'The Virgin of Compassion card with an envelope', 'img/img-shop/photos-with-plants/our-lady.jpg', 'Virgin of Compassion card with background', 'img/img-shop/virgin-comp/basket/virgin-comp-basket.jpg', 3.10, 'VC', 24),
+(2, 'Sacred Heart of Jesus', 'img/img-shop/sacred-heart/sacred-heart-back.jpg', 'img/img-shop/sacred-heart/sacred-heart-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/sacred-heart.jpg', 'Front of the Sacred Heart of Jesus card', 'Back of the Sacred Heart of Jesus card', 'The Sacred Heart of Jesus card with an envelope', 'img/img-shop/photos-with-plants/sacred-heart.jpg', 'Sacred Heart of Jesus card with background', 'img/img-shop/sacred-heart/basket/sacred-heart-basket.jpg', 3.20, 'SHJ', 37),
+(3, 'Sinai Christ', 'img/img-shop/sinai-christ/sinai-christ-back.jpg', 'img/img-shop/sinai-christ/sinai-christ-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/sinai-christ.jpg', 'Front of the Sinai Christ card', 'Back of the Sinai Christ card', 'The Sinai Christ card with an envelope', 'img/img-shop/photos-with-plants/sinai-christ.jpg', 'Sinai Christ card with background', 'img/img-shop/sinai-christ/basket/sinai-christ-basket.jpg', 2.90, 'SCH', 0),
+(4, 'St Joseph & the Christ Child', 'img/img-shop/st-joseph/st-joseph-back.jpg', 'img/img-shop/st-joseph/st-joseph-front.jpg', 'img/img-shop/photos-with-plants/photos-with-plants-cropped/st-joseph.jpg', 'Front of the St Joseph and the Christ Child card', 'Back of the St Joseph and the Christ Child card', 'The St Joseph and the Christ Child card with an envelope', 'img/img-shop/photos-with-plants/st-joseph.jpg', 'St Joseph and Christ Child card with background', 'img/img-shop/st-joseph/basket/st-joseph-basket.jpg', 3.00, 'SJCHCH', 45);
 
 -- --------------------------------------------------------
 
@@ -200,53 +218,16 @@ INSERT INTO `cards` (`id`, `product`, `imgBackUrl`, `imgFrontUrl`, `imgMoreUrl`,
 -- Table structure for table `contactForm`
 --
 
-CREATE TABLE `contactForm` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `contactForm`;
+CREATE TABLE IF NOT EXISTS `contactForm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` char(32) NOT NULL,
   `senderName` varchar(60) NOT NULL,
   `senderEmailAddress` varchar(100) NOT NULL,
   `message` text NOT NULL,
-  `datePosted` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `contactForm`
---
-
-INSERT INTO `contactForm` (`id`, `userId`, `senderName`, `senderEmailAddress`, `message`, `datePosted`) VALUES
-(1, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-09 22:00:41'),
-(2, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'f', '2021-04-09 22:01:49'),
-(3, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'fRosie Piontek', '2021-04-09 22:01:55'),
-(4, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'fRosie Piontek Orkney, United Kingdom ', '2021-04-09 22:02:01'),
-(5, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'fRosie Piontek Orkney, United Kingdom 44 01856 861 724 ', '2021-04-09 22:02:18'),
-(6, 'f4aa419111b6db09734d55d58e9d3093', 'Heniek Zylc', 'zylc@gmail.com', 'f', '2021-04-09 22:02:32'),
-(7, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-09 22:02:57'),
-(8, 'f4aa419111b6db09734d55d58e9d3093', 'aasd', 'andrzej@gmail.com', '()', '2021-04-09 22:03:31'),
-(9, 'f4aa419111b6db09734d55d58e9d3093', 'aasd', 'andrzej@gmail.com', '()', '2021-04-09 22:03:53'),
-(10, 'f4aa419111b6db09734d55d58e9d3093', 'd', 'andrzej@gmail.com', 'j', '2021-04-09 22:06:07'),
-(11, 'f4aa419111b6db09734d55d58e9d3093', 'aasd', 'andrzej@gmail.com', 'f\r\nf', '2021-04-09 22:09:05'),
-(12, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'dasdasd', '2021-04-09 22:10:17'),
-(13, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'dasdasd asdasd', '2021-04-09 22:10:20'),
-(14, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'dasdasd asdasd\r\n\r\nasdasd', '2021-04-09 22:10:25'),
-(15, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'dasdasd asdasd\r\n\r\nasdasd\r\n\r\nasdasd', '2021-04-09 22:10:33'),
-(16, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'adasd\r\n\r\nasdasd', '2021-04-09 22:10:37'),
-(17, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'adasd\r\n\r\nasdasd ()', '2021-04-09 22:10:44'),
-(18, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'adasd\r\n\r\nasdasd () ++', '2021-04-09 22:10:48'),
-(19, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'Rosie Piontek\r\n\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-09 22:11:12'),
-(20, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'Heniek Zylc\r\n\r\nulica Majkowskiego 14/31\r\n84-100 Puck\r\nPolska\r\n\r\n+4858 987938457 (9)\r\n\r\no\'HARA', '2021-04-09 22:12:16'),
-(21, 'f4aa419111b6db09734d55d58e9d3093', 'a', 'andrzej@gmail.com', 'Heniek Zylc\r\n\r\nulica Majkowskiego 14/31\r\n84-100 Puck\r\nPolska\r\n\r\n+4858 987938457 (9)\r\n\r\no\'HARA ', '2021-04-09 22:12:26'),
-(22, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-09 22:13:13'),
-(23, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-11 15:05:41'),
-(24, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'Rosie Piontek\r\nOrkney, United Kingdom\r\n+44 (0) 1856 861 724\r\n+44 (0) 7758 3000 84\r\nrosiepiontekart@gmail.com', '2021-04-11 15:06:29'),
-(25, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'w', '2021-04-11 22:03:46'),
-(26, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'e', '2021-04-11 22:06:33'),
-(27, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'yendrrek@gmail.com', 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz', '2021-04-11 22:06:42'),
-(28, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'a@gmail.com', 'wr', '2021-04-11 22:15:32'),
-(29, '95755a7270476908239d839ee0cfd483', 'Andrzej Piontek', 'a@gmail.com', 'wr', '2021-04-11 22:16:06'),
-(30, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'w', '2021-04-12 05:57:22'),
-(31, '630155c96a1d6999b8a190887d5c2092', 'andrzej', 'a@gmal.com', 'w', '2021-04-12 05:58:12'),
-(32, 'iinc1f0gsntpkv5k1qvrrg6g6o', 'Stefek Burczymucha', 'stefek@stefek.com', 'ss', '2022-11-12 15:06:55'),
-(33, 'iinc1f0gsntpkv5k1qvrrg6g6o', 'Stefek Burczymucha', 'stefek@stefek.com', 'ss', '2022-11-12 15:22:19');
+  `datePosted` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -254,15 +235,17 @@ INSERT INTO `contactForm` (`id`, `userId`, `senderName`, `senderEmailAddress`, `
 -- Table structure for table `customers`
 --
 
-CREATE TABLE `customers` (
-  `id` int(10) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE IF NOT EXISTS `customers` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `userId` char(32) NOT NULL,
   `orderId` char(32) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `name` varchar(20) NOT NULL,
   `address` varchar(80) NOT NULL,
-  `email` varchar(80) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `email` varchar(80) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -270,18 +253,20 @@ CREATE TABLE `customers` (
 -- Table structure for table `mainNavItems`
 --
 
-CREATE TABLE `mainNavItems` (
-  `id` tinyint(4) NOT NULL,
+DROP TABLE IF EXISTS `mainNavItems`;
+CREATE TABLE IF NOT EXISTS `mainNavItems` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `mainNavElements` char(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `mainNavLinks` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `mainNavLinks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `mainNavItems`
 --
 
 INSERT INTO `mainNavItems` (`id`, `mainNavElements`, `mainNavLinks`) VALUES
-(1, 'All works', 'index.php'),
+(1, 'All works', 'all-works.php'),
 (2, 'About', 'about.php'),
 (3, 'Contact', 'contact.php'),
 (4, 'Shop', 'shop.php');
@@ -292,14 +277,16 @@ INSERT INTO `mainNavItems` (`id`, `mainNavElements`, `mainNavLinks`) VALUES
 -- Table structure for table `orders`
 --
 
-CREATE TABLE `orders` (
-  `id` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `userId` char(32) NOT NULL,
   `orderId` char(32) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `priceGBP` decimal(20,2) NOT NULL,
-  `whenPosted` char(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `whenPosted` char(8) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -307,8 +294,9 @@ CREATE TABLE `orders` (
 -- Table structure for table `slideshow`
 --
 
-CREATE TABLE `slideshow` (
-  `id` tinyint(2) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `slideshow`;
+CREATE TABLE IF NOT EXISTS `slideshow` (
+  `id` tinyint(2) UNSIGNED NOT NULL AUTO_INCREMENT,
   `slideshowImgAlt` varchar(500) NOT NULL,
   `slideshowImgTitle` varchar(500) NOT NULL,
   `slideshowImgDesc` varchar(500) NOT NULL,
@@ -316,8 +304,9 @@ CREATE TABLE `slideshow` (
   `slideshowSoldInfo` varchar(500) NOT NULL,
   `1366px` varchar(255) NOT NULL,
   `768px` varchar(255) NOT NULL,
-  `414px` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `414px` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `slideshow`
@@ -360,11 +349,13 @@ INSERT INTO `slideshow` (`id`, `slideshowImgAlt`, `slideshowImgTitle`, `slidesho
 -- Table structure for table `smallMainNavItems`
 --
 
-CREATE TABLE `smallMainNavItems` (
-  `id` tinyint(4) NOT NULL,
+DROP TABLE IF EXISTS `smallMainNavItems`;
+CREATE TABLE IF NOT EXISTS `smallMainNavItems` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `smallMainNavElements` char(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `smallMainNavLinks` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `smallMainNavLinks` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `smallMainNavItems`
@@ -382,18 +373,20 @@ INSERT INTO `smallMainNavItems` (`id`, `smallMainNavElements`, `smallMainNavLink
 -- Table structure for table `smallSubNavItems`
 --
 
-CREATE TABLE `smallSubNavItems` (
-  `id` tinyint(4) NOT NULL,
+DROP TABLE IF EXISTS `smallSubNavItems`;
+CREATE TABLE IF NOT EXISTS `smallSubNavItems` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `smallSubNavElements` char(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `smallSubNavLinks` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `smallSubNavLinks` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `smallSubNavItems`
 --
 
 INSERT INTO `smallSubNavItems` (`id`, `smallSubNavElements`, `smallSubNavLinks`) VALUES
-(1, 'All Works', 'index.php'),
+(1, 'All Works', 'all-works.php'),
 (2, 'Geometry', 'geometry.php'),
 (3, 'Stained Glass', 'stained-glass.php'),
 (4, 'Ceramic Tiles', 'ceramic-tiles.php'),
@@ -405,11 +398,13 @@ INSERT INTO `smallSubNavItems` (`id`, `smallSubNavElements`, `smallSubNavLinks`)
 -- Table structure for table `subNavItems`
 --
 
-CREATE TABLE `subNavItems` (
-  `id` tinyint(4) NOT NULL,
+DROP TABLE IF EXISTS `subNavItems`;
+CREATE TABLE IF NOT EXISTS `subNavItems` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `subNavElements` char(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `subNavLinks` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `subNavLinks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `subNavItems`
@@ -427,15 +422,17 @@ INSERT INTO `subNavItems` (`id`, `subNavElements`, `subNavLinks`) VALUES
 -- Table structure for table `thumbnailImgs`
 --
 
-CREATE TABLE `thumbnailImgs` (
-  `id` tinyint(2) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `thumbnailImgs`;
+CREATE TABLE IF NOT EXISTS `thumbnailImgs` (
+  `id` tinyint(2) UNSIGNED NOT NULL AUTO_INCREMENT,
   `thumbSrc` varchar(255) NOT NULL,
   `thumbAlt` varchar(255) NOT NULL,
   `thumbTitle` varchar(255) NOT NULL,
   `thumbDesc` varchar(255) NOT NULL,
   `thumbDim` varchar(255) NOT NULL,
-  `thumbAdditional` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `thumbAdditional` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `thumbnailImgs`
@@ -471,184 +468,6 @@ INSERT INTO `thumbnailImgs` (`id`, `thumbSrc`, `thumbAlt`, `thumbTitle`, `thumbD
 (27, 'img/img-thumb/3-stained-glass/virgin-and-child.jpg', 'Virgin and Child', 'Virgin and Child, 2017', 'Lead, solder, stained and coloured glass', '65 x 35.5 cm (26 x 14 in)', ''),
 (28, 'img/img-thumb/4-ceramic-tiles/jerusalem-cross-tiles.jpg', 'Jerusalem Cross Tiles', '', 'Fired, glazed red and white clay', '27 x 27 cm (11 x 11 in)', ''),
 (29, 'img/img-thumb/4-ceramic-tiles/celtic-key-pattern-cross-tiles.jpg', 'Celtic Key Pattern Cross Tiles', 'Celtic Key Pattern Cross Tiles, 2016', 'Fired, glazed clay', '52 x 40 cm (20 x 16 in)', '');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `aboutContent`
---
-ALTER TABLE `aboutContent`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `basket`
---
-ALTER TABLE `basket`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product` (`productId`),
-  ADD KEY `user_session_id` (`userId`);
-
---
--- Indexes for table `basketMainNavItems`
---
-ALTER TABLE `basketMainNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `basketSmallMainNavItems`
---
-ALTER TABLE `basketSmallMainNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `cards`
---
-ALTER TABLE `cards`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `contactForm`
---
-ALTER TABLE `contactForm`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `customers`
---
-ALTER TABLE `customers`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `mainNavItems`
---
-ALTER TABLE `mainNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `slideshow`
---
-ALTER TABLE `slideshow`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `smallMainNavItems`
---
-ALTER TABLE `smallMainNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `smallSubNavItems`
---
-ALTER TABLE `smallSubNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `subNavItems`
---
-ALTER TABLE `subNavItems`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `thumbnailImgs`
---
-ALTER TABLE `thumbnailImgs`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `aboutContent`
---
-ALTER TABLE `aboutContent`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `basket`
---
-ALTER TABLE `basket`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
-
---
--- AUTO_INCREMENT for table `basketMainNavItems`
---
-ALTER TABLE `basketMainNavItems`
-  MODIFY `id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `basketSmallMainNavItems`
---
-ALTER TABLE `basketSmallMainNavItems`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `cards`
---
-ALTER TABLE `cards`
-  MODIFY `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `contactForm`
---
-ALTER TABLE `contactForm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
-
---
--- AUTO_INCREMENT for table `customers`
---
-ALTER TABLE `customers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `mainNavItems`
---
-ALTER TABLE `mainNavItems`
-  MODIFY `id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `slideshow`
---
-ALTER TABLE `slideshow`
-  MODIFY `id` tinyint(2) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
-
---
--- AUTO_INCREMENT for table `smallMainNavItems`
---
-ALTER TABLE `smallMainNavItems`
-  MODIFY `id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `smallSubNavItems`
---
-ALTER TABLE `smallSubNavItems`
-  MODIFY `id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `subNavItems`
---
-ALTER TABLE `subNavItems`
-  MODIFY `id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `thumbnailImgs`
---
-ALTER TABLE `thumbnailImgs`
-  MODIFY `id` tinyint(2) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -2,21 +2,28 @@
 
 namespace Rosie\Services\Contact;
 
+use JetBrains\PhpStorm\Pure;
+
 class ContactFormFields
 {
-    public function getSenderName(): string
+    #[Pure] public function getSenderName(): string
     {
         return !empty($_POST['senderName']) ? $this->sanitize($_POST['senderName']) : false;
     }
 
-    public function getSenderEmailAddress(): string
+    #[Pure] public function getSenderEmailAddress(): string
     {
         return !empty($_POST['senderEmail']) ? $this->sanitize($_POST['senderEmail']) : false;
     }
 
-    public function getMessage(): string
+    #[Pure] public function getMessage(): string
     {
         return !empty($_POST['msg']) ? $this->sanitize($_POST['msg']) : false;
+    }
+
+    #[Pure] public function isBotSendingMessage(): bool
+    {
+        return !empty($this->sanitize($_POST['website']));
     }
 
     private function sanitize($userInput): string

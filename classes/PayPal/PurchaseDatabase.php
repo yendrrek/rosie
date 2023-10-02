@@ -50,14 +50,15 @@ class PurchaseDatabase
     private function insertOrderIntoDatabase($dbConn, $userId): void
     {
         $stmt2 = $dbConn->prepare(
-            'INSERT INTO orders (userId, orderId, priceGBP)
-                VALUES (:userId, :orderId, :totalPrice)'
+            'INSERT INTO orders (userId, orderId, priceGBP, whenPosted)
+                VALUES (:userId, :orderId, :totalPrice, :whenPosted)'
         );
 
         $orderData = [
             ':userId' => $userId,
             ':orderId' => $this->orderCapture->orderId,
-            ':totalPrice' => $this->orderCapture->totalPrice
+            ':totalPrice' => $this->orderCapture->totalPrice,
+            ':whenPosted' => null // to be changed directly in database
         ];
 
         $this->insertDataIntoDatabase($orderData, $stmt2);
