@@ -1,13 +1,5 @@
 .htaccess
-.jshintrc
-rosiepiontek.com.sublime-project
-rosiepiontek.com.sublime-workspace
-cgi-bin/
-img/img-slideshow/slideshow-images-info.txt
-PHPMailer/
 .idea/
 vendor/
-.php_cs.cache
-.php-cs-fixer.cache
 log/
 /composer.phar
