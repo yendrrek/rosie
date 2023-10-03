@@ -21,11 +21,12 @@ class PurchaseConfirmationEmail
     {
         EnvironmentVariables::getEnvVars();
         $payPalEnvironment = EnvironmentVariables::$environment;
-        $sellerEmail = EnvironmentVariables::$sellerEmail;
         $sellerPhone = EnvironmentVariables::$sellerPhone;
         $sellerMobile = EnvironmentVariables::$sellerMobile;
         $host = EnvironmentVariables::$emailHost;
-        $toEmail = EnvironmentVariables::$rosieEmail;
+        $mailtrapTestToEmail = EnvironmentVariables::$mailtrapTestToEmail;
+        $emailUserName = EnvironmentVariables::$emailUserName; // For local testing this is Mailtrap user
+        $rosieEmail = EnvironmentVariables::$rosieEmail;
 
         $itemsDetails = $items = $products = $subtotal = $qtyArray = [];
         $amount = $totalQty = 0;
@@ -48,13 +49,13 @@ class PurchaseConfirmationEmail
             $mail->Port = 587;
             $mail->Username = EnvironmentVariables::$emailUserName;
             $mail->Password = EnvironmentVariables::$emailPassword;
-            $mail->setFrom($sellerEmail, 'Rosie Piontek Art');
+            $mail->setFrom($rosieEmail, 'Rosie Piontek Art');
             if ($payPalEnvironment === 'production') {
                 $mail->addAddress($this->orderCapture->buyerEmail, $this->orderCapture->buyerName);
             } elseif ($payPalEnvironment === 'sandbox') {
-                $mail->addAddress($toEmail, $this->orderCapture->buyerName);
+                $mail->addAddress($mailtrapTestToEmail, $this->orderCapture->buyerName);
             }
-            $mail->addReplyTo($sellerEmail, 'Rosie Piontek Art');
+            $mail->addReplyTo($rosieEmail, 'Rosie Piontek Art');
             $mail->isHTML();
             $mail->Subject = 'Purchase confirmation from Rosie Piontek Art. Order ID: ' . $this->orderCapture->orderId;
             ob_start();

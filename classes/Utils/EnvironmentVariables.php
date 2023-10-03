@@ -11,7 +11,7 @@ class EnvironmentVariables
     public static string $payPalClientId = '';
     public static string $payPalClientSecret = '';
     public static string $environment = '';
-    public static string $sellerEmail = '';
+    public static string $mailtrapTestToEmail = '';
     public static string $rosieEmail = '';
     public static string $sellerMobile = '';
     public static string $sellerPhone = '';
@@ -31,15 +31,15 @@ class EnvironmentVariables
         self::$payPalClientId = getenv('PAYPAL_CLIENT_ID');
         self::$payPalClientSecret = getenv('PAYPAL_CLIENT_SECRET');
         self::$environment = getenv('ENVIRONMENT');
-        self::$sellerEmail = getenv('SELLER_EMAIL');
-        self::$rosieEmail = getenv('MAILTRAP_TEST_EMAIL');
+        self::$mailtrapTestToEmail = getenv('MAILTRAP_TEST_TO_EMAIL');
+        self::$rosieEmail = getenv('ROSIE_EMAIL');
         self::$sellerMobile = getenv('SELLER_MOBILE');
         self::$sellerPhone = getenv('SELLER_PHONE');
         self::$user = getenv('USER');
         self::$logFilePath = getenv('CUSTOM_LOG_FILE_PATH');
         self::$purchaseConfirmationEmailPath = getenv('PURCHASE_CONFIRMATION_EMAIL_PATH');
-        self::$emailUserName = getenv('MAILTRAP_TEST_EMAIL_USERNAME');
-        self::$emailPassword = getenv('MAILTRAP_TEST_EMAIL_PASSWORD');
-        self::$emailHost = getenv('MAILTRAP_TEST_EMAIL_HOST');
+        self::$emailUserName = getenv('EMAIL_USERNAME');
+        self::$emailPassword = getenv('EMAIL_PASSWORD');
+        self::$emailHost = getenv('EMAIL_HOST');
     }
 }

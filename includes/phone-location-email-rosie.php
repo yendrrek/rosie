@@ -1,4 +1,8 @@
-<?php use Rosie\Utils\EnvironmentVariables; ?>
+<?php
+
+use Rosie\Utils\EnvironmentVariables;
+
+?>
 
 <div class="contact contact">
     <div class="contact__container">
@@ -7,7 +11,7 @@
             Carluke, United Kingdom <br>
             <?php echo EnvironmentVariables::$sellerPhone;?><br>
             <?php echo EnvironmentVariables::$sellerMobile;?><br>
-            <?php echo EnvironmentVariables::$sellerEmail;?>
+            <?php echo EnvironmentVariables::$rosieEmail;?>
         </p>
     </div>
 </div>
