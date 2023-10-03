@@ -22,8 +22,10 @@ class ContactFormSubmission
         $senderName = $this->contactFormFields->getSenderName();
         $senderEmailAddress = $this->contactFormFields->getSenderEmailAddress();
         $message = $this->contactFormFields->getMessage();
-        $toEmail = EnvironmentVariables::$rosieEmail;
+        $mailtrapTestToEmail = EnvironmentVariables::$mailtrapTestToEmail;
         $host = EnvironmentVariables::$emailHost;
+        $environment = EnvironmentVariables::$environment;
+        $rosieEmail = EnvironmentVariables::$emailUserName;
 
         $mail = new PHPMailer();
         try {
@@ -35,7 +37,11 @@ class ContactFormSubmission
             $mail->Username = EnvironmentVariables::$emailUserName;
             $mail->Password = EnvironmentVariables::$emailPassword;
             $mail->Subject = 'Website contact form';
-            $mail->addAddress($toEmail, 'Rosie');
+            if ($environment === 'production') {
+                $mail->addAddress($rosieEmail, 'Rosie');
+            } elseif ($environment === 'sandbox') {
+                $mail->addAddress($mailtrapTestToEmail, 'Rosie');
+            }
             $mail->setFrom($senderEmailAddress, $senderName);
             $mail->Body = $message;
             $mail->isHTML(false);
