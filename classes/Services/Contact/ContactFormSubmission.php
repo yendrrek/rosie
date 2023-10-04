@@ -34,15 +34,14 @@ class ContactFormSubmission
             $mail->SMTPAuth = true;
             $mail->SMTPSecure = 'TLS';
             $mail->Port = 587;
-            $mail->Username = EnvironmentVariables::$emailUserName;
+            $mail->Username = $rosieEmail;
             $mail->Password = EnvironmentVariables::$emailPassword;
-            $mail->Subject = 'Website contact form';
+            $mail->Subject = 'rosiepiontek.com contact form. Sender: ' . $senderName . ', ' . $senderEmailAddress;
             if ($environment === 'production') {
                 $mail->addAddress($rosieEmail, 'Rosie');
             } elseif ($environment === 'sandbox') {
                 $mail->addAddress($mailtrapTestToEmail, 'Rosie');
             }
-            $mail->setFrom($senderEmailAddress, $senderName);
             $mail->Body = $message;
             $mail->isHTML(false);
 
@@ -50,9 +49,11 @@ class ContactFormSubmission
                 $this->generalNotification = 'Message sent. Thank you';
                 $this->logging->logMessage('info', 'Message sent');
                 return true;
+            } else {
+                $this->logging->logMessage('alert', 'Failed sending message from contact form. ' . $mail->ErrorInfo);
             }
         } catch (Exception $e) {
-            $this->logging->logMessage('alert', 'Failed sending message from contact form. ' . $e->errorMessage());
+            $this->logging->logMessage('alert', 'Exception thrown when sending message from contact form. ' . $e->errorMessage());
             return false;
         }
         return false;
