@@ -18,11 +18,6 @@ Project's URL:  *https://rosiepiontek.com*
 
 ## General description
 
-The idea was to use the MVC pattern without a framework.
-When I look at it today, my approach seems rather unconventional...
-
-There are controllers, services and dependency containers which pass services to controllers.
-
 All requests are passed to *index.php*.
 
 Main components are located in *views* folder.  Smaller parts which are included in the main components are located in *includes*.
@@ -34,7 +29,6 @@ Database is queried using MySQL stored procedures or prepared statements.
 Website can be fully keyboard-only navigated.
 
 ## Shop description
-
 
 Online payment uses PayPal Smart Button integrated on the sever side.
 
